@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<excel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:noNamespaceSchemaLocation="http://www.bana.com/common-util/excelConfig.xsd" 
+type="xls" name="学生成绩单" style="border:all;fontName:微软雅黑;">
+	<sheet name="学生成绩单" checkTitle="true">
+		<row type="title" rowIndex="-1" style="fontWeight:bold;fontHeightInPoints:14;alignment:ALIGN_CENTER;"><!-- 列按照顺序进行排列 -->
+			<column name="学生成绩单" colspan="6"/>
+		</row>
+		<row type="title" rowIndex="-1" style="fontHeightInPoints:10;"><!-- 列按照顺序进行排列 -->
+			<column name="班级名称" colspan="1"/>
+			<column name="考试时间" colspan="1"/>	
+			<column name="学生编号" colspan="1"/>
+			<column name="学生姓名" colspan="1"/>
+			<column name="科目" colspan="1"/>	
+			<column name="成绩" colspan="1"/>
+			<column name="老师评语" colspan="1"/>	
+					
+		</row>
+		<row type="data" rowIndex="-1" style="fontHeightInPoints:10;" class="com.jbinfo.i3618.message.dto.StudentScoreDto">
+			<column mappedBy="classOrgName"/>
+			<column mappedBy="examinationTime"/>
+			<column mappedBy="studentIdStr"/>
+			<column mappedBy="studentName"/>
+			<column mappedBy="subject"/>
+			<column mappedBy="score"/>
+			<column mappedBy="comment"/>
+		</row>
+	</sheet>
+</excel>

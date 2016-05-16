@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transform trancateTable="true" batchSize="500" stageCommint="true">
+	<!-- 原表配置 -->
+	<sourceTable>
+		<property name="schama">bana</property>
+		<property name="name">t_wechat_callback_log</property>
+		<property name="encoding">UTF-8</property>
+	</sourceTable>
+	<!-- 目标表配置 -->
+	<destTable>
+		<property name="schama">i3618_temp</property>
+		<property name="name">t_ba_agent_callback_log</property>
+		<property name="encoding">utf8</property>
+	</destTable>
+	<!-- 转换列的对应关系 -->
+	<mappings>
+		<mapping source="toUserName" dest="to_User_Name" type="String" />
+		<mapping source="fromUserName" dest="from_user_name" type="String" />
+		<mapping source="happenTime" dest="create_day" type="String" dateFormat="yyyy-MM-dd"/>
+	</mappings>
+	<aggregate>
+		<command key="$match">
+			<option key="event" value="unsubscribe"></option>
+		</command>
+		<command key="$project">
+			<option key="_id" value="0" dataType="int"></option>
+			<option key="toUserName" value="1" dataType="int"></option>
+			<option key="fromUserName" value="1" dataType="int"></option>
+			<option key="happenTime" value="1" dataType="int"></option>
+		</command>
+		<!-- <command key="$limit" value="5" dataType="int">
+		</command> -->
+	</aggregate>
+</transform>

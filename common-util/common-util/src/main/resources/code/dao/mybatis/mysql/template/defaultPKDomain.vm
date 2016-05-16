@@ -1,0 +1,111 @@
+/**
+* @Company 青鸟软通   
+* @Title: ${Function}DomainPK.java 
+* @Package ${packageName} 
+* @author ${user}   
+* @date ${date} 
+* @version V1.0   
+*/ 
+package ${packageName};
+
+import java.io.Serializable;
+
+/** 
+ * @ClassName: ${Function}DomainPK 
+ * @Description: ${this.getTableName()} 自动生成的对应的实体对象的联合主键对象
+ *  
+ */
+public class ${Function}DomainPK implements Serializable{
+	private static final long serialVersionUID = ${serialVersionUID};
+
+	#foreach (${column} in ${this.getTable().findPriColumnList()}) 
+/** 
+	* @Fields ${column.getJavaName()} : ${column.getColumnComment()}
+	*/
+	private ${column.getJavaType()} ${column.getJavaName()};
+	#end
+	
+	
+	/*=========================getter and setter ===================*/
+	
+	#foreach (${column} in ${this.getTable().findPriColumnList()})
+/**
+	 * @Description: 属性 ${column.getJavaName()} 的get方法 
+	 * @return id
+	 */
+	public ${column.getJavaType()} ${column.findFieldGetMethod()}() {
+		return this.${column.getJavaName()};
+	}
+	/**
+	 * @Description: 属性 ${column.getJavaName()} 的set方法 
+	 * @param id 
+	 */
+	public void ${column.findFieldSetMethod()}(${column.getJavaType()} ${column.getJavaName()}) {
+		this.${column.getJavaName()} = ${column.getJavaName()};
+	}
+	#end
+	
+	
+	#if (!${this.getTable().findPriColumnList().isEmpty()})
+	
+	
+	/*====================hashCode and equals ====================*/
+/**
+	* <p>Description: ${Function}DomainPK 自动生成的hashcode方法</p> 
+	* @author ${user}   
+	* @date ${date}
+	* @return 
+	* @see java.lang.Object#hashCode() 
+	*/ 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		#foreach (${column} in ${this.getTable().findPriColumnList()})
+${column.getHashCodeString()}
+		#end
+return result;
+	}
+	/**
+	* <p>Description:${Function}DomainPK 自动生成的equals方法 </p> 
+	* @author ${user}   
+	* @date ${date}
+	* @param obj
+	* @return 
+	* @see java.lang.Object#equals(java.lang.Object) 
+	*/ 
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		${Function}DomainPK other =(${Function}DomainPK) obj;
+		#foreach (${column} in ${this.getTable().findPriColumnList()})
+${column.getEquelsString()}
+		#end
+return true;
+	}
+	#end
+	
+	/*==================== toString() ====================*/
+	/**
+	* <p>Description:${Function}DomainPK 自动生成的toString方法 </p> 
+	* @author ${user}   
+	* @date ${date} 
+	* @return 
+	* @see java.lang.Object#toString() 
+	*/ 
+	@Override
+	public String toString() {
+		return "${Function}DomainPK [" +
+		#foreach (${column} in ${this.getTable().findPriColumnList()}) 
+			"${column.getJavaName()}=" + ${column.getJavaName()} + "," + 
+		#end
+		"]";
+	}
+	
+	
+}

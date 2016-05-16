@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<excel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:noNamespaceSchemaLocation="http://www.bana.com/common-util/excelConfig.xsd" 
+type="xls" name="测试名称" style="border:all;fontName:微软雅黑;">
+	<sheet name="sheet1-test" checkTitle="true">
+		<row type="title" rowIndex="5" style="fontWeight:bold;"><!-- 列按照顺序进行排列 -->
+			<column name="系统用户统计数据" colspan="5"/>
+		</row>
+		<row type="title" mutiTitle="true" rowIndex="-1"><!-- 列按照顺序进行排列 -->
+			<column name="序号" />
+			<column name="姓名" colspan="1"/>
+			<column name="性别" colspan="1" mutiMap="年龄"/>
+			<column name="年龄" colspan="1"/>
+			<column name="住址" colspan="1"/>
+			<column name="日期" colspan="1"/>
+		</row>
+		<row type="data" class="org.bana.common.util.office.impl.TestData" rowIndex="-1">
+			<column name="序号" mappedBy="@index"/>
+			<column name="姓名" mappedBy="name"/>
+			<column name="性别" mappedBy="sex" mutiMap="年龄" colspan="1"/>
+			<column name="年龄" mappedBy="age" style="dataFormat:#" type="int"/>
+			<column name="住址" mappedBy="address"/>
+			<column name="日期" mappedBy="date" style="dataFormat:yyyy年MM月dd日 HH时mm分ss秒;" type="date"/>
+		</row>
+	</sheet>
+</excel>

@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- =========================================================== -->
+<!-- Bana 自动生成 -->
+<!-- =========================================================== -->
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="${Dao_packageName}.${Function}DAO">
+	<!-- =========================================================== -->
+	<!-- 定义resultMap -->
+	<!-- =========================================================== -->
+	<resultMap id="${Function}ResultMap" type="${Domain_packageName}.${Function}Domain">
+#foreach (${column} in ${this.getTable().getColumnList()})
+#if( ${column.isPriColumn()})
+		<id column="${column.getColumnName()}" property="#if(${this.getTable().hasPkDomain()})id.#end${column.getJavaName()}" #if(!${column.getJdbcType().equals("")}) jdbcType="${column.getJdbcType().toUpperCase()}" #end />
+#else
+		<result column="${column.getColumnName()}" property="${column.getJavaName()}" #if(!${column.getJdbcType().equals("")}) jdbcType="${column.getJdbcType().toUpperCase()}" #end />
+#end
+#end
+	</resultMap>
+	
+	<!-- =========================================================== -->
+	<!-- 一些公共变量设置 -->
+	<!-- =========================================================== -->
+	<!-- 查询的所有列 -->
+	<sql id="all_Column_List">
+#foreach (${column} in ${this.getTable().getColumnList()})
+	_THIS.${column.getColumnName().toUpperCase()}	#if ($velocityCount < ${this.getTable().getColumnList().size()}),
+#else
+	
+#end
+#end
+	</sql>
+	
+	<!-- 分页查询的公共变量 -->
+	<sql id="pagination_Tail">
+	<![CDATA[
+		limit #{pageCond.firstResult},#{pageCond.pageSize}
+	]]>
+	</sql>
+	
+	<!-- 排序列表的公共片段 -->
+	<sql id="sort_tail">
+		<if test="sortList!=null">
+		    order by <foreach collection="sortList" separator="," item="sortCond">_THIS.${sortCond.sortColumn} ${sortCond.sortType}</foreach>
+		</if>
+	</sql>
+	
+	<!-- 查询的所有变量判断 -->
+	<sql id="searchConditions">
+	#foreach (${column} in ${this.getTable().getColumnList()})
+	${column.getConditionString($this.getTable().hasPkDomain(),"id")}
+	#end
+</sql>
+
+	<!-- 查询的所有变量的equal判断 -->
+	<sql id="searchEqualsConditions">
+	#foreach (${column} in ${this.getTable().getColumnList()})
+	${column.getEqualsConditionString($this.getTable().hasPkDomain(),"id")}
+	#end
+</sql>
+	
+	<!-- =========================================================== -->
+	<!-- CommonDao中的dao实现类 -->
+	<!-- =========================================================== -->
+	<!-- 根据主键查询实体类的方法 -->
+	<select id="findById" resultMap="${Function}ResultMap"
+		parameterType="#if(${this.getTable().hasPkDomain()})${PKDomain_packageName}.${Function}DomainPK#else${this.getTable().findIdType()}#end">
+#set($jinghao="#")
+		select <include refid="all_Column_List"/>
+		from #if(${this.getTable().isTableSchamaUseInSql()})${this.getTable().getTableSchama()}.#end${this.getTable().getTableName()} _THIS
+		where 
+#foreach(${column} in ${this.getTable().findPriColumnList()})
+		#if($velocityCount > 1)and #end${column.getColumnName()} = ${jinghao}{${column.getJavaName()}}
+#end
+	</select>
+	
+	<!-- 查询此实体表中所有数据的数量 -->
+	<select id="count" resultType="long">
+		select count(1) 
+		from #if(${this.getTable().isTableSchamaUseInSql()})${this.getTable().getTableSchama()}.#end${this.getTable().getTableName()} _THIS
+	</select>
+	
+	<!-- 实体的保存法方法 -->
+	<insert id="save" parameterType="${Domain_packageName}.${Function}Domain" #if(${this.getTable().findPriColumnList().get(0).getColumnKey().equalsIgnoreCase("PRI")} && ${this.getTable().findPriColumnList().get(0).getExtra().equalsIgnoreCase("auto_increment")}) useGeneratedKeys="true" keyProperty="${this.getTable().findPriColumnList().get(0).getJavaName()}" #end>
+		insert into #if(${this.getTable().isTableSchamaUseInSql()})${this.getTable().getTableSchama()}.#end${this.getTable().getTableName()}
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+#foreach (${column} in ${this.getTable().getColumnList()})
+#if( ${column.isPriColumn()} && ${column.getExtra().equalsIgnoreCase("auto_increment")})	
+#else
+			<if test="#if(${column.isPriColumn()}&&${this.getTable().hasPkDomain()})id.#end${column.getJavaName()}!=null">
+				${column.getColumnName().toUpperCase()}	,
+			</if>
+#end
+#end
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+#foreach (${column} in ${this.getTable().getColumnList()})
+#if( ${column.getColumnKey().equalsIgnoreCase("PRI")} && ${column.getExtra().equalsIgnoreCase("auto_increment")})	
+#else
+			<if test="#if(${column.isPriColumn()}&&${this.getTable().hasPkDomain()})id.#end${column.getJavaName()}!=null">
+				${jinghao}{#if(${column.isPriColumn()}&&${this.getTable().hasPkDomain()})id.#end${column.getJavaName()}}	,
+     		</if>
+#end
+#end
+		</trim>
+	</insert>
+	
+	<!-- 实体的更新方法 -->
+	<update id="update" parameterType="${Domain_packageName}.${Function}Domain">
+		update #if(${this.getTable().isTableSchamaUseInSql()})${this.getTable().getTableSchama()}.#end${this.getTable().getTableName()}
+		<set>
+#foreach (${column} in ${this.getTable().getColumnList()})
+#if( ${column.isPriColumn()})
+#else
+			${column.getColumnName().toUpperCase()} = ${jinghao}{${column.getJavaName()}},
+#end
+#end
+		</set>
+		where 
+#foreach (${column} in ${this.getTable().findPriColumnList()})
+		#if($velocityCount > 1)and #end${column.getColumnName()} = #{#if(${this.getTable().hasPkDomain()})id.#end${column.getJavaName()}}
+#end
+	</update>
+	
+	
+	<!-- 实体的更新方法,只更新不为空的字段 -->
+	<update id="updateNotNull" parameterType="${Domain_packageName}.${Function}Domain">
+		update #if(${this.getTable().isTableSchamaUseInSql()})${this.getTable().getTableSchama()}.#end${this.getTable().getTableName()}
+		<set>
+#foreach (${column} in ${this.getTable().getColumnList()})
+#if( ${column.isPriColumn()})
+#else
+			<if test="${column.getJavaName()}!=null">
+				${column.getColumnName().toUpperCase()} = ${jinghao}{${column.getJavaName()}},
+			</if>
+#end
+#end
+		</set>
+		where 
+#foreach (${column} in ${this.getTable().findPriColumnList()})
+		#if($velocityCount > 1)and #end${column.getColumnName()} = #{#if(${this.getTable().hasPkDomain()})id.#end${column.getJavaName()}}
+#end
+	</update>	
+	
+	<!-- 按照ID主键删除一条记录的功能 -->
+	<delete id="delete" parameterType="#if(${this.getTable().hasPkDomain()})${PKDomain_packageName}.${Function}DomainPK#else${this.getTable().findIdType()}#end">
+		delete from #if(${this.getTable().isTableSchamaUseInSql()})${this.getTable().getTableSchama()}.#end${this.getTable().getTableName()} 
+		where  
+#foreach (${column} in ${this.getTable().findPriColumnList()})
+		#if($velocityCount > 1)and #end${column.getColumnName()} = ${jinghao}{${column.getJavaName()}}
+#end
+	</delete>
+	
+	<!-- 根据参数查询分页查询所有的对象内容 -->
+	<select id="findByParams" resultMap="${Function}ResultMap" >
+		select <include refid="all_Column_List"/>
+		from #if(${this.getTable().isTableSchamaUseInSql()})${this.getTable().getTableSchama()}.#end${this.getTable().getTableName()} _THIS
+		where 1=1
+		<include refid="searchConditions"/>
+		<include refid="pagination_Tail"/>
+	</select>
+	<!-- 根据参数查询分页查询所有的对象内容 -->
+	<select id="findCountByParams" resultType="integer" >
+		select count(1)
+		from #if(${this.getTable().isTableSchamaUseInSql()})${this.getTable().getTableSchama()}.#end${this.getTable().getTableName()} _THIS
+		where 1=1
+		<include refid="searchConditions"/>
+	</select>
+	
+	<!-- 根据Equal参数查询分页查询所有的对象内容 -->
+	<select id="findByEqualsParams" resultMap="${Function}ResultMap" >
+		select <include refid="all_Column_List"/>
+		from #if(${this.getTable().isTableSchamaUseInSql()})${this.getTable().getTableSchama()}.#end${this.getTable().getTableName()} _THIS
+		where 1=1
+		<include refid="searchEqualsConditions"/>
+		<include refid="pagination_Tail"/>
+	</select>
+	<!-- 根据Equal参数查询分页查询所有的对象内容 -->
+	<select id="findCountByEqualsParams" resultType="integer" >
+		select count(1)
+		from #if(${this.getTable().isTableSchamaUseInSql()})${this.getTable().getTableSchama()}.#end${this.getTable().getTableName()} _THIS
+		where 1=1
+		<include refid="searchEqualsConditions"/>
+	</select>
+	
+</mapper>

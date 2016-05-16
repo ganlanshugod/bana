@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<excel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:noNamespaceSchemaLocation="http://www.bana.com/common-util/excelConfig.xsd" 
+type="xls" name="测试名称">
+	<sheet name="test1">
+		
+	</sheet>
+	<sheet name="test1"/>
+	<sheet name="代收到付进账单明细"
+		class="com.jbinfo.ecms.finance.domain.report.PostBankReportDomain"
+		titleRowIndex="3" columnWidth="0:14;1:14;2:11;3:17;4:12;5:18">
+		<column name="序列" mappedBy="columnIndex" titleFont="fontName:宋体;fontHeightInPoints:9"
+			titleStyle="border:all">
+			<style style="border:all"></style>
+		</column>
+		<column name="部门" mappedBy="orgName" titleFont="fontName:宋体;fontHeightInPoints:9"
+			titleStyle="border:all">
+			<style style="border:all"></style>
+		</column>
+		<column name="事项" mappedBy="moneyType" useDic="true"
+			dicType="postal_bank_money_type" titleFont="fontName:宋体;fontHeightInPoints:9"
+			titleStyle="border:all">
+			<style style="border:all"></style>
+		</column>
+		<column name="金额" mappedBy="itemMoney" type="NUMERIC"
+			data-params="formulaType:SUM,from:4" titleFont="fontName:宋体;fontHeightInPoints:9"
+			titleStyle="border:all">
+			<style style="border:all"></style>
+		</column>
+		<column name="资金性质" default="速递" titleFont="fontName:宋体;fontHeightInPoints:9"
+			titleStyle="border:all">
+			<style style="border:all"></style>
+		</column>
+		<column name="备注" mappedBy="remark" titleFont="fontName:宋体;fontHeightInPoints:9"
+			titleStyle="border:all">
+			<style style="border:all"></style>
+		</column>
+	</sheet>
+	<sheet name="代收到付汇总表">
+		<!-- 增加行合计 -->
+		<column name="合计" type="FORMULA" data-params="formulaType:SUM,from:1">
+			<style style="boder:all" />
+		</column>
+	</sheet>
+</excel>

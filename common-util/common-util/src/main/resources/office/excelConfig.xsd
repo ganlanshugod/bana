@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified">
+	<xs:element name="excel">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="sheet" type="sheet" minOccurs="1" maxOccurs="10"></xs:element>
+			</xs:sequence>
+			<xs:attribute name="name" type="xs:string"/>
+			<xs:attribute name="type" type="excelType" use="required"/>
+			<xs:attribute name="style" type="xs:string"/>
+		</xs:complexType>
+		<xs:key name="sheet_name">
+	   		<xs:selector xpath=".//sheet"/>
+	   		<xs:field xpath="@name"/>
+	  	</xs:key>
+	</xs:element>
+	
+	<!-- 定义excel的Type类型枚举 -->
+	<xs:simpleType name="excelType">
+	  <xs:restriction base="xs:string">
+	    <xs:enumeration value="xls"/>
+	    <xs:enumeration value="xlsx"/>
+	  </xs:restriction>
+	</xs:simpleType>
+	<!-- 定义row的Type类型枚举 -->
+	<xs:simpleType name="rowType">
+	  <xs:restriction base="xs:string">
+	    <xs:enumeration value="data"/>
+	    <xs:enumeration value="title"/>
+	  </xs:restriction>
+	</xs:simpleType>
+	<!-- 定义sheet标签的复杂标签类型 -->
+	<xs:complexType name="sheet">
+		<xs:sequence>
+			<xs:element name="row" type="row" maxOccurs="unbounded"></xs:element>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="style" type="xs:string"/>
+		<xs:attribute name="checkTitle" type="xs:boolean" default="false"></xs:attribute>
+	</xs:complexType>
+	<!-- 定义row标签的复杂标签类型 -->
+	<xs:complexType name="row">
+		<xs:sequence>
+			<xs:element name="column" type="column" maxOccurs="unbounded"></xs:element>
+		</xs:sequence>
+		<xs:attribute name="type" type="rowType" use="required"/>
+		<xs:attribute name="rowIndex" type="xs:integer" default="-1"/><!-- -1默认是从当前行进行继续加载 -->
+		<xs:attribute name="class" type="xs:string"/><!-- -1默认是从当前行进行继续加载 -->
+		<xs:attribute name="style" type="xs:string"/>
+		<xs:attribute name="mutiTitle" type="xs:boolean"></xs:attribute>
+	</xs:complexType>
+	<!-- 定义row标签的复杂标签类型 -->
+	<xs:complexType name="column">
+		<xs:attribute name="name" type="xs:string"/>
+		<xs:attribute name="colspan" default="1" type="xs:positiveInteger"/>
+		<xs:attribute name="mappedBy" type="xs:string"/>
+		<xs:attribute name="style" type="xs:string"/>
+		<xs:attribute name="type" type="xs:string"></xs:attribute>
+		<xs:attribute name="mutiMap" type="xs:string"></xs:attribute>
+		<xs:attribute name="useDic" type="xs:boolean"></xs:attribute>
+		<xs:attribute name="dicType" type="xs:string"></xs:attribute>
+	</xs:complexType>
+	
+</xs:schema>

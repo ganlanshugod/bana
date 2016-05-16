@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transform trancateTable="true" batchSize="2000" fetchSize="2000" stageCommint="true">
+	<!-- 原表配置 -->
+	<sourceTable>
+		<property name="schama">bana</property>
+		<property name="name">t_bs_game_prize</property>
+		<property name="encoding">UTF-8</property>
+	</sourceTable>
+	<!-- 目标表配置 -->
+	<destTable>
+		<property name="schama">i3618_temp</property>
+		<property name="name">t_bs_game_prize</property>
+		<property name="encoding">utf8</property>
+	</destTable>
+	<!-- 转换列的对应关系 -->
+	<mappings>
+		<mapping source="operatorId" dest="operator_id" type="Long" />
+		<mapping source="operatorName" dest="operator_name" type="String" />
+		<mapping source="gameCode" dest="game_code" type="String" />
+		<mapping source="gameName" dest="game_name" type="String" />
+		<mapping source="prizeId" dest="prize_id" type="String" />
+		<mapping source="prizeName" dest="prize_name" type="String" />
+		<mapping source="remark" dest="remark" type="String" />
+		<mapping source="createDate" dest="create_date" type="Date" />
+	</mappings>
+	<aggregate>
+<!-- 		<command key="$match"> -->
+<!-- 			<option key="executeUrl"> -->
+<!-- 				<option key="$regex" value="/app/message/findById/(16070|16071|16072|16073|16074|16075|16079|16090|16091|16092|16093|16094|16095|16096|16097|16098|16099|16100|16101|16102|16103|16104|16105|16107|16108|16110|16128|16129|16130|16132|16138|16140|16141|16142|16143|16144|16145|16146|16149|16150|16151|16152|16153|16155|16156|16187|16188|16189|16191|16192|16194|16195|16196|16197|16198|16200|16201|16202|16203|16204|16205|16207|16209|16230|16231|16234|16235|16236|16237|16238|16239|16240|16241|16242|16243|16423|16425|16447|16448|16450|16456|16460|16466|16470|16472|16476|16480|16482|16484|16485|16489|16491|16498|16499|16500|16501|16502|16517|16519|16520|16521|16522|16523|16524|16525|16526|16527|16528|16564|16565|16566|16567|16568|16571|16572|16575|16576|16577|16580|16581|16582|16586|16587|16591|16592|16596|16597|16598|16602|16603|16604|16610|16612|16613|16616|16618|16619|16624|16625|16626|16632|16634|16635|16690|16691|16692|16693|16694|16695|16696|16697|16699|16700|16703|16704|16706|16707|16709)"/> -->
+<!-- 			</option> -->
+<!-- 			<option key="operatorId"> -->
+<!-- 				<option key="$exists" value="true"/> -->
+<!-- 			</option> -->
+<!-- 		</command> -->
+		<command key="$project">
+			<option key="_id" value="1" dataType="int"></option>
+			<option key="operatorId" value="1" dataType="int"></option>
+			<option key="operatorName" value="1" dataType="int"></option>
+			<option key="gameCode" value="1" dataType="int"></option>
+			<option key="gameName" value="1" dataType="int"></option>
+			<option key="prizeId" value="1" dataType="int"></option>
+			<option key="prizeName" value="1" dataType="int"></option>
+			<option key="remark" value="1" dataType="int"></option>
+			<option key="createDate" value="1" dataType="int"></option>
+		</command>
+		<command key="$group">
+			<option key="_id">
+				<option key="id" value="$_id"></option>
+				<option key="operatorId" value="$operatorId"></option>
+				<option key="operatorName" value="$operatorName"></option>
+				<option key="gameCode" value="$gameCode"></option>
+				<option key="gameName" value="$gameName"></option>
+				<option key="prizeId" value="$prizeId"></option>
+				<option key="prizeName" value="$prizeName"></option>
+				<option key="remark" value="$remark"></option>
+				<option key="createDate" value="$createDate"></option>
+			</option>
+<!-- 			<option key="count"> -->
+<!-- 				<option key="$sum" value="1" dataType="int"></option> -->
+<!-- 			</option> -->
+		</command>
+		<command key="$project">
+				<option key="_id" value="0" dataType="int"></option>
+				<option key="operatorId" value="$_id.operatorId"></option>
+				<option key="operatorName" value="$_id.operatorName"></option>
+				<option key="gameCode" value="$_id.gameCode"></option>
+				<option key="gameName" value="$_id.gameName"></option>
+				<option key="prizeId" value="$_id.prizeId"></option>
+				<option key="prizeName" value="$_id.prizeName"></option>
+				<option key="remark" value="$_id.remark"></option>
+				<option key="createDate" value="$_id.createDate"></option>
+<!-- 			<option key="count" value="1" dataType="int"></option> -->
+		</command>
+		<!-- <command key="$limit" value="5" dataType="int">
+		</command> -->
+	</aggregate>
+</transform>
