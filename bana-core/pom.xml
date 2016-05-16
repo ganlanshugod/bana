@@ -1,0 +1,154 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.bana</groupId>
+	<artifactId>bana-core</artifactId>
+	<version>0.0.7-SNAPSHOT</version>
+	<name>bana-core</name>
+	<description>bana-core</description>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<spring.version>4.0.9.RELEASE</spring.version>
+		
+	</properties>
+
+	<dependencies>
+		<!-- =======================srping 组件的依赖 begin ================= -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<!-- =======================srping 组件的依赖 end ================= -->
+		<!-- =======================mybatis 组件的依赖 begin ================= -->
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis</artifactId>
+			<version>3.2.2</version>
+			<scope>provide</scope>
+		</dependency>
+		<!-- =======================mybatis 组件的依赖 end ================= -->
+		<!-- =======================ehcache 依赖 begin ================= -->
+	 	<!-- <dependency>
+			<groupId>net.sf.ehcache</groupId>
+			<artifactId>ehcache</artifactId>
+			<version>2.6.10</version>
+			<type>pom</type>
+		</dependency> -->
+		<dependency>
+			<groupId>com.jbinfo.ehcache</groupId>
+			<artifactId>ehcache</artifactId>
+			<version>2.6.8</version>
+		</dependency>
+		<dependency>
+			<groupId>com.jbinfo.terracotta</groupId>
+			<artifactId>terracotta</artifactId>
+			<version>2.6.8</version>
+		</dependency>
+		<dependency>
+			<groupId>com.jbinfo.terracotta.toolkit</groupId>
+			<artifactId>terracotta.toolkit</artifactId>
+			<version>5.7.0</version>
+		</dependency>
+		<!-- =======================ehcache 依赖 end ================= -->
+		<!-- 自开发的公共方法类组件 -->
+		<dependency>
+			<groupId>org.bana</groupId>
+			<artifactId>common-util</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${spring.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<!-- 工程编码插件 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.0</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+			<!-- 生成javadoc插件 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<charset>UTF-8</charset>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+			<!-- 打包java源码 -->
+			<plugin>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.2.1</version>
+				<configuration>
+					<attach>true</attach>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>compile</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+		<resources>
+			<resource><!-- 不对指定的资源文件进行资源替换 -->
+				<directory>src/main/resources</directory>
+			</resource>
+		</resources>
+		<testResources>
+			<testResource>
+				<directory>src/test/resources</directory>
+			</testResource>
+		</testResources>
+	</build>
+
+
+
+
+	<distributionManagement>
+		<repository>
+			<id>releases</id>
+			<name>hosts-release</name>
+			<url>http://121.42.209.241:8081/nexus/content/repositories/releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>snapshots</id>
+			<name>hosts-snapshot</name>
+			<url>http://121.42.209.241:8081/nexus/content/repositories/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
+</project>
