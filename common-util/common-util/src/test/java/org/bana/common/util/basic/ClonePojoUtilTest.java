@@ -17,7 +17,7 @@ import org.junit.Test;
 
 /** 
  * @ClassName: ClonePojoUtilTest 
- * @Description: TODO(这里用一句话描述这个类的作用) 
+ * @Description: 怎么回事 
  *  
  */
 public class ClonePojoUtilTest {
