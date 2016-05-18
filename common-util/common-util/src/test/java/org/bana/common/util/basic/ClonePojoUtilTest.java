@@ -8,8 +8,6 @@
 */ 
 package org.bana.common.util.basic;
 
-import static org.junit.Assert.fail;
-
 import java.util.Date;
 
 import org.bana.common.util.basic.ClonePojoUtil.Formatter;
@@ -17,7 +15,7 @@ import org.junit.Test;
 
 /** 
  * @ClassName: ClonePojoUtilTest 
- * @Description: TODO(这里用一句话描述这个类的作用) 
+ * @Description:
  *  
  */
 public class ClonePojoUtilTest {
