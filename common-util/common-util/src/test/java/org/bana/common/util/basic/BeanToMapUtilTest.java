@@ -1,9 +1,9 @@
 /**
-* @Company ÇàÄñÈíÍ¨   
+* @Company ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¨   
 * @Title: BeanToMapUtilTest.java 
 * @Package com.haier.common.util 
 * @author Liu Wenjie   
-* @date 2014-3-25 ÏÂÎç6:57:54 
+* @date 2014-3-25 ï¿½ï¿½ï¿½ï¿½6:57:54 
 * @version V1.0   
 */ 
 package org.bana.common.util.basic;
@@ -33,6 +33,11 @@ public class BeanToMapUtilTest {
 		Map<String, Object> map = BeanToMapUtil.convertBean(new TestBean("liuwenjie",25,"19870809"));
 		System.out.println(map.entrySet());
 	}
+	
+	@Test
+	public void test2(){
+		//kankan chogntu 
+	}
 
 	/**
 	 * Test method for {@link com.haier.common.util.BeanToMapUtil#convertBean(java.lang.Object)}.
@@ -44,7 +49,7 @@ public class BeanToMapUtilTest {
 		map.put("name", "liuwenjie");
 		map.put("age", 28);
 //		map.put("birthday", "19870809");
-//		map.put("mark", "¶îÍâ");
+//		map.put("mark", "ï¿½ï¿½ï¿½ï¿½");
 		Object bean = BeanToMapUtil.convertMap(TestBean.class, map);
 		System.out.println(bean);
 	}
@@ -57,7 +62,7 @@ public class BeanToMapUtilTest {
     	/** 
 		 * <p>Description: </p> 
 		 * @author Liu Wenjie   
-		 * @date 2014-3-25 ÏÂÎç6:53:46  
+		 * @date 2014-3-25 ï¿½ï¿½ï¿½ï¿½6:53:46  
 		 */
 		public TestBean() {
 		}
@@ -67,42 +72,42 @@ public class BeanToMapUtilTest {
 			this.birthday = birthday;
 		}
 		/**
-		 * @Description: ÊôÐÔ name µÄget·½·¨ 
+		 * @Description: ï¿½ï¿½ï¿½ï¿½ name ï¿½ï¿½getï¿½ï¿½ï¿½ï¿½ 
 		 * @return name
 		 */
 		public String getName() {
 			return name;
 		}
 		/**
-		 * @Description: ÊôÐÔ name µÄset·½·¨ 
+		 * @Description: ï¿½ï¿½ï¿½ï¿½ name ï¿½ï¿½setï¿½ï¿½ï¿½ï¿½ 
 		 * @param name 
 		 */
 		public void setName(String name) {
 			this.name = name;
 		}
 		/**
-		 * @Description: ÊôÐÔ age µÄget·½·¨ 
+		 * @Description: ï¿½ï¿½ï¿½ï¿½ age ï¿½ï¿½getï¿½ï¿½ï¿½ï¿½ 
 		 * @return age
 		 */
 		public int getAge() {
 			return age;
 		}
 		/**
-		 * @Description: ÊôÐÔ age µÄset·½·¨ 
+		 * @Description: ï¿½ï¿½ï¿½ï¿½ age ï¿½ï¿½setï¿½ï¿½ï¿½ï¿½ 
 		 * @param age 
 		 */
 		public void setAge(int age) {
 			this.age = age;
 		}
 		/**
-		 * @Description: ÊôÐÔ birthday µÄget·½·¨ 
+		 * @Description: ï¿½ï¿½ï¿½ï¿½ birthday ï¿½ï¿½getï¿½ï¿½ï¿½ï¿½ 
 		 * @return birthday
 		 */
 		public String getBirthday() {
 			return birthday;
 		}
 		/**
-		 * @Description: ÊôÐÔ birthday µÄset·½·¨ 
+		 * @Description: ï¿½ï¿½ï¿½ï¿½ birthday ï¿½ï¿½setï¿½ï¿½ï¿½ï¿½ 
 		 * @param birthday 
 		 */
 		public void setBirthday(String birthday) {
@@ -111,7 +116,7 @@ public class BeanToMapUtilTest {
 		/**
 		* <p>Description: </p> 
 		* @author Liu Wenjie   
-		* @date 2014-3-25 ÏÂÎç6:55:49 
+		* @date 2014-3-25 ï¿½ï¿½ï¿½ï¿½6:55:49 
 		* @return 
 		* @see java.lang.Object#toString() 
 		*/ 
@@ -121,14 +126,14 @@ public class BeanToMapUtilTest {
 					+ birthday + ", uRL=" + url  + "]";
 		}
 		/**
-		 * @Description: ÊôÐÔ url µÄget·½·¨ 
+		 * @Description: ï¿½ï¿½ï¿½ï¿½ url ï¿½ï¿½getï¿½ï¿½ï¿½ï¿½ 
 		 * @return url
 		 */
 		public String getUrl() {
 			return url;
 		}
 		/**
-		 * @Description: ÊôÐÔ url µÄset·½·¨ 
+		 * @Description: ï¿½ï¿½ï¿½ï¿½ url ï¿½ï¿½setï¿½ï¿½ï¿½ï¿½ 
 		 * @param url 
 		 */
 		public void setUrl(String url) {
