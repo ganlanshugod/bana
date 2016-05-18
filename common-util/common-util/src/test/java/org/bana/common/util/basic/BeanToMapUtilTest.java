@@ -1,11 +1,11 @@
 /**
-* @Company ������ͨ   
-* @Title: BeanToMapUtilTest.java 
-* @Package com.haier.common.util 
+* @Company 青鸟软通   
+* @Title: ClonePojoUtilTest.java 
+* @Package org.bana.common.util.basic 
 * @author Liu Wenjie   
-* @date 2014-3-25 ����6:57:54 
+* @date 2015-4-29 下午6:35:51 
 * @version V1.0   
-*/ 
+*/
 package org.bana.common.util.basic;
 
 
@@ -21,7 +21,9 @@ import org.junit.Test;
  *  
  */
 public class BeanToMapUtilTest {
-
+	public void test(){
+		//更新点代码
+	}
 	/**
 	 * Test method for {@link com.haier.common.util.BeanToMapUtil#convertMap(java.lang.Class, java.util.Map)}.
 	 * @throws Exception 
