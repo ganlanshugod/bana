@@ -35,12 +35,6 @@ public class BeanToMapUtilTest {
 		Map<String, Object> map = BeanToMapUtil.convertBean(new TestBean("liuwenjie",25,"19870809"));
 		System.out.println(map.entrySet());
 	}
-	
-	@Test
-	public void test2(){
-		//kankan chogntu 
-		//再加点东西
-	}
 
 	/**
 	 * Test method for {@link com.haier.common.util.BeanToMapUtil#convertBean(java.lang.Object)}.
