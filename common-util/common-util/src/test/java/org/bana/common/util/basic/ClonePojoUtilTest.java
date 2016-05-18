@@ -29,7 +29,7 @@ public class ClonePojoUtilTest {
 		TestA testa = new TestA();
 		testa.setToday(new Date());
 		TestB testb = ClonePojoUtil.copyClassFromTo(testa, TestB.class);
-		System.out.println(testb.getToday());
+		System.out.println(testb.getToday()+"");
 	}
 	
 	public static class TestA {
