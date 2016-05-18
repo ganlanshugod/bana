@@ -23,7 +23,7 @@ import org.junit.Test;
 public class BeanToMapUtilTest {
 	public void test(){
 		//更新点代码
-		//ceshi1234
+		//ceshi12345
 	}
 	/**
 	 * Test method for {@link com.haier.common.util.BeanToMapUtil#convertMap(java.lang.Class, java.util.Map)}.
