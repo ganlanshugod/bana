@@ -15,7 +15,7 @@ import org.junit.Test;
 
 /** 
  * @ClassName: ClonePojoUtilTest 
- * @Description:
+ * @Description: 怎么回事 
  *  
  */
 public class ClonePojoUtilTest {
