@@ -50,6 +50,10 @@ public class BeanToMapUtilTest {
 		Object bean = BeanToMapUtil.convertMap(TestBean.class, map);
 		System.out.println(bean);
 	}
+	
+	public void test2(){
+		//提交点代码
+	}
 
 	public static class TestBean{
     	private String name;
