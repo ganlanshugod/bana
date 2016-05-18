@@ -39,6 +39,7 @@ public class BeanToMapUtilTest {
 	@Test
 	public void test2(){
 		//kankan chogntu 
+		//再加点东西
 	}
 
 	/**
