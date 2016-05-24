@@ -34,4 +34,9 @@ public class DateUtilTest {
 	public void testString2(){
 		System.out.println(DateUtil.toString(new Date(1450281600000L),"yyyy-MM-dd HH:mm:ss"));
 	}
+	
+	@Test
+	public void testString4(){
+		System.out.println(new Date(1463573660687L));
+	}
 }

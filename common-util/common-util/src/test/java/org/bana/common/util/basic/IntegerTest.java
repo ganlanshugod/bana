@@ -10,6 +10,7 @@ package org.bana.common.util.basic;
 
 import java.util.Date;
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.junit.Test;
 
 /** 
@@ -27,5 +28,12 @@ public class IntegerTest {
 	@Test
 	public void testDate(){
 		System.out.println(DateUtil.toString(new Date(1445592744000l),"yyyy-MM-dd HH:mm:ss"));
+	}
+	
+	@Test
+	public void testLong(){
+		long time = DateUtil.formateToDate("2016-05-23 07:00:00").getTime()/1000;
+		System.out.println(time);
+		System.out.println(Long.toHexString(time));
 	}
 }

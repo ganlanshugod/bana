@@ -26,5 +26,5 @@ public class ETLConfigTest {
 		config.initConfig("/etl/testConfig.xml");
 		System.out.println(config);
 	}
-
+	
 }

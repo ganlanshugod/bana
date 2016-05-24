@@ -24,6 +24,7 @@ import org.bana.common.util.basic.XmlLoader;
 import org.bana.common.util.etl.config.ColumnMapping.ColumnType;
 import org.bana.common.util.etl.config.MongoGroup.Condition;
 import org.bana.common.util.exception.BanaUtilException;
+import org.bson.types.ObjectId;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -80,7 +81,6 @@ public class ETLConfig {
 	*/ 
 	private boolean trancateTable = true;
 	
-	
 	/** 
 	* @Description: 获取表达式的值
 	* @author Liu Wenjie   
@@ -88,37 +88,36 @@ public class ETLConfig {
 	* @param script
 	* @return  
 	*/ 
-	public static Object getRealValue(String script){
-		ScriptEngineManager manager = new ScriptEngineManager();
-        ScriptEngine engine = manager.getEngineByName("js");
-        engine.put("$todayMillisecond", DateUtil.getTodayBegin().getTime());
-        try {
-			Object result = engine.eval(script);
-			if(result instanceof Double){
-				return Math.round((Double)result);
-			}
-			return result;
-		} catch (ScriptException e) {
-			throw new BanaUtilException("执行表达式错误",e);
-		}
+	public static Object getRealScriptValue(String script){
+		return getRealScriptValue(script,null);
 	}
-	
 	/** 
-	* @Description: 时间戳的解析方法
-	* @author Huang nana   
-	* @date 2015-12-10 下午7:17:31 
+	* @Description: 获取表达式的值
+	* @author Liu Wenjie   
+	* @date 2015-8-11 下午2:11:14 
 	* @param script
 	* @return  
 	*/ 
-	public static Object todayBeginSecond(String script){
+	public static Object getRealScriptValue(String script,String parentDataType){
 		ScriptEngineManager manager = new ScriptEngineManager();
         ScriptEngine engine = manager.getEngineByName("js");
+        engine.put("$todayMillisecond", DateUtil.getTodayBegin().getTime());
         engine.put("$todaySecond", DateUtil.getTodayBegin().getTime()/1000);
         try {
 			Object result = engine.eval(script);
 			if(result instanceof Double){
-				return Math.round((Double)result);
+				result =  Math.round((Double)result);
 			}
+			if("ObjectId".equals(parentDataType)){
+				if(result instanceof Long){
+					if(String.valueOf(result).length() == 13 ){//millisecond 
+						return new ObjectId(new Date((Long)result));
+					}else if(String.valueOf(result).length() == 10){
+						return new ObjectId(new Date((Long)result*1000));
+					}
+				}
+			}
+			
 			return result;
 		} catch (ScriptException e) {
 			throw new BanaUtilException("执行表达式错误",e);
@@ -183,7 +182,7 @@ public class ETLConfig {
 				List<Element> optionsList = (List<Element>)element.elements();
 				BasicDBObject command = null;
 				if(optionsList != null && !optionsList.isEmpty()){
-					command = new BasicDBObject(element.attributeValue("key"),getCommandDBObject(optionsList));
+					command = new BasicDBObject(element.attributeValue("key"),getCommandDBObject(optionsList,element.attributeValue("dataType")));
 				}else{
 					command = new BasicDBObject(element.attributeValue("key"),getRealValue(element.attributeValue("value"),element.attributeValue("dataType")));
 				}
@@ -199,7 +198,7 @@ public class ETLConfig {
 	* @param optionsList
 	* @return  
 	*/ 
-	private Object getCommandDBObject(List<Element> optionsList) {
+	private Object getCommandDBObject(List<Element> optionsList,String parentDataType) {
 		BasicDBObject options = new BasicDBObject();
 		if(optionsList != null){
 			for (Element element : optionsList) {
@@ -208,10 +207,10 @@ public class ETLConfig {
 					if("list".equals(element.attributeValue("dataType"))){
 						options.append(element.attributeValue("key"),getCommandDBObjectList(subList));
 					}else{
-						options.append(element.attributeValue("key"),getCommandDBObject(subList));
+						options.append(element.attributeValue("key"),getCommandDBObject(subList,element.attributeValue("dataType")));
 					}
 				}else{
-					options.append(element.attributeValue("key"),getRealValue(element.attributeValue("value"),element.attributeValue("dataType")));
+					options.append(element.attributeValue("key"),getRealValue(element.attributeValue("value"),element.attributeValue("dataType"),parentDataType));
 				}
 			}
 		}
@@ -234,7 +233,7 @@ public class ETLConfig {
 					if("list".equals(element.attributeValue("dataType"))){
 						dbList.add(new BasicDBObject(element.attributeValue("key"),getCommandDBObjectList(subList)));
 					}else{
-						dbList.add(new BasicDBObject(element.attributeValue("key"),getCommandDBObject(subList)));
+						dbList.add(new BasicDBObject(element.attributeValue("key"),getCommandDBObject(subList,element.attributeValue("dataType"))));
 					}
 				}else{
 					dbList.add(getRealValue(element.attributeValue("value"),element.attributeValue("dataType")));
@@ -242,6 +241,19 @@ public class ETLConfig {
 			}
 		}
 		return dbList;
+	}
+	
+	/** 
+	* @Description: 获取元素数据
+	* @author liuwenjie   
+	* @date 2016-5-24 上午10:15:51 
+	* @param attributeValue
+	* @param attributeValue2
+	* @param parentDataType
+	* @return  
+	*/ 
+	private Object getRealValue(String value, String dateType) {
+		return getRealValue(value, dateType,null);
 	}
 
 	/** 
@@ -252,21 +264,22 @@ public class ETLConfig {
 	* @param attributeValue2
 	* @return  
 	*/ 
-	private Object getRealValue(String value, String dateType) {
-		if(StringUtils.isBlank(dateType)){
+	private Object getRealValue(String value, String dataType,String parentDataType) {
+		//add 2016-05-24 add parentDataType,if is ObjectId
+		if(StringUtils.isBlank(dataType)){
 			return value;
-		}else if("boolean".equalsIgnoreCase(dateType)){
+		}else if("boolean".equalsIgnoreCase(dataType)){
 			return Boolean.valueOf(value);
-		}else if("Date".equalsIgnoreCase(dateType)){
+		}else if("Date".equalsIgnoreCase(dataType)){
 			return DateUtil.formateToDate(value);
-		}else if("int".equalsIgnoreCase(dateType)){
+		}else if("int".equalsIgnoreCase(dataType)){
 			return Integer.parseInt(value);
-		}else if("long".equalsIgnoreCase(dateType)){
+		}else if("long".equalsIgnoreCase(dataType)){
 			return Long.parseLong(value);
-		}else if("todayMillisecondscript".equalsIgnoreCase(dateType)){
-			return getRealValue(value);
-		}else if("todaysecondscript".equalsIgnoreCase(dateType)){
-			return todayBeginSecond(value);
+		}else if("todayMillisecondscript".equalsIgnoreCase(dataType)){
+			return getRealScriptValue(value,parentDataType);
+		}else if("todaysecondscript".equalsIgnoreCase(dataType)){
+			return getRealScriptValue(value,parentDataType);
 		}else{
 			return value;
 		}

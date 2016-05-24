@@ -79,8 +79,8 @@ public class MutiTransform extends SimpleTransform{
 						condition.put(conditionCond.getName(), conditionCond.getValue());
 					}else if("$between".equals(conditionCond.getType())){//如果有比较类型则增加
 						condition.put(conditionCond.getName(), 
-								new BasicDBObject("$lte",ETLConfig.getRealValue(conditionCond.getMax()))
-								.append("$gte", ETLConfig.getRealValue(conditionCond.getMin())));
+								new BasicDBObject("$lte",ETLConfig.getRealScriptValue(conditionCond.getMax(),null))
+								.append("$gte", ETLConfig.getRealScriptValue(conditionCond.getMin(),null)));
 					}else{
 						condition.put(conditionCond.getName(), new BasicDBObject(conditionCond.getType(),conditionCond.getValue()));
 					}

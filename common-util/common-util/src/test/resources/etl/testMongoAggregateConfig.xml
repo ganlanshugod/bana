@@ -20,6 +20,10 @@
 	</mappings>
 	<aggregate>
 		<command key="$match">
+			<option key="_id" dataType="ObjectId">
+				<option key="$lt" value="$todayMillisecond" dataType="todaysecondscript"></option>
+				<option key="$gt" value="$todayMillisecond-86400000" dataType="todaysecondscript"></option>
+			</option>
 			<option key="event" value="unsubscribe"></option>
 		</command>
 		<command key="$project">
