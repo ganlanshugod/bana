@@ -9,7 +9,7 @@
 	<!-- 目标表配置 -->
 	<destTable>
 		<property name="schama">i3618_log</property>
-		<property name="name">t_user_visit_log_pro</property>
+		<property name="name">t_user_visit_log</property>
 		<property name="encoding">utf8</property>
 	</destTable>
 	<!-- 转换列的对应关系 -->
@@ -21,11 +21,11 @@
 	</mappings>
 	<aggregate>
 		<command key="$match">
-			<option key="event" value="enter_agent"></option>
-			<option key="happenMillisecond" >
-				<option key="$lt" value="1450281600" dataType="Int"></option>
-				<option key="$gte" value="1450108800" dataType="Int"></option>
+			<option key="_id" dataType="ObjectId">
+				<option key="$lt" value="$todayMillisecond" dataType="todayMillisecondscript"></option>
+				<option key="$gte" value="$todayMillisecond - 86400000" dataType="todayMillisecondscript"></option>
 			</option>
+			<option key="event" value="enter_agent"></option>
 			<option key="fromUserName">
 				<option key="$exists" value="true"/>
 			</option>

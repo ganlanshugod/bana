@@ -41,7 +41,7 @@ public class MutiTransformTest {
 		MutiTransform tf = new MutiTransform();
 		tf.setSourceClient(client);
 		tf.setDestDatasource(dataSource);
-		tf.setConfigPath("/etl/testMongoAggregateConfig.xml");
+		tf.setConfigPath("/etl/activity_user.xml");
 		tf.execute();
 	}
 	

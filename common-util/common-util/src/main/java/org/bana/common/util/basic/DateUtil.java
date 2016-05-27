@@ -438,4 +438,21 @@ public class DateUtil extends org.apache.commons.lang.StringUtils{
         return toString(returnDate, format);
 	}
 	
+	/** 
+	* @Description: 获取指定日期的前一天，指定日期为空的话则获取当前日期的前一天
+	* @author Han Tongyang   
+	* @date 2016-5-23 下午7:57:16 
+	* @param today
+	* @return  
+	*/ 
+	public static Date getYesterDay(Date today){
+		Calendar cal = Calendar.getInstance();
+		if(today == null){
+			today = new Date();
+		}
+		cal.setTime(today);
+		cal.add(Calendar.DAY_OF_MONTH, -1);
+		return cal.getTime();
+	}
+	
 }

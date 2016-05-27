@@ -21,8 +21,8 @@
 	<aggregate>
 		<command key="$match">
 			<option key="_id" dataType="ObjectId">
-				<option key="$lt" value="$todayMillisecond" dataType="todaysecondscript"></option>
-				<option key="$gt" value="$todayMillisecond-86400000" dataType="todaysecondscript"></option>
+				<option key="$lt" value="$todayMillisecond" dataType="todayMillisecondscript"></option>
+				<option key="$gt" value="$todayMillisecond-86400000" dataType="todayMillisecondscript"></option>
 			</option>
 			<option key="event" value="unsubscribe"></option>
 		</command>

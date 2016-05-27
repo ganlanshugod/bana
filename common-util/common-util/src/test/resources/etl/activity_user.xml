@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<transform trancateTable="false" batchSize="500" stageCommint="true">
+<transform trancateTable="true" batchSize="500" stageCommint="true">
 	<!-- 原表配置 -->
 	<sourceTable>
 		<property name="schama">bana</property>
@@ -19,10 +19,9 @@
 	</mappings>
 	<aggregate>
 		<command key="$match">
-			<option key="startMillisecond" >
-				<option key="$lt"  value="1448985600000" dataType="long"></option>
-				<option key="$gte" value="1448380800000" dataType="long"></option>
-
+			<option key="_id" dataType="ObjectId">
+				<option key="$lt" value="$todayMillisecond" dataType="todayMillisecondscript"></option>
+				<option key="$gte" value="$todayMillisecond - 604800000" dataType="todayMillisecondscript"></option>
 			</option>
 			<option key="operatorId" >
 				<option key="$exists" value="true" dataType="boolean"></option>
