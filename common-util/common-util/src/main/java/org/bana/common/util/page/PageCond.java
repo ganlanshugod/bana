@@ -124,5 +124,18 @@ public class PageCond implements Serializable{
 	public void setFirstResult(int firstResult) {
 		this.firstResult = firstResult;
 	}
+
+	/**
+	* Description: 
+	* @author liuwenjie   
+	* @date 2016-6-4 下午3:47:36 
+	* @return 
+	* @see java.lang.Object#toString() 
+	*/ 
+	@Override
+	public String toString() {
+		return "PageCond [totalCount=" + totalCount + ", pageSize=" + pageSize + ", currentPage=" + currentPage + ", pageCount=" + pageCount + ", firstResult=" + firstResult
+				+ ", sumMap=" + sumMap + "]";
+	}
     
 }
