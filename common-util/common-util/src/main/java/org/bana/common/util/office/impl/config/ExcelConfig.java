@@ -283,7 +283,7 @@ public class ExcelConfig {
 //				cellStyle.setFillForegroundColor(HSSFColor.YELLOW.index);
 				cellStyle.setFillBackgroundColor(HSSFColor.YELLOW.index);
 				if("RED".equalsIgnoreCase(colorValue)){
-					cellStyle.setFillForegroundColor(HSSFColor.GREEN.index);
+					cellStyle.setFillForegroundColor(HSSFColor.RED.index);
 				}else if("LIGHT_YELLOW".equalsIgnoreCase(colorValue)){
 					cellStyle.setFillForegroundColor(HSSFColor.LIGHT_YELLOW.index);
 				}else if("DARK_YELLOW".equalsIgnoreCase(colorValue)){
