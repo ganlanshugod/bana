@@ -53,5 +53,12 @@ public class MapTest {
 		System.out.println(Map.class.isInstance(map));
 		
 	}
+	
+	@Test
+	public void testNullMap(){
+		Map<String,String> map = new HashMap<String, String>();
+		map.put(null, "123");
+		System.out.println(map.get(null));
+	}
 
 }

@@ -235,7 +235,7 @@ public class BasicExcelGenerator implements ExcelGenerator {
 	}
 
 	/** 
-	* @Description: TODO (这里用一句话描述这个类的作用)
+	* @Description: 创建当前单元格内容
 	* @author Liu Wenjie   
 	* @date 2015-11-29 下午4:37:12 
 	* @param workbook
@@ -312,6 +312,15 @@ public class BasicExcelGenerator implements ExcelGenerator {
 	* @return  
 	*/ 
 	private Workbook getWorkBook() {
+		if(StringUtils.isNotBlank(excelConfig.getBaseFile())){
+			try {
+				return WorkbookFactory.create(BasicExcelGenerator.class.getResourceAsStream(excelConfig.getBaseFile()));
+			} catch (IOException e) {
+				throw new BanaUtilException("初始化workBook出错",e);
+			} catch (InvalidFormatException e) {
+				throw new BanaUtilException("初始化workBook出错",e);
+			}
+		}
 		if(ExcelType.XLS.equals(excelConfig.getType())){
 			//03文档
 			return new HSSFWorkbook();

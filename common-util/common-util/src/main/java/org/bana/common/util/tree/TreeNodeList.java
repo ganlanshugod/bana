@@ -8,6 +8,7 @@
 */ 
 package org.bana.common.util.tree;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,8 +18,12 @@ import java.util.List;
  * @Description: 树形节点的集合
  *  
  */
-public class TreeNodeList<T>{
+public class TreeNodeList<T> implements Serializable{
 
+	/** 
+	* @Fields serialVersionUID : 
+	*/ 
+	private static final long serialVersionUID = -8841287820482599880L;
 	/** 
 	* @Fields nodeList : 保存节点的集合方法
 	*/ 

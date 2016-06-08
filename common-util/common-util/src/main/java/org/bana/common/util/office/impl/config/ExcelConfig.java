@@ -17,6 +17,7 @@ import java.util.Set;
 
 import net.sf.json.JSONObject;
 
+import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.DataFormat;
 import org.apache.poi.ss.usermodel.Font;
@@ -83,6 +84,11 @@ public class ExcelConfig {
 	*/ 
 	private List<SheetConfig> sheetConfigList;
 	
+	/** 
+	* @Fields baseFile : excel的根组织名称，如果是基于某个文件来生成文件，需要指定路径
+	*/ 
+	private String baseFile;
+	
 	/*========excel 中使用的配置 begin ========*/
 	
 	/** 
@@ -104,6 +110,7 @@ public class ExcelConfig {
 		this.name = excel.attributeValue("name");
 		this.type = ExcelType.getInstance(excel.attributeValue("type"));
 		this.style = StringUtils.parseStyleStr(excel.attributeValue("style"));
+		this.baseFile = excel.attributeValue("baseFile");
 		//init SheetConfigList
 		this.sheetConfigList = initSheetConfigList(document);
 	}
@@ -269,6 +276,35 @@ public class ExcelConfig {
 			}else if("dataFormat".equalsIgnoreCase(entry.getKey())){
 				DataFormat dataFormat = workbook.createDataFormat();
 	            cellStyle.setDataFormat(dataFormat.getFormat(entry.getValue()));
+			}else if("fillForegroundColor".equalsIgnoreCase(entry.getKey())){//单元格背景颜色
+				String colorValue = entry.getValue();
+				cellStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
+//				cellStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
+//				cellStyle.setFillForegroundColor(HSSFColor.YELLOW.index);
+				cellStyle.setFillBackgroundColor(HSSFColor.YELLOW.index);
+				if("RED".equalsIgnoreCase(colorValue)){
+					cellStyle.setFillForegroundColor(HSSFColor.GREEN.index);
+				}else if("LIGHT_YELLOW".equalsIgnoreCase(colorValue)){
+					cellStyle.setFillForegroundColor(HSSFColor.LIGHT_YELLOW.index);
+				}else if("DARK_YELLOW".equalsIgnoreCase(colorValue)){
+					cellStyle.setFillForegroundColor(HSSFColor.DARK_YELLOW.index);
+				}else if("YELLOW".equalsIgnoreCase(colorValue)){
+					cellStyle.setFillForegroundColor(HSSFColor.YELLOW.index);
+				}else if("BLUE".equalsIgnoreCase(colorValue)){
+					cellStyle.setFillForegroundColor(HSSFColor.BLUE.index);
+				}else if("LIGHT_BLUE".equalsIgnoreCase(colorValue)){
+					cellStyle.setFillForegroundColor(HSSFColor.LIGHT_BLUE.index);
+				}else if("DARK_BLUE".equalsIgnoreCase(colorValue)){
+					cellStyle.setFillForegroundColor(HSSFColor.DARK_BLUE.index);
+				}else if("GREEN".equalsIgnoreCase(colorValue)){
+					cellStyle.setFillForegroundColor(HSSFColor.GREEN.index);
+				}else if("LIGHT_GREEN".equalsIgnoreCase(colorValue)){
+					cellStyle.setFillForegroundColor(HSSFColor.LIGHT_GREEN.index);
+				}else if("DARK_GREEN".equalsIgnoreCase(colorValue)){
+					cellStyle.setFillForegroundColor(HSSFColor.DARK_GREEN.index);
+				}else{
+//					cellStyle.setFillForegroundColor(Short.parseShort(colorValue));
+				}
 			}else{
 				throw new BanaUtilException("不支持的样式属性" + entry.getKey());
 			}
@@ -478,6 +514,22 @@ public class ExcelConfig {
 	 */
 	public void setDicMap(Map<String, Map<String, Object>> dicMap) {
 		this.dicMap = dicMap;
+	}
+
+	/**
+	 * @Description: 属性 baseFile 的get方法 
+	 * @return baseFile
+	 */
+	public String getBaseFile() {
+		return baseFile;
+	}
+
+	/**
+	 * @Description: 属性 baseFile 的set方法 
+	 * @param baseFile 
+	 */
+	public void setBaseFile(String baseFile) {
+		this.baseFile = baseFile;
 	}
 
 	/**

@@ -8,13 +8,15 @@
 */ 
 package org.bana.common.util.tree;
 
+import java.io.Serializable;
+
 
 /** 
  * @ClassName: TreeNode 
  * @Description: 树的节点对象
  *  
  */
-public interface TreeNode<T> {
+public interface TreeNode<T> extends Serializable{
 
 	/** 
 	* @Description: 返回当前节点的id

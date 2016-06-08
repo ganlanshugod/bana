@@ -20,6 +20,10 @@ import org.bana.common.util.tree.TreeNodeList;
 public class SimpleTreeNode<T> implements TreeNode<T> {
 
 	/** 
+	* @Fields serialVersionUID : 
+	*/ 
+	private static final long serialVersionUID = 2119494364967095895L;
+	/** 
 	* @Fields id : id值
 	*/ 
 	private Object id;

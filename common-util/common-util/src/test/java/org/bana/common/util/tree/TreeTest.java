@@ -75,16 +75,16 @@ public class TreeTest {
 	@Test
 	public void testIterator(){
 		TreeNodeList<TestTreeData> rootTreeNodes = tree.getRootTreeNodes();
-		printNode(rootTreeNodes);
+		printNode(rootTreeNodes,1);
 	}
 	
 	
 	
-	private void printNode(TreeNodeList<TestTreeData> treeNodeList){
+	private void printNode(TreeNodeList<TestTreeData> treeNodeList,int level){
 		for(int i = 0;i < treeNodeList.size(); i++){
 			TreeNode<TestTreeData> treeNode = treeNodeList.get(i);
-			System.out.print(treeNode.getId() + "\t");
-			printNode(treeNode.getChildrenList());
+			System.out.print("层级"+ level + ":" + treeNode.getId() + "\t");
+			printNode(treeNode.getChildrenList(),level+1);
 			System.out.println();
 		}
 	}
