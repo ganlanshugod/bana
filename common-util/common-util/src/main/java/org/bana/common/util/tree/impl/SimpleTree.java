@@ -194,10 +194,15 @@ public class SimpleTree<T> implements Tree<T> {
 						parentNodeInTree.addChild(childTreeNode);
 					}else{
 						//如果树上原本的id值和给定的id是重复的，则不会继续添加对应的元素
-						if(childNodeInTree.getParentId().equals(childTreeNode)){
+						if(childNodeInTree.getParentId().equals(childTreeNode.getParentId())){
 							//什么都不做
 						}else{
-							throw new BanaUtilException("创建根组织时，发现树上已经包含 id 为" + childNodeInTree.getId() + " 的元素，而且parentId为" + childNodeInTree.getParentId() + ", 而当前要插入的元素id值为 " + childTreeNode.getId() + " ,parentId 为" + childTreeNode.getParentId());
+							emptyRootNode.removeChild(childNodeInTree);
+							childNodeInTree.setParentId(parentTreeNode.getId());
+							childNodeInTree.setThisData(childTreeNode.getThisData());
+							parentTreeNode.addChild(childNodeInTree);
+							parentNodeInTree.addChild(childNodeInTree);
+//							throw new BanaUtilException("创建根组织时，发现树上已经包含 id 为" + childNodeInTree.getId() + " 的元素，而且parentId为" + childNodeInTree.getParentId() + ", 而当前要插入的元素id值为 " + childTreeNode.getId() + " ,parentId 为" + childTreeNode.getParentId());
 						}
 					}
 				}
