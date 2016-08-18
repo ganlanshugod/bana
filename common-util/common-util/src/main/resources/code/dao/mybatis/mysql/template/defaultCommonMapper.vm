@@ -175,6 +175,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		from #if(${this.getTable().isTableSchamaUseInSql()})${this.getTable().getTableSchama()}.#end${this.getTable().getTableName()} _THIS
 		where 1=1
 		<include refid="searchEqualsConditions"/>
+		<include refid="sort_tail"/>
 		<include refid="pagination_Tail"/>
 	</select>
 	<!-- 根据Equal参数查询分页查询所有的对象内容 -->
