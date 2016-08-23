@@ -2,7 +2,7 @@
 <excel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://www.bana.com/excelConfig
 	http://www.bana.com/common-util/excelConfig.xsd"
-type="xls" name="测试名称" style="border:all;fontName:微软雅黑;" baseFile="/office/学生成绩单模版-科目横版-v1.1.xls">
+type="xls" name="测试名称" style="border:all;fontName:微软雅黑;" baseFile="/office/学生成绩单模版-科目横版-v1.1 - 副本.xls">
 	<sheet name="sheet1-test">
 		<row type="title" rowIndex="5" style="fontWeight:bold;"><!-- 列按照顺序进行排列 -->
 			<column name="系统用户统计数据" colspan="7"/>

@@ -27,5 +27,9 @@ public class MD5UtilTest {
 		System.out.println(MD5Util.getMD5UseKey("111111"));
 	}
 	
+	@Test
+	public void testGetMD5(){
+		System.out.println(MD5Util.getMD5(MD5Util.getMD5("admin888")));
+	}
 
 }

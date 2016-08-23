@@ -100,4 +100,10 @@ public class StringUtilsTest {
 		System.out.println(source);
 		System.out.println(StringUtils.replaceUxxx(source));
 	}
+	
+	@Test
+	public void testRandom(){
+		String random = "";
+		System.out.println(StringUtils.getRandomStr());
+	}
 }

@@ -39,4 +39,9 @@ public class DateUtilTest {
 	public void testString4(){
 		System.out.println(new Date(1463573660687L));
 	}
+	
+	@Test
+	public void testString5(){
+		System.out.println(DateUtil.formateToDate("2016年08月05日 11时35分", "yyyy年MM月dd日 HH时mm分"));
+	}
 }

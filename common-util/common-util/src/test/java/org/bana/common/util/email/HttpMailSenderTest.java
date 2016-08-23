@@ -8,10 +8,14 @@
 */ 
 package org.bana.common.util.email;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import org.apache.commons.mail.EmailException;
 import org.apache.velocity.VelocityContext;
+import org.bana.common.util.basic.DateUtil;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /** 
@@ -45,5 +49,24 @@ public class HttpMailSenderTest {
 		mailSender.addTo("liuwenjiegod@126.com");
 		System.out.println(mailSender.send(mailContent));
 	}
+	
+	@Test
+	public void testSendHttpMailContent2() throws EmailException{
+		List<String> emailList = new ArrayList<String>();
+		emailList.add("liuwenjie@i3618.com.cn");
+		emailList.add("hantongyang@i3618.com.cn");
+		HttpMailContent mailContent = new HttpMailContent();
+		StringBuffer subject = new StringBuffer();
+		String time = DateUtil.toString(new Date(),"yyyy-MM-dd HH:mm:ss");
+		subject.append("消息发送到微信端时失败-消息id为").append(22).append("-")
+	    .append(time);
+		mailContent.setSubject(subject.toString());
+		mailContent.setMsg("备注内容");
+		for (String email : emailList) {
+			mailSender.addTo(email);
+		}
+		mailSender.send(mailContent);
+	}
+	
 
 }

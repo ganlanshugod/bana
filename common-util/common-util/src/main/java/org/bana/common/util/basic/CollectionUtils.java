@@ -8,12 +8,11 @@
 */ 
 package org.bana.common.util.basic;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import org.apache.poi.ss.formula.functions.T;
 
 /** 
  * @ClassName: CollectionUtils 
@@ -42,5 +41,23 @@ public class CollectionUtils extends org.apache.commons.collections.CollectionUt
 			temp.add(t);
 		}
 		return Arrays.asList((T[])result.toArray());
+	}
+	
+	/** 
+	* @Description: 把一个long类型的集合转化为Int的集合
+	* @author liuwenjie   
+	* @date 2016-8-23 下午8:06:28 
+	* @param targetList
+	* @return  
+	*/ 
+	public static List<Integer> parseLongList2IntegerList(List<Long> targetList){
+		if(targetList == null){
+			return null;
+		}
+		List<Integer> interList = new ArrayList<Integer>();
+		for (Long value : targetList) {
+			interList.add(value.intValue());
+		}
+		return interList;
 	}
 }

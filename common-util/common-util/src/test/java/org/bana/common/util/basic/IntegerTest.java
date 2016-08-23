@@ -36,4 +36,16 @@ public class IntegerTest {
 		System.out.println(time);
 		System.out.println(Long.toHexString(time));
 	}
+	
+	@Test
+	public void testString(){
+		String s1 = "hello";
+		String s2 = "hello";
+		if(s1 == s2){
+			System.out.println("s1 = \"hello\"");
+		}else{
+			System.out.println("s1 !=hello");
+		} 
+	}
+	
 }
