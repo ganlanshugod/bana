@@ -37,10 +37,14 @@ public class URLUtil {
 	* @param name
 	* @return  
 	*/ 
-	public static String removeUrlParam(String url,String name){
-		if (StringUtils.isNotBlank(url) && StringUtils.isNotBlank(name)) {  
-            url = url.replaceAll("(&?" + name + "=[^&]*)", "").replaceAll("(\\?&)", "\\?");
-        }  
+	public static String removeUrlParam(String url,String... nameArr){
+		if(nameArr != null && StringUtils.isNotBlank(url)){
+			for (String name : nameArr) {
+				if (StringUtils.isNotBlank(name)) {  
+		            url = url.replaceAll("(&?" + name + "=[^&]*)", "").replaceAll("(\\?&)", "\\?");
+		        }
+			}
+		}
 		if(url.charAt(url.length() - 1) == '?'){
 			url = url.substring(0,url.length()-1);
 		}

@@ -31,7 +31,7 @@ public class URLUtilTest {
 		System.out.println(url1);
 		System.out.println(url2);
 		System.out.println(url3);
-		System.out.println(URLUtil.removeUrlParam(URLUtil.removeUrlParam(URLUtil.removeUrlParam(url, "name"),"value"),"age"));
+		System.out.println(URLUtil.removeUrlParam(url,"name","age"));
 	}
 
 	/**
