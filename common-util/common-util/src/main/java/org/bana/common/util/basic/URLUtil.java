@@ -27,6 +27,41 @@ public class URLUtil {
 	* @Fields REQUEST_COUNT : 链接请求的访问次数
 	*/ 
 	private static int REQUEST_COUNT = 5;
+	
+	
+	/** 
+	* @Description: 从指定的url中移出指定的参数值
+	* @author liuwenjie   
+	* @date 2016-8-26 上午11:31:15 
+	* @param url
+	* @param name
+	* @return  
+	*/ 
+	public static String removeUrlParam(String url,String name){
+		if (StringUtils.isNotBlank(url) && StringUtils.isNotBlank(name)) {  
+            url = url.replaceAll("(&?" + name + "=[^&]*)", "").replaceAll("(\\?&)", "\\?");
+        }  
+		if(url.charAt(url.length() - 1) == '?'){
+			url = url.substring(0,url.length()-1);
+		}
+        return url;  
+	}
+	
+	/** 
+	* @Description: 根据指定的参数名，替换对应的参数值，如果没有对应的参数值，则不进行替换操作
+	* @author liuwenjie   
+	* @date 2016-8-26 上午11:29:46 
+	* @param url
+	* @param name
+	* @param newValue
+	* @return  
+	*/ 
+	public static String replaceUrlParam(String url,String name,String newValue){
+        if (StringUtils.isNotBlank(url) && StringUtils.isNotBlank(newValue)) {  
+            url = url.replaceAll("(" + name + "=[^&]*)", name + "=" + newValue);  
+        }  
+        return url;  
+	}
     /** 
     * @Description:  * 功能：检测当前URL是否可连接或是否有效, 
     * 描述：最多连接网络 3 次, 如果 3 次都不成功，视为该地址不可用 

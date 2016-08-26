@@ -48,4 +48,10 @@ public class IntegerTest {
 		} 
 	}
 	
+	@Test
+	public void testInteger(){
+		Integer index = null;
+		System.out.println( index + 1);
+	}
+	
 }
