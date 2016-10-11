@@ -25,6 +25,10 @@ public class IntegerTest {
 		System.out.println(new Integer(2) == 2);
 	}
 	
+	@Test public void testLong2(){
+		System.out.println(102 == new Long(102));
+	}
+	
 	@Test
 	public void testDate(){
 		System.out.println(DateUtil.toString(new Date(1445592744000l),"yyyy-MM-dd HH:mm:ss"));

@@ -168,10 +168,10 @@ public class BasicExcelGeneratorTest {
 		Random random = new Random();
 		for (int i = 0; i < 1000; i++) {
 			TestData testData = new TestData();
-			testData.setAddress("address"+i+":" + random.nextInt(100));
+			testData.setAddress("地址内容，看看"+i+":" + random.nextInt(100));
 			testData.setAge(random.nextInt(100));
 			testData.setName("name"+i+":" + random.nextInt(100));
-			testData.setSex("sex"+i+":" + random.nextInt(100));
+			testData.setSex("性别，弄个长一点的"+i+":" + random.nextInt(100));
 			testData.setDate(new Date());
 			dataList.add(testData);
 		}

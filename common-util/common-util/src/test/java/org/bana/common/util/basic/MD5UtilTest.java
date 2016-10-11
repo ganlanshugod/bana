@@ -31,5 +31,13 @@ public class MD5UtilTest {
 	public void testGetMD5(){
 		System.out.println(MD5Util.getMD5(MD5Util.getMD5("admin888")));
 	}
+	
+	@Test
+	public void testGetMD52(){
+		String mac1 = "00:e0:4c:a7:32:f9";
+		String mac2 = "02:08:a8:94:ce:e5";
+		System.out.println(MD5Util.getMD5(mac1));
+		System.out.println(MD5Util.getMD5(mac2));
+	}
 
 }

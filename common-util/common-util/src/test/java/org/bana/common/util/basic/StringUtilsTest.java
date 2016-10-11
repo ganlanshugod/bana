@@ -22,6 +22,12 @@ import org.junit.Test;
 public class StringUtilsTest {
 	
 	@Test
+	public void testEquals(){
+		String type = "102";
+		System.out.println(type.equals(102));
+	}
+	
+	@Test
 	public void testInteger(){
 		String hexString = "90000CB20301F401F401F401F407D447FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
 		String binaryString = hexString2binaryString(hexString);

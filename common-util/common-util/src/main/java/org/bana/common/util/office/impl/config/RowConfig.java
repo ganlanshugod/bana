@@ -40,6 +40,11 @@ public class RowConfig implements Serializable {
     */ 
     private boolean mutiTitle;
     
+    /** 
+    * @Fields rowHieght : 每行的高度值
+    */ 
+    private float rowHieght = 17.5f;
+    
     
     /** 
     * @Description: 获取配置项按照名字的map集合
@@ -185,9 +190,22 @@ public class RowConfig implements Serializable {
 	public void setMutiTitle(boolean mutiTitle) {
 		this.mutiTitle = mutiTitle;
 	}
+	
 
-
-
+	/**
+	 * @Description: 属性 rowHieght 的get方法 
+	 * @return rowHieght
+	 */
+	public float getRowHieght() {
+		return rowHieght;
+	}
+	/**
+	 * @Description: 属性 rowHieght 的set方法 
+	 * @param rowHieght 
+	 */
+	public void setRowHieght(float rowHieght) {
+		this.rowHieght = rowHieght;
+	}
 	/**
 	 * @Description: 属性 rowIndex 的get方法 
 	 * @return rowIndex

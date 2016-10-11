@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -144,10 +145,47 @@ public class BasicExcelGenerator implements ExcelGenerator {
 		}
 		//设置列宽自适应
 		for (int i = 0; i < columnSize; i++) {
-			sheet.autoSizeColumn((short)i); //调整第一列宽度
+			sheet.autoSizeColumn(i,true); //调整第一列宽度
 		}
 		
+//		float hieght=getExcelCellAutoHeight("指定的数据类型 ", 8f);     
+//		//根据字符串的长度设置高度
+//		sheet.getRow(sheet.getLastRowNum()).setHeightInPoints(height)s(hieght); 
+		
 	}
+	
+	public static float getExcelCellAutoHeight(String str, float fontCountInline) {
+        float defaultRowHeight = 12.00f;//每一行的高度指定
+        float defaultCount = 0.00f;
+        for (int i = 0; i < str.length(); i++) {
+            float ff = getregex(str.substring(i, i + 1));
+            defaultCount = defaultCount + ff;
+        }
+        return ((int) (defaultCount / fontCountInline) + 1) * defaultRowHeight;//计算
+    }
+
+    public static float getregex(String charStr) {
+        
+        if(charStr==" ")
+        {
+            return 0.5f;
+        }
+        // 判断是否为字母或字符
+        if (Pattern.compile("^[A-Za-z0-9]+$").matcher(charStr).matches()) {
+            return 0.5f;
+        }
+        // 判断是否为全角
+
+        if (Pattern.compile("[\u4e00-\u9fa5]+$").matcher(charStr).matches()) {
+            return 1.00f;
+        }
+        //全角符号 及中文
+        if (Pattern.compile("[^x00-xff]").matcher(charStr).matches()) {
+            return 1.00f;
+        }
+        return 0.5f;
+
+    }
 
 	/** 
 	* @Description: 根据指定的数据和匹配关系，构造一行记录
@@ -192,6 +230,7 @@ public class BasicExcelGenerator implements ExcelGenerator {
 	*/ 
 	private int createRow(Workbook workbook, Sheet sheet, SheetConfig sheetConfig, RowConfig rowConfig,Object object, int currentRowNum, int index){
 		Row row = sheet.createRow(currentRowNum);
+		row.setHeightInPoints(rowConfig.getRowHieght());
 		int currentColNum = 0;
 	    List<ColumnConfig> columnConfigList = rowConfig.getColumnConfigList();
 	    if(columnConfigList != null){
