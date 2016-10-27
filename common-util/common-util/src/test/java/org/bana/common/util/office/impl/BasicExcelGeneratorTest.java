@@ -10,6 +10,7 @@ package org.bana.common.util.office.impl;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -107,6 +108,55 @@ public class BasicExcelGeneratorTest {
 		Assert.assertEquals(2007, data.size());
 		System.out.println(data.get(500));
 	}
+	
+	/** 
+	* @Description: 测试导出学生成绩的列宽问题
+	* @author liuwenjie   
+	 * @throws IOException 
+	 * @date 2016-10-11 下午3:34:06   
+	*/ 
+	@Test
+	public void testGeneratorScore() throws IOException{
+		ExcelConfig excelConfig = new ExcelConfig();
+		excelConfig.setConfigFile("/office/excelStudentAchievement.xml");
+		excelConfig.init();
+		excelGenerator.setExcelConfig(excelConfig);
+		FileOutputStream outputStream = new FileOutputStream(new File("D:/成绩页面.xls"));
+		ExcelObject excelObject = new ExcelObject();
+		List<StudentScoreDto4Query> dataList = new ArrayList<StudentScoreDto4Query>();
+		addScoreDate(dataList);
+		excelObject.putData("学生成绩单", dataList);
+		excelGenerator.generatorExcel(outputStream, excelObject);
+		outputStream.close();
+		System.out.println("样式数量为" + excelGenerator.excelConfig.getCellStyleSize());
+	}
+
+	/** 
+	* @Description: 增加学生的测试数据
+	* @author liuwenjie   
+	* @date 2016-10-11 下午3:38:44 
+	* @param dataList  
+	*/ 
+	private void addScoreDate(List<StudentScoreDto4Query> dataList) {
+		Random random = new Random();
+		for (int i = 0; i < 1000; i++) {
+			StudentScoreDto4Query scoreData = new StudentScoreDto4Query();
+			scoreData.setTitle("标题"+i+random.nextInt(100));
+			scoreData.setStudentId(new Long(i)+random.nextInt(100));
+			scoreData.setStudentName("学生名字"+i+random.nextInt(100));
+			scoreData.setClassOrgName("班级名字"+i+random.nextInt(100));
+			scoreData.setSubject(random.nextInt()/2 == 0?"语文":"数学");
+			scoreData.setScore(""+i+random.nextInt(100));
+			scoreData.setExaminationTime("2016-10-11");
+			if(!(i>30 && i<50)){
+				scoreData.setComment("评论"+i+random.nextInt(100));
+			}else if(i==40 || i==45){
+				scoreData.setComment("超长评论的问题评论"+i+random.nextInt(100));
+			}
+			scoreData.setCreateName("任命"+i+random.nextInt(100));
+			dataList.add(scoreData);
+		}
+	}
 
 	/**
 	 * Test method for {@link org.bana.common.util.office.impl.BasicExcelGenerator#generatorExcel(java.io.OutputStream, org.bana.common.util.office.ExcelObject)}.
@@ -130,15 +180,15 @@ public class BasicExcelGeneratorTest {
 		excelConfig.setConfigFile("/office/excelMutiConfig.xml");
 		excelConfig.init();
 		Map<String,List<String>> mutiMap = new HashMap<String, List<String>>();
-		mutiMap.put("性别", Arrays.asList("男","女"));
-//		excelConfig.setMutiTitleMap(mutiMap);
+		mutiMap.put("性别", Arrays.asList("性别：（男）","性别：（女）"));
+		excelConfig.setMutiTitleMap(mutiMap);
 		excelGenerator.setExcelConfig(excelConfig);
 		FileOutputStream outputStream = new FileOutputStream(new File("D:/test3.xls"));
 		ExcelObject excelObject = new ExcelObject();
-		List<TestData> dataList = new ArrayList<TestData>();
-		addDate(dataList);
-//		List<Map<String,Object>> dataList = new ArrayList<Map<String,Object>>();
-//		addMapData(dataList);
+//		List<TestData> dataList = new ArrayList<TestData>();
+//		addDate(dataList);
+		List<Map<String,Object>> dataList = new ArrayList<Map<String,Object>>();
+		addMapData(dataList);
 		excelObject.putData("sheet1-test", dataList);
 		excelGenerator.generatorExcel(outputStream, excelObject);
 		outputStream.close();
@@ -170,8 +220,8 @@ public class BasicExcelGeneratorTest {
 			TestData testData = new TestData();
 			testData.setAddress("地址内容，看看"+i+":" + random.nextInt(100));
 			testData.setAge(random.nextInt(100));
-			testData.setName("name"+i+":" + random.nextInt(100));
-			testData.setSex("性别，弄个长一点的"+i+":" + random.nextInt(100));
+//			testData.setName("name"+i+":" + random.nextInt(100));
+//			testData.setSex("性别，弄个长一点的"+i+":" + random.nextInt(100));
 			testData.setDate(new Date());
 			dataList.add(testData);
 		}

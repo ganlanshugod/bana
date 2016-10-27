@@ -54,7 +54,7 @@ public class HttpMailSenderTest {
 	public void testSendHttpMailContent2() throws EmailException{
 		List<String> emailList = new ArrayList<String>();
 		emailList.add("liuwenjie@i3618.com.cn");
-		emailList.add("hantongyang@i3618.com.cn");
+//		emailList.add("hantongyang@i3618.com.cn");
 		HttpMailContent mailContent = new HttpMailContent();
 		StringBuffer subject = new StringBuffer();
 		String time = DateUtil.toString(new Date(),"yyyy-MM-dd HH:mm:ss");
