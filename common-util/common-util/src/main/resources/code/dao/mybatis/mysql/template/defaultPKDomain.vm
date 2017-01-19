@@ -26,6 +26,31 @@ public class ${Function}DomainPK implements Serializable{
 	#end
 	
 	
+	/** 
+	* <p>Description: 默认的构造函数</p> 
+	* @author ${user}   
+	* @date ${date}   
+	*/ 
+	public ${Function}DomainPK(){}
+	
+	
+	/** 
+	* <p>Description: 全部属性的一个构造函数</p> 
+	* @author ${user}     
+	* @date ${date}  
+#foreach (${column} in ${this.getTable().findPriColumnList()})
+	* @param ${column.getJavaName()} : ${column.getColumnComment()}
+#end
+	*/ 
+	public WxSubmerchantDomainPK(#foreach (${column} in ${this.getTable().findPriColumnList()})${column.getJavaType()} ${column.getJavaName()}#if ($velocityCount < ${this.getTable().findPriColumnList().size()}),#end #end) {
+		super();
+#foreach (${column} in ${this.getTable().findPriColumnList()})
+		this.${column.getJavaName()} = ${column.getJavaName()};
+#end
+	}
+	
+	
+	
 	/*=========================getter and setter ===================*/
 	
 	#foreach (${column} in ${this.getTable().findPriColumnList()})
