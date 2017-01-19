@@ -443,4 +443,37 @@ public class StringUtils extends org.apache.commons.lang.StringUtils{
 		}
 		return intList;
 	}
+	
+	
+	/**
+	 * 获取字符串的长度，如果有中文，则每个中文字符计为2位
+	 * @param value 指定的字符串
+	 * @return 字符串的长度
+	 */
+	public static int chineselength(String s) {
+		if (s == null)  
+	       return 0;  
+		char[] c = s.toCharArray();  
+		int len = 0;  
+		for (int i = 0; i < c.length; i++) {  
+	       len++;  
+	       if (!isLetter(c[i])) {  
+	           len++;  
+	       }  
+		}  
+		return len;  
+	}
+	
+	
+	/** 
+	* @Description: 判断是否是字符
+	* @author liuwenjie   
+	* @date 2017-1-19 下午8:26:13 
+	* @param c
+	* @return  
+	*/ 
+	public static boolean isLetter(char c) {   
+       int k = 0x80;   
+       return c / k == 0 ? true : false;   
+	}  
 }
