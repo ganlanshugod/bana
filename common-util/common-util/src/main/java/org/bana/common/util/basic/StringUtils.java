@@ -366,10 +366,24 @@ public class StringUtils extends org.apache.commons.lang.StringUtils{
 	* @return  
 	*/ 
 	public static String getRandomStr() {
+		return getRandomStr(16);
+	}
+	
+	/** 
+	* @Description: 获取指定长度的随机字符串
+	* @author liuwenjie   
+	* @date 2017-1-20 下午1:18:08 
+	* @param num
+	* @return  
+	*/ 
+	public static String getRandomStr(int num){
+		if(num <= 0){
+			num = 16;
+		}
 		String base = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 		Random random = new Random();
 		StringBuffer sb = new StringBuffer();
-		for (int i = 0; i < 16; i++) {
+		for (int i = 0; i < num; i++) {
 			int number = random.nextInt(base.length());
 			sb.append(base.charAt(number));
 		}
