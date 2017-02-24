@@ -34,10 +34,12 @@ import javax.imageio.ImageIO;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 import org.bana.common.util.basic.StringUtils;
 import org.bana.common.util.file.barcode.MatrixToImageWriter;
 import org.bana.common.util.jdbc.DbUtil;
+import org.bana.common.util.secure.DES;
 import org.junit.Test;
 
 import com.google.zxing.BarcodeFormat;
@@ -409,5 +411,116 @@ public class ImageUtilsTest {
 		ImageIO.write(combined, "PNG", destStream);
 		
 		return hasNext;
+	}
+	
+	
+	@Test
+	public void testGeneratorUseDateBase() throws IOException, WriterException, SQLException{
+		int picW = 350;
+	    int pading = 0;
+	    int margin = 0;
+		String basePath = "D:/user/testbase/qrcode20170109/";
+		int width = 350;
+		int height = 350;
+		
+		int ractW = 340;
+		int ractH = 40;
+		Connection connection = DbUtil.getConnection();
+		String sql = "select class_name,student_name,student_code from test.student_info WHERE class_name LIKE '2015%' limit ?,?";
+		PreparedStatement pstat = connection.prepareStatement(sql);
+		boolean hasNext = true;
+		int itemSize = 1;
+		int pageNum = 1;
+		int pageSize = 1;
+		while(hasNext){
+			pstat.setInt(1, pageSize*(pageNum-1));
+			pstat.setInt(2, pageSize);
+			String imageName = (itemSize) + "_" + (pageNum * pageSize);
+			hasNext = generatorImg3(picW, pading, margin, basePath, width, height, ractW, ractH, pstat, itemSize,pageSize,imageName);
+			itemSize +=70;
+			pageNum ++;
+		}
+		pstat.close();
+		connection.close();
+	}
+	
+	
+	String password = "5502371938126290729141505563143324947905848891019283849899444248941936042570205778918093896184338373557878761607282260195790613629135575844061278404464777165404";
+	
+	@Test
+	public void testDecodeStr() throws Exception{
+		String encryptStr = "urxc3Mr5pMes7OeUuwukHsTSEXC97Og8";
+		byte[] decodeBase64 = Base64.decodeBase64(encryptStr);
+		byte[] decryResult = DES.decrypt(decodeBase64, password);
+		System.out.println("解密后：" + new String(decryResult));
+	}
+	
+	
+	private boolean generatorImg3(int picW, int pading, int margin, String basePath, int width, int height, int ractW, int ractH, PreparedStatement pstat,int i,int pageSize, String imageName)
+			throws IOException, FileNotFoundException, MalformedURLException, WriterException, SQLException {
+		boolean hasNext = false;
+		ResultSet rs = pstat.executeQuery();
+		if(!rs.next()){
+			return false;
+		}
+		String studentCode = rs.getString("student_code");
+		String studentName = rs.getString("student_name");
+		String className = rs.getString("class_name");
+		File outFile = new File(basePath + studentCode +".png");
+		if(!outFile.exists()){
+			if(!outFile.getParentFile().exists()){
+				outFile.getParentFile().mkdirs();
+			}
+			outFile.createNewFile();
+		}
+		BufferedImage combined = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+		Graphics2D g = (Graphics2D)combined.getGraphics();
+		g.setColor(Color.WHITE);
+		g.fillRect(0,0,width,height);//填充整个屏幕
+		OutputStream destStream = new FileOutputStream(outFile);
+		int index = 0;
+		
+//		while(rs.next()){
+			hasNext = true;
+			
+			String name = className+"_"+studentName+"_"+studentCode;
+			String sourceStr = studentCode + "," + studentName;
+			byte[] result = DES.encrypt(sourceStr.getBytes(), password);
+			String qrcodeUrl = Base64.encodeBase64String(result);
+//			String qrcodeUrl = sourceStr;
+			// 二维码的图片格式
+			
+			Map<EncodeHintType,Object> hints = new HashMap<EncodeHintType,Object>();
+			// 内容所使用编码
+			hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
+			hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
+			BitMatrix bitMatrix = new MultiFormatWriter().encode(qrcodeUrl, BarcodeFormat.QR_CODE, picW, picW, hints);
+			
+			BufferedImage sourceImg = MatrixToImageWriter.toBufferedImage(bitMatrix);
+			// paint both images, preserving the alpha channels
+			int qrX = (index%7) * (picW+pading)+margin;
+			int qrY = index/7 * (picW+pading)+margin;
+			g.drawImage(sourceImg.getScaledInstance(picW, picW, Image.SCALE_SMOOTH), qrX,qrY, null);
+			//画一个文字的背景
+			g.setColor(Color.WHITE);
+			//这是居中画法
+//			int ractX = qrX + ((picW - ractW)/2);
+//			int ractY = qrY + (picW - ractH)/2;
+			//这是底部画法
+			int ractX = qrX + ((picW - ractW)/2);
+			int ractY = qrY + picW;
+			g.fillRect(ractX,ractY,ractW,ractH);
+			g.setColor(Color.BLACK);
+			g.setFont(new Font("黑体",800, 24));
+			//g.drawString(name+"", ractX+18,ractY+28);
+			//画一个二维码的边框
+//		    g.setColor(new Color(229 , 229 , 228));     
+//			g.drawRect(qrX, qrY, picW, picW);  
+			index ++;
+//		}
+		hasNext = index == pageSize;
+		ImageIO.write(combined, "PNG", destStream);
+		
+		return true;
 	}
 }

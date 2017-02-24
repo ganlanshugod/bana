@@ -9,7 +9,11 @@
 package org.bana.common.util.basic;
 
 
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -20,6 +24,92 @@ import org.junit.Test;
  *  
  */
 public class StringUtilsTest {
+	
+	@Test
+	public void testChineseLength(){
+		System.out.println(StringUtils.chineselength("伴行a618电影优惠券测试"));
+	}
+	
+	@Test
+	public void testArray(){
+		Random ran = new Random();
+		int index = 0;
+		String[] buffer = new String[16];
+		String[] temp1 = new String[]{"1","2","3","4","5","6","7","8","9"};
+		System.arraycopy(temp1, 0, buffer, index, 9);
+		String[] temp2 = new String[]{"a","b","c","d","e","f","0"};
+		System.arraycopy(temp2, 0, buffer, 9, temp2.length);
+		System.out.println(Arrays.toString(buffer));
+	}
+	
+	@Test
+	public void testString(){
+		String doBuffer = doBuffer(new byte[]{64, 7, 0, 0, 8, 4, 0, 8, 4, -116, 57, 80, 44, -96, -114, 13},16);
+		System.out.println(doBuffer);
+		String doBuffer2 = doBuffer(new byte[]{4, -116, 57, 80, 44, -96, -114, 13, 64, 7, 0, 0, 8, 4, 0, 8},16);
+		System.out.println(doBuffer2);
+		System.out.println(getTruthID(doBuffer));
+		System.out.println(getTruthID(doBuffer2));
+		//0743455116
+		//2c50398c
+	}
+	
+	private String getTruthID(String str){
+		str = StringUtils.trimAll(str).substring(2,10);
+        String result="";
+        List<String> spid=new ArrayList<String>();
+        for (int i=0;i<str.length();i++){
+            if(i%2==0){
+                spid.add(str.substring(i,i+2));
+            }
+        }
+        for (int i=spid.size()-1;i>-1;i--){
+            result+=spid.get(i);
+        }
+//        int buwei=10-result.length();
+
+
+        if(result==null||result.length()<1){
+            throw new RuntimeException("字符串不合法");
+        }
+
+        BigInteger sum=new BigInteger(result,16);
+
+        result=String.valueOf(sum);
+        int buwei=10-result.length();
+        for (int i=0;i<buwei;i++){
+            result="0"+result;
+        }
+        return  result;
+    }
+	
+	private String doBuffer(byte[] buffer, int bufferLength) {
+
+        String bufferString = "";
+
+        for (int i = 0; i < bufferLength; i++) {
+
+            String hexChar = Integer.toHexString(buffer[i] & 0xFF);
+            if (hexChar.length() == 1) {
+                hexChar = "0" + hexChar;
+            }
+
+            if (i % 16 == 0) {
+
+                if (bufferString != "") {
+                    bufferString = "";
+                }
+            }
+
+            bufferString += hexChar.toUpperCase() + " ";
+        }
+
+        if (bufferString != "") {
+            return bufferString;
+        }
+        return "";
+
+    }
 	
 	@Test
 	public void testEquals(){
