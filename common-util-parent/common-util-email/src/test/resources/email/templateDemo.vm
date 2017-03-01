@@ -1,0 +1,28 @@
+<html>
+<head>
+</head>  
+	<center>  
+	<TABLE width=850 border=1 bordercolor="#000000" id="tabID">  
+	    <TBODY align="left">  
+	        <TR rowspan="2">  
+	            <TD colSpan=4><B><FONT color=blue>$map.get("applyFormId")</FONT></B></TD>  
+	        </TR>  
+	        <TR>  
+	            <TD align=middle colSpan=4><FONT size=5><B>templateDemo</B></FONT></TD>  
+	        </TR>  
+	        <TR>  
+	            <TD nowrap width="140"><B>标题:</B></TD>  
+	            <TD> $map.get("Name")</TD>  
+	            <TD nowrap><B>关键字</B></TD>  
+	            <TD> $map.get("key")</TD>  
+	            <TD> $fileConfig.getFileContent()</TD>
+	        </TR>
+	        #foreach ($name in $map.get("list")) 
+                <tr> 
+                  <td bgcolor="#eeeeee">$name</td> 
+                </tr> 
+            #end
+	    </TBODY>  
+	</TABLE>  
+	</center>  
+</html>  

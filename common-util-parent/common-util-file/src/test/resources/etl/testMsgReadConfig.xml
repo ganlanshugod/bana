@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transform trancateTable="true" batchSize="2000" fetchSize="2000" stageCommint="true">
+	<!-- 原表配置 -->
+	<sourceTable>
+		<property name="schama">bana</property>
+		<property name="name">t_dubbo_monitor_log</property>
+		<property name="encoding">UTF-8</property>
+	</sourceTable>
+	<!-- 目标表配置 -->
+	<destTable>
+		<property name="schama">i3618_log</property>
+		<property name="name">t_dubbo_monitor_log</property>
+		<property name="encoding">utf8</property>
+	</destTable>
+	<!-- 转换列的对应关系 -->
+	<mappings>
+		<mapping source="operatorId" dest="operator_id" type="Long" />
+<!-- 		<mapping source="loginName" dest="login_name" type="String" /> -->
+<!-- 		<mapping source="userIp" dest="user_ip" type="String" /> -->
+		<mapping source="executeUrl" dest="execute_url" type="String" />
+<!-- 		<mapping source="executeClass" dest="execute_class" type="String" /> -->
+<!-- 		<mapping source="executeFunction" dest="execute_function" type="String" /> -->
+<!-- 		<mapping source="executeParamsJson" dest="execute_Params_json" type="String" /> -->
+		<mapping source="startTime" dest="start_time" type="Date" />
+		<mapping source="endTime" dest="end_time" type="Date" />
+<!-- 		<mapping source="startMillisecond" dest="start_millisecond" type="Long" /> -->
+<!-- 		<mapping source="endMillisecond" dest="end_millisecond" type="Long" /> -->
+<!-- 		<mapping source="duration" dest="duration" type="Long" /> -->
+<!-- 		<mapping source="excuteResult" dest="excute_result" type="String" /> -->
+<!-- 		<mapping source="exceptionClass" dest="exception_class" type="String" /> -->
+<!-- 		<mapping source="exceptionCode" dest="exception_code" type="String" /> -->
+<!-- 		<mapping source="excuteException" dest="excute_exception" type="String" /> -->
+<!-- 		<mapping source="remark" dest="REMARK" type="String" /> -->
+	</mappings>
+	<aggregate>
+		<command key="$match">
+			<option key="executeUrl">
+				<option key="$regex" value="/app/message/findById/(23545|23569|23574|23629|23714|23717|23718|23719|23720|23721|23722|23724|23725|23726|23728|23729|23731|23732|23735|23736|23737|23738|23742|23743|23744|23745|23749|23751|23752|23753|23759|23760|23761|23765|23766|23767|23768|23775|23777|23778|23780|23784|23785|23786|23791|23792|23793|23795|23805|23806|23807|23826|23827|23998|24029|26486|26493|26519|26522|26526|26529|26531|26533|27353|27356|27358|27364|27386|27390|27750|27798|27880|27882|27908|27911|27913|28055|28056|28133|28251|28355|28453|28495|28534|28809|29830|30089|30136|30141|30147|30152|30160|30163|30206|30208|30212|30235|30242|30245|30247|30254|30255|30476|30487|30548|30637|30712|30750|30788|30844|30852|30888|30898|30904|30926|31078|31128)"/>
+			</option>
+			<option key="operatorId">
+				<option key="$exists" value="true"/>
+			</option>
+		</command>
+		<command key="$project">
+			<option key="executeUrl" value="1" dataType="int"></option>
+			<option key="operatorId" value="1" dataType="int"></option>
+			<option key="startTime" value="1" dataType="int"></option>
+			<option key="endTime" value="1" dataType="int"></option>
+		</command>
+		<command key="$group">
+			<option key="_id">
+				<option key="executeUrl" value="$executeUrl"></option>
+				<option key="operatorId" value="$operatorId"></option>
+				<option key="startTime" value="$startTime"></option>
+				<option key="endTime" value="$endTime"></option>
+			</option>
+			<option key="count">
+				<option key="$sum" value="1" dataType="int"></option>
+			</option>
+		</command>
+		<command key="$project">
+			<option key="_id" value="0" dataType="int"></option>
+			<option key="executeUrl" value="$_id.executeUrl"></option>
+			<option key="operatorId" value="$_id.operatorId"></option>
+			<option key="startTime" value="$_id.startTime"></option>
+			<option key="endTime" value="$_id.endTime"></option>
+			<option key="count" value="1" dataType="int"></option>
+		</command>
+		<!-- <command key="$limit" value="5" dataType="int">
+		</command> -->
+	</aggregate>
+</transform>

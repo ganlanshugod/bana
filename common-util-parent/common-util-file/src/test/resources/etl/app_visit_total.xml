@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transform trancateTable="false" batchSize="2000" fetchSize="2000" stageCommint="true">
+	<!-- 原表配置 -->
+	<sourceTable>
+		<property name="schama">bana</property>
+		<property name="name">t_wechat_callback_log</property>
+		<property name="encoding">UTF-8</property>
+	</sourceTable>
+	<!-- 目标表配置 -->
+	<destTable>
+		<property name="schama">i3618_log</property>
+		<property name="name">t_user_visit_log</property>
+		<property name="encoding">utf8</property>
+	</destTable>
+	<!-- 转换列的对应关系 -->
+	<mappings>
+		<mapping source="createDay" dest="for_date" type="String" />
+		<mapping source="toUserName" dest="corp_id" type="String" />
+		<mapping source="agentId" dest="agent_id" type="String" />
+		<mapping source="count" dest="count" type="Int" />
+	</mappings>
+	<aggregate>
+		<command key="$match">
+			<option key="_id" dataType="ObjectId">
+				<option key="$lt" value="$todayMillisecond" dataType="todayMillisecondscript"></option>
+				<option key="$gte" value="$todayMillisecond - 86400000" dataType="todayMillisecondscript"></option>
+			</option>
+			<option key="event" value="enter_agent"></option>
+			<option key="fromUserName">
+				<option key="$exists" value="true"/>
+			</option>
+		</command>
+		<command key="$project">
+			<option key="toUserName" value="1" dataType="int"></option>
+			<option key="agentId" value="1" dataType="int"></option>
+			<option key="createDay">
+				<option key="$substr" dataType="list">
+					<option key="$add" dataType="list">
+						<option value="$createTime"></option>
+						<option value="28800000" dataType="int"></option>
+					</option>
+					<option value="0" dataType="int"></option>
+					<option value="10" dataType="int"></option>
+				</option>
+			</option>
+		</command>
+		<command key="$group">
+			<option key="_id">
+				<option key="toUserName" value="$toUserName"></option>
+				<option key="agentId" value="$agentId"></option>
+				<option key="createDay" value="$createDay"></option>
+			</option>
+			<option key="count">
+				<option key="$sum" value="1" dataType="int"></option>
+			</option>
+		</command>
+		<command key="$project">
+			<option key="_id" value="0" dataType="int"></option>
+			<option key="toUserName" value="$_id.toUserName"></option>
+			<option key="agentId" value="$_id.agentId"></option>
+			<option key="createDay" value="$_id.createDay"></option>
+			<option key="count" value="1" dataType="int"></option>
+		</command>
+		<!-- <command key="$limit" value="5" dataType="int">
+		</command> -->
+	</aggregate>
+</transform>

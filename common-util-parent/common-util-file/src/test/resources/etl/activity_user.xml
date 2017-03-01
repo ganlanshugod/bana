@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transform trancateTable="true" batchSize="500" stageCommint="true">
+	<!-- 原表配置 -->
+	<sourceTable>
+		<property name="schama">bana</property>
+		<property name="name">t_dubbo_monitor_log</property>
+		<property name="encoding">UTF-8</property>
+	</sourceTable>
+	<!-- 目标表配置 -->
+	<destTable>
+		<property name="schama">i3618_temp</property>
+		<property name="name">t_ba_user_visitor</property>
+		<property name="encoding">utf-8</property>
+	</destTable>
+	<!-- 转换列的对应关系 -->
+	<mappings>
+		<mapping source="_id" dest="operator_id" type="Long" />
+		<mapping source="logincount" dest="login_count" type="String" />
+	</mappings>
+	<aggregate>
+		<command key="$match">
+			<option key="_id" dataType="ObjectId">
+				<option key="$lt" value="$todayMillisecond" dataType="todayMillisecondscript"></option>
+				<option key="$gte" value="$todayMillisecond - 604800000" dataType="todayMillisecondscript"></option>
+			</option>
+			<option key="operatorId" >
+				<option key="$exists" value="true" dataType="boolean"></option>
+			</option>
+		</command>
+		<command key="$group">
+			<option key="_id" >
+				<option key="day">
+					<option key="$dayOfMonth">
+						<option key="$add" dataType="list">
+							<option value="$startTime"></option>
+							<option value="28800000" dataType="long"></option>
+						</option>
+					</option>
+				</option>
+				<option key="operatorId" value="$operatorId"></option>
+			</option>
+		</command>
+		<command key="$group">
+			<option key="_id" value="$_id.operatorId"></option>
+			<option key="logincount" >
+				<option key="$sum" value="1" dataType="int"></option>
+			</option>
+		</command>
+		<command key="$match">
+			<option key="logincount" >
+				<option key="$gte" value="3" dataType="int"></option>
+			</option>
+		</command>
+	</aggregate>
+	
+</transform>

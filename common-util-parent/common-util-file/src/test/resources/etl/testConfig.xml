@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transform fetchSize="500" trancateTable="true" batchSize="500" stageCommint="true">
+	<!-- 原表配置 -->
+	<sourceTable>
+		<property name="schama">EHUB_SLS</property>
+		<property name="name">VIEW_BTB_GOODBASE</property>
+		<property name="encoding">ISO8859-1</property>
+	</sourceTable>
+	<!-- 目标表配置 -->
+	<destTable>
+		<property name="schama">isales_sys</property>
+		<property name="name">BTB_GOODBASE3</property>
+		<property name="encoding">GBK</property>
+	</destTable>
+	<!-- 转换列的对应关系 -->
+	<mappings>
+		<mapping source="PRODCODE" dest="PRODCODE" type="String" />
+		<mapping source="PRDN" dest="PRDN" type="String" />
+		<mapping source="CATEGORY_E" dest="CATEGORY_E" type="String" />
+		<mapping source="CATEGORY_E_NAME" dest="CATEGORY_E_NAME" type="String" />
+		<mapping source="PRO_BRAND_NAME" dest="PRO_BRAND_NAME" type="String" />
+		<mapping source="MARK_DATE" dest="MARK_DATE" type="Date" />
+	</mappings>
+	<where>
+		<source></source>
+	</where>
+	<procedures>
+		<procedure name="p_test_conconoco">
+			<param value="null"/>
+			<param value="2"/>
+			<param value="4"/>
+		</procedure>
+		<procedure name="p_test_conconoco2">
+			<param value="null"/>
+			<param value="adf"/>
+		</procedure>
+	</procedures>
+</transform>
