@@ -16,27 +16,27 @@
   
   <dependencies>
 	  <dependency>
-	  	<groupId>${groupId}</groupId>
+	  	<groupId>${project.groupId}</groupId>
 	  	<artifactId>common-util-basic</artifactId>
 	  </dependency>
 	  <dependency>
-	  	<groupId>${groupId}</groupId>
+	  	<groupId>${project.groupId}</groupId>
 	  	<artifactId>common-util-database</artifactId>
 	  </dependency>
 	  <dependency>
-	  	<groupId>${groupId}</groupId>
+	  	<groupId>${project.groupId}</groupId>
 	  	<artifactId>common-util-app</artifactId>
 	  </dependency>
 	  <dependency>
-	  	<groupId>${groupId}</groupId>
+	  	<groupId>${project.groupId}</groupId>
 	  	<artifactId>common-util-email</artifactId>
 	  </dependency>
 	  <dependency>
-	  	<groupId>${groupId}</groupId>
+	  	<groupId>${project.groupId}</groupId>
 	  	<artifactId>common-util-file</artifactId>
 	  </dependency>
 	  <dependency>
-	  	<groupId>${groupId}</groupId>
+	  	<groupId>${project.groupId}</groupId>
 	  	<artifactId>common-util-template</artifactId>
 	  </dependency>
   </dependencies>
@@ -98,12 +98,12 @@
 						<promoteTransitiveDependencies>true</promoteTransitiveDependencies>
 						<artifactSet>
 							<includes>
-								<include>${groupId}:common-util-basic</include>
-								<include>${groupId}:common-util-database</include>
-								<include>${groupId}:common-util-app</include>
-								<include>${groupId}:common-util-email</include>
-								<include>${groupId}:common-util-file</include>
-								<include>${groupId}:common-util-template</include>
+								<include>${project.groupId}:common-util-basic</include>
+								<include>${project.groupId}:common-util-database</include>
+								<include>${project.groupId}:common-util-app</include>
+								<include>${project.groupId}:common-util-email</include>
+								<include>${project.groupId}:common-util-file</include>
+								<include>${project.groupId}:common-util-template</include>
 							</includes>
 						</artifactSet>
 					</configuration>

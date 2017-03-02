@@ -13,7 +13,7 @@
   
   <dependencies>
   	<dependency>
-  		<groupId>${groupId}</groupId>
+  		<groupId>${project.groupId}</groupId>
   		<artifactId>common-util-basic</artifactId>
   	</dependency>
   	<!-- spring AOP监控依赖的jar包 -->

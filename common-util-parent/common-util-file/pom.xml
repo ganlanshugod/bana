@@ -13,7 +13,7 @@
   
   <dependencies>
   	<dependency>
-  		<groupId>${groupId}</groupId>
+  		<groupId>${project.groupId}</groupId>
   		<artifactId>common-util-basic</artifactId>
   	</dependency>
   	<!-- 二维码的生成与解析 -->
@@ -46,13 +46,13 @@
 	
 	<!-- 测试引用 -->
 	<dependency>
-  		<groupId>${groupId}</groupId>
+  		<groupId>${project.groupId}</groupId>
   		<artifactId>common-util-database</artifactId>
   		<scope>test</scope>
   	</dependency>
   	
   	<dependency>
-  		<groupId>${groupId}</groupId>
+  		<groupId>${project.groupId}</groupId>
   		<artifactId>common-util-code</artifactId>
   		<scope>test</scope>
   	</dependency>

@@ -13,11 +13,11 @@
   
   <dependencies>
   	<dependency>
-  		<groupId>${groupId}</groupId>
+  		<groupId>${project.groupId}</groupId>
   		<artifactId>common-util-basic</artifactId>
   	</dependency>
   	<dependency>
-  		<groupId>${groupId}</groupId>
+  		<groupId>${project.groupId}</groupId>
   		<artifactId>common-util-template</artifactId>
   	</dependency>
   	

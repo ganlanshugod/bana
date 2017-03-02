@@ -67,12 +67,12 @@
               <promoteTransitiveDependencies>true</promoteTransitiveDependencies>
               <artifactSet>
                 <includes>
-                  <include>${groupId}:common-util-basic</include>
-                  <include>${groupId}:common-util-database</include>
-                  <include>${groupId}:common-util-app</include>
-                  <include>${groupId}:common-util-email</include>
-                  <include>${groupId}:common-util-file</include>
-                  <include>${groupId}:common-util-template</include>
+                  <include>${project.groupId}:common-util-basic</include>
+                  <include>${project.groupId}:common-util-database</include>
+                  <include>${project.groupId}:common-util-app</include>
+                  <include>${project.groupId}:common-util-email</include>
+                  <include>${project.groupId}:common-util-file</include>
+                  <include>${project.groupId}:common-util-template</include>
                 </includes>
               </artifactSet>
             </configuration>

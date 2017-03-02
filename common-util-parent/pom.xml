@@ -14,41 +14,41 @@
   <dependencyManagement>
   <dependencies>
   	<dependency>
-  		<groupId>${groupId}</groupId>
+  		<groupId>${project.groupId}</groupId>
   		<artifactId>common-util-basic</artifactId>
   		<version>${project.version}</version>
   	</dependency>
   	
   	<dependency>
-  		<groupId>${groupId}</groupId>
+  		<groupId>${project.groupId}</groupId>
   		<artifactId>common-util-template</artifactId>
   		<version>${project.version}</version>
   	</dependency>
   	
   	<dependency>
-  		<groupId>${groupId}</groupId>
+  		<groupId>${project.groupId}</groupId>
   		<artifactId>common-util-database</artifactId>
   		<version>${project.version}</version>
   	</dependency>
   	
   	<dependency>
-  		<groupId>${groupId}</groupId>
+  		<groupId>${project.groupId}</groupId>
   		<artifactId>common-util-code</artifactId>
   		<version>${project.version}</version>
   	</dependency>
   	
   	<dependency>
-	  	<groupId>${groupId}</groupId>
+	  	<groupId>${project.groupId}</groupId>
 	  	<artifactId>common-util-app</artifactId>
 	  	<version>${project.version}</version>
 	  </dependency>
 	  <dependency>
-	  	<groupId>${groupId}</groupId>
+	  	<groupId>${project.groupId}</groupId>
 	  	<artifactId>common-util-email</artifactId>
 	  	<version>${project.version}</version>
 	  </dependency>
 	  <dependency>
-	  	<groupId>${groupId}</groupId>
+	  	<groupId>${project.groupId}</groupId>
 	  	<artifactId>common-util-file</artifactId>
 	  	<version>${project.version}</version>
 	  </dependency>

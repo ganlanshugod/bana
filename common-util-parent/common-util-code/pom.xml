@@ -13,11 +13,11 @@
   
   <dependencies>
   	<dependency>
-  		<groupId>${groupId}</groupId>
+  		<groupId>${project.groupId}</groupId>
   		<artifactId>common-util-basic</artifactId>
   	</dependency>
   	<dependency>
-  		<groupId>${groupId}</groupId>
+  		<groupId>${project.groupId}</groupId>
   		<artifactId>common-util-template</artifactId>
   	</dependency>
 	<!-- cxf自动生成客户端工具类WsdlToJava 需要的工具类 -->
