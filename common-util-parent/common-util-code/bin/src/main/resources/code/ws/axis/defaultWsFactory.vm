@@ -1,0 +1,34 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+	http://www.springframework.org/schema/context 
+	http://www.springframework.org/schema/context/spring-context-3.1.xsd 
+	http://www.springframework.org/schema/aop 
+	http://www.springframework.org/schema/aop/spring-aop-3.1.xsd  "
+	default-lazy-init="true">
+
+	<!-- 生成的axis1客户端的spring代理工厂类 -->
+	<bean id="${wsServiceName}"	class="org.springframework.remoting.jaxrpc.JaxRpcPortProxyFactoryBean">
+		<property name="serviceFactoryClass">
+			<value>org.apache.axis.client.ServiceFactory</value>
+		</property>
+		<property name="wsdlDocumentUrl">
+			<!-- 需要对ip地址根据不同环境进行配置-->
+			<value>${this.getWsdlWebUrl()}</value>
+		</property>
+		<property name="namespaceUri">
+			<value>TODO wsdl中获得targetNamespace值</value>
+		</property>
+		<property name="serviceName">
+			<value>${wsServiceName}</value>
+		</property>
+		<property name="portName">
+			<value>TODO wsdl 中 <wsdl:port>标签中的name属性</value>
+		</property>
+		<property name="serviceInterface">
+			<value>${packageName}.生成的被调用的接口类</value>
+		</property>
+	</bean>
+</beans>
