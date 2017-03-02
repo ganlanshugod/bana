@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.bana</groupId>
   <artifactId>common-util-parent</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.1-SNAPSHOT</version>
   <name>common-util</name>
   <packaging>pom</packaging>
   <description>集成所有公共工具方法的实体类</description>
@@ -286,6 +286,7 @@
     <!-- 可以執行checkin的Connection URL, 前面必需加上scm:xxx -->
     <developerConnection>scm:git:https://github.com/ganlanshugod/bana.git</developerConnection>
     <url>https://github.com/ganlanshugod/bana</url>
+    <tag>HEAD</tag>
   </scm>
 
 
