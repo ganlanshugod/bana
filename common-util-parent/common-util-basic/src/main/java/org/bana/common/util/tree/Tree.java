@@ -8,9 +8,6 @@
 */ 
 package org.bana.common.util.tree;
 
-import org.bana.common.util.tree.impl.SimpleTreeNode;
-
-
 /** 
  * @ClassName: Tree 
  * @Description: 树形集合的顶层接口

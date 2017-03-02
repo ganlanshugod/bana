@@ -3,12 +3,12 @@
   <parent>
 		<artifactId>common-util-parent</artifactId>
 		<groupId>org.bana</groupId>
-		<version>1.0.1</version>
+		<version>1.0.1-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
   </parent>
-  <artifactId>common-util-email</artifactId>
-  <name>common-util-email</name>
-  <description>邮件处理的数据操作</description>
+  <artifactId>common-util-template</artifactId>
+  <name>common-util-template</name>
+  <description>模板引擎的中间封装操作</description>
   
   
   <dependencies>
@@ -16,15 +16,10 @@
   		<groupId>${groupId}</groupId>
   		<artifactId>common-util-basic</artifactId>
   	</dependency>
-  	<dependency>
-  		<groupId>${groupId}</groupId>
-  		<artifactId>common-util-template</artifactId>
-  	</dependency>
-  	
-  	<!-- apache 的 email功能 -->
-  	<dependency>
-		<groupId>org.apache.commons</groupId>
-		<artifactId>commons-email</artifactId>
+ 	<!-- apache 的velocity的模板技术 -->
+	<dependency>
+		<groupId>velocity</groupId>
+		<artifactId>velocity</artifactId>
 	</dependency>
   </dependencies>
 </project>

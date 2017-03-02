@@ -79,17 +79,25 @@ public class ClonePojoUtil {
             try {
             	Object object = df.get(from);
             	if(object == null){
-            		try {
-            			PropertyDescriptor pd = new PropertyDescriptor(df.getName(), from.getClass());
-        				Method getMethod = pd.getReadMethod();
-        				object = getMethod.invoke(from);
-					} catch (Exception e) {
-						LOG.warn("没有找到" + df.getName() + "值 对象对应的get方法",e);
-					}
+            		Method getMethod = findGetMethod(from, df);
+            		if(getMethod != null){
+            			object = getMethod.invoke(from);
+            		}
             	}
             	
-				PropertyDescriptor efpd = new PropertyDescriptor(ef.getName(), entity.getClass());
-				Method efWriteMethod = efpd.getWriteMethod();
+				Method efWriteMethod;
+				try {
+					PropertyDescriptor efpd = new PropertyDescriptor(ef.getName(), entity.getClass());
+					efWriteMethod = efpd.getWriteMethod();
+				} catch (Exception e) {
+					String setMethodName = "set" + StringUtils.upcaseFirstChar(ef.getName());
+					try {
+						efWriteMethod = entity.getClass().getDeclaredMethod(setMethodName, ef.getType());
+					}catch(Exception e1){
+						setMethodName = "set" + ef.getName();
+						efWriteMethod = entity.getClass().getDeclaredMethod(setMethodName, ef.getType());
+					}
+				}
             	if(ef.getType().equals(String.class)){
             		if(object != null){
             			if(object instanceof Date){
@@ -127,12 +135,16 @@ public class ClonePojoUtil {
 				}
             }  catch (IllegalAccessException ex) {
                 LOG.error("反射错误",ex);
-            } catch(IntrospectionException e){
-            	LOG.error("获取java bean的读取和设置方法出现错误",e);
-            } catch (IllegalArgumentException e) {
+            } 
+            //catch(IntrospectionException e){
+            //	LOG.error("获取java bean的读取和设置方法出现错误",e);
+//            } 
+            catch (IllegalArgumentException e) {
             	LOG.error("执行设置方法时，设置方法的参数异常",e);
 			} catch (InvocationTargetException e) {
 				LOG.error("执行设置方法时出现错误",e);
+			} catch (NoSuchMethodException e) {
+				LOG.error("获取对象的方法是出现错误",e);
 			}
             
             df.setAccessible(false);
@@ -141,13 +153,34 @@ public class ClonePojoUtil {
         LOG.debug("转化成功... ...");
         return entity;
     }
+
+	private static Method findGetMethod(Object from, Field df) {
+		try {
+			PropertyDescriptor pd = new PropertyDescriptor(df.getName(), from.getClass());
+			Method getMethod = pd.getReadMethod();
+			return getMethod;
+		} catch (Exception e) {
+			String getMethodName = "get" + StringUtils.upcaseFirstChar(df.getName());
+			try {
+				Method getMethod = from.getClass().getDeclaredMethod(getMethodName, null);
+				return getMethod;
+			} catch (Exception e1) {
+				getMethodName = "get" + df.getName();
+				try {
+					Method getMethod = from.getClass().getDeclaredMethod(getMethodName, null);
+					return getMethod;
+				} catch (Exception e2) {
+					LOG.warn("没有找到" + df.getName() + "值 对象对应的get方法",e);
+					return null;
+				}
+			}
+		}
+	}
     
     private static boolean arrayIsEmpty(Object[] objs) {
         return objs == null || objs.length == 0;
     }
     
-    public static String findFieldGetMethod(String fieldName){
-    	return "get" + fieldName.substring(0,1).toUpperCase() + fieldName.substring(1);
-    }
+    
     
 }

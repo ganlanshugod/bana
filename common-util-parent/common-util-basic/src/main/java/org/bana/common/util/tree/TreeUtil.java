@@ -8,9 +8,6 @@
 */ 
 package org.bana.common.util.tree;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
 import java.util.List;
 
 import org.bana.common.util.tree.impl.SimpleTree;

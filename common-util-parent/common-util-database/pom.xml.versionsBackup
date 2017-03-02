@@ -3,12 +3,12 @@
   <parent>
 		<artifactId>common-util-parent</artifactId>
 		<groupId>org.bana</groupId>
-		<version>1.0.1</version>
+		<version>1.0.1-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
   </parent>
-  <artifactId>common-util-email</artifactId>
-  <name>common-util-email</name>
-  <description>邮件处理的数据操作</description>
+  <artifactId>common-util-database</artifactId>
+  <name>common-util-database</name>
+  <description>数据库相关的数据操作</description>
   
   
   <dependencies>
@@ -16,15 +16,24 @@
   		<groupId>${groupId}</groupId>
   		<artifactId>common-util-basic</artifactId>
   	</dependency>
+  	
   	<dependency>
   		<groupId>${groupId}</groupId>
-  		<artifactId>common-util-template</artifactId>
+  		<artifactId>common-util-code</artifactId>
+  		<scope>test</scope>
   	</dependency>
   	
-  	<!-- apache 的 email功能 -->
-  	<dependency>
-		<groupId>org.apache.commons</groupId>
-		<artifactId>commons-email</artifactId>
+  	<!-- mongodb 的jdbc驱动jar包 begin -->
+	<dependency>
+		<groupId>org.mongodb</groupId>
+		<artifactId>mongo-java-driver</artifactId>
+		<scope>provided</scope>
+	</dependency>
+	<!-- mongodb 的jdbc驱动jar包 end -->
+  	<!-- 代理类需要的jar包 -->
+	<dependency>
+		<groupId>cglib</groupId>
+		<artifactId>cglib</artifactId>
 	</dependency>
   </dependencies>
 </project>

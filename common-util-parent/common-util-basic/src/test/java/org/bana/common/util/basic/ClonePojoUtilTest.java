@@ -8,8 +8,6 @@
 */ 
 package org.bana.common.util.basic;
 
-import static org.junit.Assert.fail;
-
 import java.util.Date;
 
 import org.bana.common.util.basic.ClonePojoUtil.Formatter;
@@ -28,12 +26,16 @@ public class ClonePojoUtilTest {
 	public void testCopyClassFromTo() {
 		TestA testa = new TestA();
 		testa.setToday(new Date());
+		testa.setOOrder("1234");
 		TestB testb = ClonePojoUtil.copyClassFromTo(testa, TestB.class);
-		System.out.println(testb.getToday()+"");
+		System.out.println(testb);
 	}
+	
+	
 	
 	public static class TestA {
 		private Date today;
+		private String oOrder;
 
 		/**
 		 * @Description: 属性 today 的get方法 
@@ -50,11 +52,21 @@ public class ClonePojoUtilTest {
 		public void setToday(Date today) {
 			this.today = today;
 		}
+
+		public String getOOrder() {
+			return oOrder;
+		}
+
+		public void setOOrder(String oOrder) {
+			this.oOrder = oOrder;
+		}
+		
 	}
 	
 	public static class TestB {
 		@Formatter("yyyy-MM-dd HH:mm:ss")
 		private String today;
+		private String oOrder;
 
 		/**
 		 * @Description: 属性 today 的get方法 
@@ -71,6 +83,20 @@ public class ClonePojoUtilTest {
 		public void setToday(String today) {
 			this.today = today;
 		}
+
+		public String getOOrder() {
+			return oOrder;
+		}
+
+		public void setOOrder(String oOrder) {
+			this.oOrder = oOrder;
+		}
+
+		@Override
+		public String toString() {
+			return "TestB [today=" + today + ", oOrder=" + oOrder + "]";
+		}
+		
 	}
 
 
