@@ -351,12 +351,12 @@
 			<repository>
 				<id>releases</id>
 				<name>hosts-release</name>
-				<url>http://121.42.209.241:8081/nexus/content/repositories/releases/</url>
+				<url>http://118.190.61.243:8081/nexus/content/repositories/releases/</url>
 			</repository>
 			<snapshotRepository>
 				<id>snapshots</id>
 				<name>hosts-snapshot</name>
-				<url>http://121.42.209.241:8081/nexus/content/repositories/snapshots/</url>
+				<url>http://118.190.61.243:8081/nexus/content/repositories/snapshots/</url>
 			</snapshotRepository>
 		</distributionManagement>
 	<!-- ~~~~~~~~~~Maven私服配置结束 -->
