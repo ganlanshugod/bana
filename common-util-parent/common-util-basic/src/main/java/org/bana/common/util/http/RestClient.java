@@ -116,7 +116,7 @@ public class RestClient {
 			responseBuilder.append(input).append("\r\n");
 		}
 		in.close();
-		conn.disconnect();
+//		conn.disconnect();
 		String response = responseBuilder.toString();
 		return response;
 	}
