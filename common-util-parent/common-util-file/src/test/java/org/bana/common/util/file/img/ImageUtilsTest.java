@@ -8,8 +8,6 @@
 */ 
 package org.bana.common.util.file.img;
 
-import static org.junit.Assert.fail;
-
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -54,7 +52,7 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
  * @Description: TODO(这里用一句话描述这个类的作用) 
  *  
  */
-@Ignore
+//@Ignore
 public class ImageUtilsTest {
 
 	/**
@@ -361,6 +359,42 @@ public class ImageUtilsTest {
 	
 	private String baseUrl = "http://m.i3618.com.cn/other/pingjia/show.html?code=";
 	
+	@Test
+	public void testGeneratorNum() throws IOException, WriterException{
+//		String filePath = this.getClass().getResource("/file/image/all.json").getFile();
+//		File file = new File(filePath);  
+//		System.out.println(file.getAbsolutePath());
+//        String content = FileUtils.readFileToString(file);  
+//        System.out.println("Contents of file: " + content);  
+//        JSONArray jsonArray = JSON.parseArray(content);
+//        System.out.println(jsonArray.size());
+        
+        int picW = 300;
+	    int pading = 40;
+	    int margin = 70;
+		String basePath = "D:/user/testbase/qrcode20170405-1/";
+		int width = 2480;
+		int height = 3508;
+		
+		int ractW = 80;
+		int ractH = 40;
+		
+		int totalCount = 600;
+		int baseNum = 4000;
+		
+		JSONArray jsonArray = new JSONArray();
+		for (int j = 0; j < baseNum; j++) {
+			JSONObject json = new JSONObject();
+			json.put("code", "QY"+(baseNum+j+1)+"QY");
+			jsonArray.add(json);
+		}
+		
+		for (int i = 0; i < totalCount; i+=70) {
+			int pageSize = i+70 > totalCount?totalCount-i:70;
+			String imageName = (baseNum+i+1) + "_" + (baseNum+i+pageSize);
+			generatorImg2(picW, pading, margin, basePath, width, height, ractW, ractH, jsonArray,i,pageSize, imageName);
+		}
+	}
 	private boolean generatorImg2(int picW, int pading, int margin, String basePath, int width, int height, int ractW, int ractH, JSONArray jsonArray,int i,int pageSize, String imageName)
 			throws IOException, FileNotFoundException, MalformedURLException, WriterException {
 		boolean hasNext = false;
@@ -381,9 +415,11 @@ public class ImageUtilsTest {
 		for(int j=0;j<pageSize;j++){
 			JSONObject obj = jsonArray.getJSONObject(i+j);
 			hasNext = true;
-			Long id = obj.getLong("code");
+			String id = obj.getString("code");
+			String name = id.substring(2,6);
 //			String name = obj.getString("name");
-			String qrcodeUrl = baseUrl+id;
+//			String qrcodeUrl = baseUrl+id;
+			String qrcodeUrl = id;
 			// 二维码的图片格式
 			
 			Map<EncodeHintType,Object> hints = new HashMap<EncodeHintType,Object>();
@@ -404,7 +440,7 @@ public class ImageUtilsTest {
 			g.fillRect(ractX,ractY,ractW,ractH);
 			g.setColor(Color.BLACK);
 			g.setFont(new Font("黑体",800, 24));
-			g.drawString(id+"", ractX+18,ractY+28);
+			g.drawString(name, ractX+18,ractY+28);
 			//画一个二维码的边框
 		    g.setColor(new Color(229 , 229 , 228));     
 			g.drawRect(qrX, qrY, picW, picW);  
@@ -417,19 +453,19 @@ public class ImageUtilsTest {
 	
 	
 	@Test
-	@Ignore
+//	@Ignore
 	public void testGeneratorUseDateBase() throws IOException, WriterException, SQLException{
 		int picW = 350;
 	    int pading = 0;
 	    int margin = 0;
-		String basePath = "D:/user/testbase/qrcode20170109/";
+		String basePath = "D:/user/testbase/qrcode20170417/";
 		int width = 350;
 		int height = 350;
 		
 		int ractW = 340;
 		int ractH = 40;
 		Connection connection = DbUtil.getConnection();
-		String sql = "select class_name,student_name,student_code from test.student_info WHERE class_name LIKE '2015%' limit ?,?";
+		String sql = "select class_name,student_name,student_code from test.student_info limit ?,?";
 		PreparedStatement pstat = connection.prepareStatement(sql);
 		boolean hasNext = true;
 		int itemSize = 1;
@@ -440,7 +476,7 @@ public class ImageUtilsTest {
 			pstat.setInt(2, pageSize);
 			String imageName = (itemSize) + "_" + (pageNum * pageSize);
 			hasNext = generatorImg3(picW, pading, margin, basePath, width, height, ractW, ractH, pstat, itemSize,pageSize,imageName);
-			itemSize +=70;
+			itemSize += pageSize;
 			pageNum ++;
 		}
 		pstat.close();
@@ -458,6 +494,8 @@ public class ImageUtilsTest {
 		System.out.println("解密后：" + new String(decryResult));
 	}
 	
+	private String baseQrcodeUrl= "http://iwechat.i3618.com.cn/core-web/i3618/host/laosanevalue/saveLxEvalue/108?corpId=wx0bc8b231447f6377&appId=502&studentOrg=";
+	
 	
 	private boolean generatorImg3(int picW, int pading, int margin, String basePath, int width, int height, int ractW, int ractH, PreparedStatement pstat,int i,int pageSize, String imageName)
 			throws IOException, FileNotFoundException, MalformedURLException, WriterException, SQLException {
@@ -469,7 +507,7 @@ public class ImageUtilsTest {
 		String studentCode = rs.getString("student_code");
 		String studentName = rs.getString("student_name");
 		String className = rs.getString("class_name");
-		File outFile = new File(basePath + studentCode +".png");
+		File outFile = new File(basePath + className + File.separator + studentCode+"_"+studentName +".png");
 		if(!outFile.exists()){
 			if(!outFile.getParentFile().exists()){
 				outFile.getParentFile().mkdirs();
@@ -487,16 +525,16 @@ public class ImageUtilsTest {
 			hasNext = true;
 			
 			String name = className+"_"+studentName+"_"+studentCode;
-			String sourceStr = studentCode + "," + studentName;
-			byte[] result = DES.encrypt(sourceStr.getBytes(), password);
-			String qrcodeUrl = Base64.encodeBase64String(result);
-//			String qrcodeUrl = sourceStr;
+			String sourceStr = baseQrcodeUrl + studentCode.trim();
+//			byte[] result = DES.encrypt(sourceStr.getBytes(), password);
+//			String qrcodeUrl = Base64.encodeBase64String(result);
+			String qrcodeUrl = sourceStr;
 			// 二维码的图片格式
 			
 			Map<EncodeHintType,Object> hints = new HashMap<EncodeHintType,Object>();
 			// 内容所使用编码
 			hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
-			hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
+			hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.M);
 			BitMatrix bitMatrix = new MultiFormatWriter().encode(qrcodeUrl, BarcodeFormat.QR_CODE, picW, picW, hints);
 			
 			BufferedImage sourceImg = MatrixToImageWriter.toBufferedImage(bitMatrix);
@@ -524,6 +562,6 @@ public class ImageUtilsTest {
 		hasNext = index == pageSize;
 		ImageIO.write(combined, "PNG", destStream);
 		
-		return true;
+		return hasNext;
 	}
 }

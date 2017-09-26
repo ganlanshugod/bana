@@ -19,7 +19,7 @@ import org.junit.Test;
  * @Description: 文件生成工具的测试方法 
  *  
  */
-@Ignore
+//@Ignore
 public class FileUtilTest {
 	private File targetFile;
 	
@@ -44,6 +44,12 @@ public class FileUtilTest {
 	public void testAppendFile() {
 		String fileContent = "测试追加文件内容的问题。\n\r换行后添加的内容";
 		FileUtil.appendFile(targetFile, fileContent);
+	}
+	
+	@Test
+	public void testUrl(){
+		System.out.println(targetFile.getPath());
+		System.out.println(FileUtilTest.class.getResource("/xml/test/note.xml"));
 	}
 
 }
