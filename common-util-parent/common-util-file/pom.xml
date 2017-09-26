@@ -50,6 +50,12 @@
   		<artifactId>common-util-database</artifactId>
   		<scope>test</scope>
   	</dependency>
+  	<!-- jdbc数据库连接池依赖的链接池  begin-->
+	<dependency>
+		<groupId>commons-dbcp</groupId>
+		<artifactId>commons-dbcp</artifactId>
+		<scope>test</scope>
+	</dependency>
   	
   	<dependency>
   		<groupId>${project.groupId}</groupId>

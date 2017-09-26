@@ -24,7 +24,7 @@ import org.junit.Test;
  *  
  */
 public class FTPClientTest {
-	private String host = "121.42.209.241";
+	private String host = "118.190.61.243";
 	private String userName = "webftp";
 	private String password = "jbinfo";
 	private String dirPath = "/i3618/20150413";

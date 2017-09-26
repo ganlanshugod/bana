@@ -24,12 +24,12 @@ public class MD5UtilTest {
 	 */
 	@Test
 	public void testGetMD5UseKey() {
-		System.out.println(MD5Util.getMD5UseKey("111111"));
+		System.out.println(MD5Util.getMD5UseKey("super2017"));
 	}
 	
 	@Test
 	public void testGetMD5(){
-		System.out.println(MD5Util.getMD5(MD5Util.getMD5("admin888")));
+		System.out.println(MD5Util.getMD5(MD5Util.getMD5("xinshijizhifu")));
 	}
 	
 	@Test

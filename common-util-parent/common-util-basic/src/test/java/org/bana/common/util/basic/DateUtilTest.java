@@ -22,7 +22,7 @@ public class DateUtilTest {
 
 	@Test
 	public void testString(){
-		System.out.println(DateUtil.formateToDate("2016-04-06 20:00:00").getTime());
+		System.out.println(DateUtil.formateToDate("2017-03-19").getTime());
 	}
 	
 	@Test

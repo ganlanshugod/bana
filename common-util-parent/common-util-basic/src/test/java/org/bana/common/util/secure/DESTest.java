@@ -28,7 +28,7 @@ public class DESTest {
 	// 测试
 	public static void main(String args[]) {
 		// 待加密内容
-		String str = "测试内容";
+		String str = "test";
 		// 密码，长度要是8的倍数
 //		String password = "9588028820109132570743325311898426347857298773549468758875018579537757772163084478873699447306034466200616411960574122434059469100235892702736860872901247123456";
 //		String password = getPassword();
@@ -39,6 +39,7 @@ public class DESTest {
 		
 		byte[] result = DES.encrypt(str.getBytes(), password);
 		String encodeString = Base64.encodeBase64String(result);
+		System.out.println(Base64.encodeBase64String(encodeString.getBytes()));
 		System.out.println("加密后：" + encodeString);
 		byte[] decodeBase64 = Base64.decodeBase64(encodeString);
 		

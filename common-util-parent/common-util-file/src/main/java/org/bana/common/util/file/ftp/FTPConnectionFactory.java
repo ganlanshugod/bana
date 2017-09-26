@@ -24,7 +24,7 @@ public class FTPConnectionFactory {
 
 	private static Logger LOG = LoggerFactory.getLogger(FTPConnectionFactory.class);
 
-	private String host = "121.42.209.241";
+	private String host = "118.190.61.243";
 	private String userName = "webftp";
 	private String password = "jbinfo";
 	private String basePath = "~";
