@@ -37,7 +37,6 @@
 	<dependency>
 		<groupId>jaxen</groupId>
 		<artifactId>jaxen</artifactId>
-		<optional>true</optional>
 	</dependency>
 	
 	<!-- test 依赖 -->
