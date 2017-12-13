@@ -357,37 +357,37 @@ public class ImageUtilsTest {
 		}
 	}
 	
-	private String baseUrl = "http://m.i3618.com.cn/other/pingjia/show.html?code=";
+	private String baseUrl = "http://m.i3618.com.cn/other/pingjia2017/show.html?code=";
 	
 	@Test
 	public void testGeneratorNum() throws IOException, WriterException{
-//		String filePath = this.getClass().getResource("/file/image/all.json").getFile();
-//		File file = new File(filePath);  
-//		System.out.println(file.getAbsolutePath());
-//        String content = FileUtils.readFileToString(file);  
-//        System.out.println("Contents of file: " + content);  
-//        JSONArray jsonArray = JSON.parseArray(content);
-//        System.out.println(jsonArray.size());
+		String filePath = this.getClass().getResource("/file/image/all-2017.json").getFile();
+		File file = new File(filePath);  
+		System.out.println(file.getAbsolutePath());
+        String content = FileUtils.readFileToString(file);  
+        System.out.println("Contents of file: " + content);  
+        JSONArray jsonArray = JSON.parseArray(content);
+        System.out.println(jsonArray.size());
         
         int picW = 300;
 	    int pading = 40;
 	    int margin = 70;
-		String basePath = "D:/user/testbase/qrcode20170405-1/";
+		String basePath = "D:/user/testbase/qrcode20171018/";
 		int width = 2480;
 		int height = 3508;
 		
-		int ractW = 80;
+		int ractW = 60;
 		int ractH = 40;
 		
-		int totalCount = 600;
-		int baseNum = 4000;
+		int totalCount = jsonArray.size();
+		int baseNum = 0;
 		
-		JSONArray jsonArray = new JSONArray();
-		for (int j = 0; j < baseNum; j++) {
-			JSONObject json = new JSONObject();
-			json.put("code", "QY"+(baseNum+j+1)+"QY");
-			jsonArray.add(json);
-		}
+//		JSONArray jsonArray = new JSONArray();
+//		for (int j = 0; j < baseNum; j++) {
+//			JSONObject json = new JSONObject();
+//			json.put("code", "QY"+(baseNum+j+1)+"QY");
+//			jsonArray.add(json);
+//		}
 		
 		for (int i = 0; i < totalCount; i+=70) {
 			int pageSize = i+70 > totalCount?totalCount-i:70;
@@ -413,13 +413,18 @@ public class ImageUtilsTest {
 		OutputStream destStream = new FileOutputStream(outFile);
 		int index = 0;
 		for(int j=0;j<pageSize;j++){
+			if(i+j >= jsonArray.size()){
+				hasNext = false;
+				break;
+			}
 			JSONObject obj = jsonArray.getJSONObject(i+j);
 			hasNext = true;
 			String id = obj.getString("code");
-			String name = id.substring(2,6);
+//			String name = id.substring(2,6);
 //			String name = obj.getString("name");
-//			String qrcodeUrl = baseUrl+id;
-			String qrcodeUrl = id;
+			String name = id;
+			String qrcodeUrl = baseUrl+id;
+//			String qrcodeUrl = id;
 			// 二维码的图片格式
 			
 			Map<EncodeHintType,Object> hints = new HashMap<EncodeHintType,Object>();
