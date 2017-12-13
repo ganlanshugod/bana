@@ -58,6 +58,11 @@ public class Column {
 	
 	public static final String COLUMN_PRI_KEY = "PRI";
 	
+	/**
+	 * @Fields columnDefault : 默认值
+	 */
+	public String columnDefault;
+	
 	/** 
 	* @ClassName: ColumnToJava 
 	* @Description: 列类型与Java类型的对照关系
@@ -415,6 +420,15 @@ public class Column {
 	public void setColumnComment(String columnComment) {
 		this.columnComment = columnComment;
 	}
+
+	public String getColumnDefault() {
+		return columnDefault;
+	}
+
+	public void setColumnDefault(String columnDefault) {
+		this.columnDefault = columnDefault;
+	}
+	
 	
 	
 }

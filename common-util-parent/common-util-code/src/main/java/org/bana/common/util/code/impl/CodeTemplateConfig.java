@@ -73,7 +73,9 @@ public class CodeTemplateConfig {
 		Spring_xml("/spring/${module}","spring-${function}",".xml",TYPE_RESOURCE),
 		Mybatis_Common_xml("/mybatis/mappers/${module}","${Function}4CommonMapper",".xml",TYPE_RESOURCE),
 		Mybatis_xml("/mybatis/mappers/${module}","${Function}Mapper",".xml",TYPE_RESOURCE),
-		
+		Entity("entity","${Function}Entity",".java",TYPE_CODE),
+		PKEntity("entity","${Function}PKEntity",".java",TYPE_CODE),
+		Repository("repository","${Function}Repository",".java",TYPE_CODE),
 		WS_Spring_Factory_xml("/spring_ws/${module}","spring-${function}",".xml",TYPE_RESOURCE);
 		private String packageName;//包名
 		private String classConfig;//类名
