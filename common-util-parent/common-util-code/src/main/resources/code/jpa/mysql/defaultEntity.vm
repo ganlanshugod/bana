@@ -31,7 +31,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "${this.getTableName()}" #if(${this.getIndexStr()}),indexes = {${this.getIndexStr()}}#end)
-public class ${Function}Entity extends #if(${this.isHasBaseEntity()})${this.getBaseEntityClassName()}#else Serializable; #end {
+public class ${Function}Entity #if(${this.isHasBaseEntity()})extends ${this.getBaseEntityClassName()}#else implements Serializable #end {
 	
 	private static final long serialVersionUID = ${serialVersionUID};
 	
