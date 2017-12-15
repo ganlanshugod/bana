@@ -24,7 +24,7 @@ public class MD5UtilTest {
 	 */
 	@Test
 	public void testGetMD5UseKey() {
-		System.out.println(MD5Util.getMD5UseKey("super2017"));
+		System.out.println(MD5Util.getMD5UseKey("cjmm6666"));
 	}
 	
 	@Test
