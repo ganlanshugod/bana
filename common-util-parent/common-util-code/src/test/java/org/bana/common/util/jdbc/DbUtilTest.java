@@ -18,13 +18,12 @@ import java.util.Map;
 import org.apache.commons.lang.BooleanUtils;
 import org.bana.common.util.basic.StringUtils;
 import org.bana.common.util.code.CodeGenerator;
-import org.bana.common.util.code.dao.mybatis.mysql.MybatisGeneratorConfig4Mysql;
+import org.bana.common.util.code.impl.CodeTemplateConfig;
 import org.bana.common.util.code.impl.GeneratorOptions;
 import org.bana.common.util.code.impl.GeneratorOptions.CoverResourceFile;
 import org.bana.common.util.code.impl.SimpleCodeGenerator;
 import org.bana.common.util.code.jpa.mysql.JpaGeneratorConfig4Mysql;
 import org.junit.Test;
-import org.bana.common.util.code.impl.CodeTemplateConfig;
 
 /** 
  * @ClassName: DbUtilTest 
@@ -40,8 +39,8 @@ public class DbUtilTest {
 		DbUtil.closeConnection();
 	}
 	
-	private String baseProjectPath = "D:/workspace/ruantong_i3618/i3618/i3618-biz";
-	private String basePackage = "com/jbinfo/i3618";
+	private String baseProjectPath = "D:/workspace/ruantong/test";
+	private String basePackage = "com/jbinfo/oasis";
 	private String userName = "TEST";
 	boolean generatorEntity;
 	boolean generatorRepository;
@@ -56,9 +55,9 @@ public class DbUtilTest {
 		generatorRepository = true;
 		
 		//数据结构配置
-		config.put("database", "oasis");//数据库名称
-		config.put("table", "tb_simple");//表名
-		config.put("module", "simple");//模块名称
+		config.put("database", "oasis_sys");//数据库名称
+		config.put("table", "t_bi_position");//表名
+		config.put("module", "position");//模块名称
 		
 		//mybatis生成内容配置
 		config.put("functionPackage", false);//是否将function属性生成一层目录,模式是true
@@ -69,13 +68,13 @@ public class DbUtilTest {
 		if(generatorEntity || generatorRepository){
 			generatorEntity(config);
 		}
-
+		
 	}
 	
 	private void generatorEntity(Map<String, Object> config){
 		String database = (String)config.get("database");
 		String table = (String)config.get("table");
-		JpaGeneratorConfig4Mysql jpaGeneratorConfig = new JpaGeneratorConfig4Mysql(table, database,true);
+		JpaGeneratorConfig4Mysql jpaGeneratorConfig = new JpaGeneratorConfig4Mysql(table, database/*,"org.bana.common.util.code.jpa.mysql.AbstractAuditingEntity"*/);
 		
 		jpaGeneratorConfig.setProjectBasePath(baseProjectPath);
 		jpaGeneratorConfig.setBasePackage(basePackage);
@@ -102,7 +101,7 @@ public class DbUtilTest {
 		option.setCoverResourceFile(CoverResourceFile.覆盖);
 		jpaGeneratorConfig.setGeneratorOptions(option);
 		
-		List<CodeTemplateConfig> codeList = new ArrayList<CodeTemplateConfig>();
+		/*List<CodeTemplateConfig> codeList = new ArrayList<CodeTemplateConfig>();
 		if(generatorEntity){
 			codeList.add(JpaGeneratorConfig4Mysql.default_entity);
 		}
@@ -110,7 +109,7 @@ public class DbUtilTest {
 			codeList.add(JpaGeneratorConfig4Mysql.default_repository);
 		}
 		
-		jpaGeneratorConfig.setCodeVelocities(codeList);
+		jpaGeneratorConfig.setCodeVelocities(codeList);*/
 		
 		
 //		不生成代码文件

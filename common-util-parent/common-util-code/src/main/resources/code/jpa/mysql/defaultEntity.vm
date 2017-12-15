@@ -7,12 +7,21 @@
 * @version V1.0   
 */ 
 package ${packageName};
-
+#if(${this.isHasBaseEntity()})
+import ${this.getBaseEntityName()};
+#else
+import java.io.Serializable;
+#end
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 #if(${this.getTable().hasPkDomain()})
 import javax.persistence.EmbeddedId;
+#else
+import javax.persistence.Id;
+#end
+#if(${this.getIndexStr()})
+import javax.persistence.Index;
 #end
 import javax.persistence.Table;
 
@@ -21,8 +30,8 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name = "${this.getTableName()}")
-public class ${Function}Entity extends AbstractAuditingEntity {
+@Table(name = "${this.getTableName()}" #if(${this.getIndexStr()}),indexes = {${this.getIndexStr()}}#end)
+public class ${Function}Entity extends #if(${this.isHasBaseEntity()})${this.getBaseEntityClassName()}#else Serializable; #end {
 	
 	private static final long serialVersionUID = ${serialVersionUID};
 	
@@ -30,6 +39,7 @@ public class ${Function}Entity extends AbstractAuditingEntity {
 	/** 
 	* @Fields id : 生成的联合主键类
 	*/
+	@EmbeddedId
 	private ${PKEntity_packageName}.${Function}PKEntity id;
 #end
 
@@ -43,10 +53,7 @@ public class ${Function}Entity extends AbstractAuditingEntity {
 	@Id
 	@GeneratedValue
 #end
-	@Column(name="${column.getColumnName()}",nullable="${column.isNullAble()}"
-	#if(${column.getColumnLength()} > 0)
-	,length="${column.getColumnLength()}"
-	#end)
+	@Column(name="${column.getColumnName()}" #if(!${column.isNullAble()}),nullable=${column.isNullAble()}#end #if(${column.getColumnLength()} > 0),length=${column.getColumnLength()}#end)
 	private ${column.getJavaType()} ${column.getJavaName()};
 #end
 #end
@@ -90,11 +97,11 @@ public class ${Function}Entity extends AbstractAuditingEntity {
 #end
 #end
 	
-	#if (!${this.getTable().findPriColumnList().isEmpty()})
+#if (!${this.getTable().findPriColumnList().isEmpty()})
 	
 	
 	/*====================hashCode and equals ====================*/
-/**
+	/**
 	* <p>Description: ${Function}Entity 自动生成的hashcode方法</p> 
 	* @author ${user}   
 	* @date ${date}

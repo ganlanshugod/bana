@@ -26,6 +26,7 @@ public class ${Function}PKEntity implements Serializable{
 	/** 
 	* @Fields ${column.getJavaName()} : ${column.getColumnComment()}
 	*/
+	@Column(name="${column.getColumnName()}" #if(!${column.isNullAble()}),nullable=${column.isNullAble()}#end #if(${column.getColumnLength()} > 0),length=${column.getColumnLength()}#end)
 	private ${column.getJavaType()} ${column.getJavaName()};
 	#end
 	
@@ -42,10 +43,10 @@ public class ${Function}PKEntity implements Serializable{
 	* <p>Description: 全部属性的一个构造函数</p> 
 	* @author ${user}     
 	* @date ${date}  
-	#foreach (${column} in ${this.getTable().findPriColumnList()})
+#foreach (${column} in ${this.getTable().findPriColumnList()})
 	* @param ${column.getJavaName()} : ${column.getColumnComment()}
 	#end
-	*/ 
+*/ 
 	public ${Function}PKEntity(#foreach (${column} in ${this.getTable().findPriColumnList()})${column.getJavaType()} ${column.getJavaName()}#if ($velocityCount < ${this.getTable().findPriColumnList().size()}),#end #end) {
 		super();
 		#foreach (${column} in ${this.getTable().findPriColumnList()})
@@ -57,7 +58,7 @@ public class ${Function}PKEntity implements Serializable{
 	
 	/*=========================getter and setter ===================*/
 	
-	#foreach (${column} in ${this.getTable().findPriColumnList()})
+#foreach (${column} in ${this.getTable().findPriColumnList()})
 	/**
 	 * @Description: 属性 ${column.getJavaName()} 的get方法 
 	 * @return id
@@ -72,10 +73,10 @@ public class ${Function}PKEntity implements Serializable{
 	public void ${column.findFieldSetMethod()}(${column.getJavaType()} ${column.getJavaName()}) {
 		this.${column.getJavaName()} = ${column.getJavaName()};
 	}
-	#end
+#end
 	
 	
-	#if (!${this.getTable().findPriColumnList().isEmpty()})
+#if (!${this.getTable().findPriColumnList().isEmpty()})
 	
 	
 	/*====================hashCode and equals ====================*/
@@ -117,7 +118,7 @@ public class ${Function}PKEntity implements Serializable{
 		#end
 		return true;
 	}
-	#end
+#end
 	
 	/*==================== toString() ====================*/
 	/**

@@ -8,11 +8,15 @@
 */ 
 package org.bana.common.util.code.jpa.mysql;
 
+import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.bana.common.util.code.dao.Column;
@@ -28,7 +32,7 @@ import org.slf4j.LoggerFactory;
 
 /** 
  * @ClassName: JpaGeneratorConfig4Mysql 
- * @Description: 生成entity repository
+ * @Description: 生成entity与repository
  *  
  */
 public class JpaGeneratorConfig4Mysql extends MybatisGeneratorConfig {
@@ -44,31 +48,55 @@ public class JpaGeneratorConfig4Mysql extends MybatisGeneratorConfig {
 	*/ 
 	private String databaseName;
 	
-	/** 
-	* @Fields databaseUseInSql : 生成的sql语句中，是否包含database名称
-	*/ 
-	private boolean databaseUseInSql;
 	
+	/**
+	 * @Fields baseEntityName : entity继承的父类,带包名 
+	 */
+	private String baseEntityName;
+	
+	private String baseEntityClassName;
 	/** 
 	* @Fields table : table对象，解析后的对象
 	*/ 
 	private Table table;
 	
+	/**
+	 * @Fields defaultColumList : 设置entity继承父类时需要排除的字段
+	 */
+	private List<String> defaultColumList;
 	
+	private boolean hasBaseEntity;
+	
+	private Map<String, Object> indexList; 
+	
+	private String indexStr;
+	/**
+	 * @Fields default_entity : entity模板
+	 */
 	public static CodeTemplateConfig default_entity = new CodeTemplateConfig(GeneratorFileType.Entity,"","code/jpa/mysql/defaultEntity.vm");
+	/**
+	 * @Fields default_pk_entity : entity主键模板
+	 */
 	public static CodeTemplateConfig default_pk_entity = new CodeTemplateConfig(GeneratorFileType.PKEntity,"","code/jpa/mysql/defaultPKEntity.vm");
-	
-	public static CodeTemplateConfig abstract_auditing_entity = new CodeTemplateConfig(GeneratorFileType.PKEntity,"","code/jpa/mysql/abstractAuditingEntity.vm");
+	/**
+	 * @Fields default_repository : repository主键模板
+	 */
 	public static CodeTemplateConfig default_repository = new CodeTemplateConfig(GeneratorFileType.Repository,"","code/jpa/mysql/defaultRepository.vm");
-	/** 
-	* <p>Description: </p> 
-	* @author Liu Wenjie   
-	* @date 2014-10-30 下午8:32:46  
-	*/ 
-	public JpaGeneratorConfig4Mysql(String tableName, String databaseName,boolean databaseUseInSql){
+
+	/**
+	 * @param tableName
+	 * @param databaseName
+	 * @param baseEntityName
+	 */
+	public JpaGeneratorConfig4Mysql(String tableName, String databaseName, String baseEntityName){
 		this.tableName = tableName;
 		this.databaseName = databaseName;
-		this.databaseUseInSql = databaseUseInSql;
+		//设置继承父类则从父类查找应排除的字段
+		if(org.bana.common.util.basic.StringUtils.isNotBlank(baseEntityName)){
+			this.baseEntityName = baseEntityName;
+			findDefaultColumnByClassName();
+		}
+		
 		try {
 			initTableAttribute();
 		} catch (Exception e) {
@@ -85,11 +113,8 @@ public class JpaGeneratorConfig4Mysql extends MybatisGeneratorConfig {
 	* @param databaseName 
 	*/ 
 	public JpaGeneratorConfig4Mysql(String tableName, String databaseName) {
-		this(tableName, databaseName, true);
+		this(tableName, databaseName, null);
 	}
-
-
-
 
 	/** 
 	* @Description: 初始化对应
@@ -103,9 +128,6 @@ public class JpaGeneratorConfig4Mysql extends MybatisGeneratorConfig {
 		this.codeVelocities.add(default_entity);
 		if(this.table.findPriColumnList().size() > 1){//多主键需要设置默认的主键生成方式
 			this.codeVelocities.add(default_pk_entity);
-		}
-		if(this.resourceVelocities == null){
-			this.resourceVelocities = new ArrayList<CodeTemplateConfig>();
 		}
 	}
 
@@ -144,13 +166,17 @@ public class JpaGeneratorConfig4Mysql extends MybatisGeneratorConfig {
 		this.table = new Table();
 		this.table.setTableName(this.tableName);
 		this.table.setTableSchama(this.databaseName);
-		this.table.setTableSchamaUseInSql(this.databaseUseInSql);
+
 		List<Column> columnList = new ArrayList<Column>();
+		boolean needRemove = this.defaultColumList != null && this.defaultColumList.size() > 0;
 		while(rs.next()){
-			Column column = initTableColumns(rs);
-			columnList.add(column);
+			Column column = initTableColumns(rs, needRemove);
+			if(null != column){
+				columnList.add(column);
+			}
 		}
 		this.table.setColumnList(columnList);
+		
 		rs.close();
 		statement.close();
 		//获取表结构的约束类型
@@ -165,9 +191,60 @@ public class JpaGeneratorConfig4Mysql extends MybatisGeneratorConfig {
 		this.table.setHasPrimaryKey(rs.next());
 		rs.close();
 		statement.close();
+		
+		//获取索引
+		sql = "show index from "+this.databaseName+"."+this.tableName;
+		statement = connection.prepareStatement(sql);
+		rs = statement.executeQuery();
+		while(rs.next()){
+			initIndex(rs);
+		}
+		if(this.indexList != null){
+			getIndexString();
+		}
+		rs.close();
+		statement.close();
+		
+		
 		DbUtil.closeConnection();
 	}
-	
+	private void getIndexString(){
+		List<String> indexStrList = new ArrayList<String>();
+		for (Object value : this.indexList.values()) { 
+			Map<String, Object> indexItem = (Map<String, Object>) value;
+			List<String> fields = (List<String>) indexItem.get("fields");
+			indexStrList.add("@Index(name=\""+indexItem.get("name")+"\",columnList=\""+String.join(",", fields)+"\",unique="+indexItem.get("unique")+")");
+		}
+		this.indexStr = String.join(",", indexStrList);
+	}
+	private void initIndex(ResultSet rs){
+		Map<String, Object> indexItem = new HashMap<String, Object>();
+		try {
+			String keyName = rs.getString("Key_name");
+			if("PRIMARY".equals(keyName)){
+				return;
+			}
+			List<String> fields;
+			if(this.indexList == null){
+				this.indexList = new HashMap<String, Object>();
+			}
+			indexItem = (Map<String, Object>) this.indexList.get(keyName);
+			if(indexItem == null){
+				indexItem = new HashMap<String, Object>();
+				indexItem.put("name", keyName);
+				String unique = "0".equals(rs.getString("Non_unique")) ? "false" : "true";
+				indexItem.put("unique", unique);
+				fields = new ArrayList<String>();
+			}else{
+				fields = (List<String>) indexItem.get("fields");
+			}
+			fields.add(rs.getString("Column_name"));
+			indexItem.put("fields", fields);
+			this.indexList.put(keyName, indexItem);
+		} catch (SQLException e) {
+			throw new BanaUtilException("初始化索引出错",e);
+		}
+	}
 	/** 
 	* @Description: 根据rs对象初始化TableColumns
 	* @author Liu Wenjie   
@@ -175,11 +252,15 @@ public class JpaGeneratorConfig4Mysql extends MybatisGeneratorConfig {
 	* @param rs
 	* @return  
 	*/ 
-	private Column initTableColumns(ResultSet rs) {
+	private Column initTableColumns(ResultSet rs, boolean needRemove) {
 		try {
+			String columnName = StringUtils.lowerCase(rs.getString("COLUMN_NAME"));
+			if(needRemove && this.defaultColumList.contains(columnName)){
+				return null;
+			}
 			Column column = new Column();
 			column.setColumnKey(rs.getString("COLUMN_KEY"));
-			column.setColumnName(rs.getString("COLUMN_NAME"));
+			column.setColumnName(columnName);
 			column.setColumnType(rs.getString("COLUMN_TYPE"));
 			column.setDataType(rs.getString("DATA_TYPE"));
 			column.setExtra(rs.getString("EXTRA"));
@@ -208,6 +289,30 @@ public class JpaGeneratorConfig4Mysql extends MybatisGeneratorConfig {
 		}
 	}
 	
+	/** 
+	* @Description: 获取父类默认数据库字段
+	* @author Huang Nana   
+	* @date 2017年12月14日 下午5:19:10   
+	*/ 
+	private void findDefaultColumnByClassName(){
+		String className = this.baseEntityName;
+		List<String> filedList = new ArrayList<String>();
+		try {
+			Class<?> obj = Class.forName(className);
+			this.baseEntityClassName = obj.getSimpleName();
+			this.hasBaseEntity = true;
+			Field[] classFields= obj.getDeclaredFields();
+			for(Field field : classFields){
+				javax.persistence.Column columnAnnotation = field.getAnnotation(javax.persistence.Column.class);
+				if(columnAnnotation != null){
+					filedList.add(columnAnnotation.name());
+				}
+			}
+		} catch (ClassNotFoundException e) {
+			throw new BanaUtilException("未找到：className ,生成失败。");
+		}
+		this.defaultColumList = filedList;
+	}
 	
 	/*===================getter and setter =====================*/
 	
@@ -253,30 +358,38 @@ public class JpaGeneratorConfig4Mysql extends MybatisGeneratorConfig {
 		return databaseName;
 	}
 
-	/**
-	 * @Description: 属性 databaseName 的set方法 
-	 * @param databaseName 
-	 */
-	public void setDatabaseName(String databaseName) {
-		this.databaseName = databaseName;
+	public String getBaseEntityName() {
+		return baseEntityName;
 	}
 
-
-	/**
-	 * @Description: 属性 databaseUseInSql 的get方法 
-	 * @return databaseUseInSql
-	 */
-	public boolean isDatabaseUseInSql() {
-		return databaseUseInSql;
+	public void setBaseEntityName(String baseEntityName) {
+		this.baseEntityName = baseEntityName;
 	}
 
+	public boolean isHasBaseEntity() {
+		return hasBaseEntity;
+	}
 
-	/**
-	 * @Description: 属性 databaseUseInSql 的set方法 
-	 * @param databaseUseInSql 
-	 */
-	public void setDatabaseUseInSql(boolean databaseUseInSql) {
-		this.databaseUseInSql = databaseUseInSql;
+	public void setHasBaseEntity(boolean hasBaseEntity) {
+		this.hasBaseEntity = hasBaseEntity;
+	}
+
+	public String getBaseEntityClassName() {
+		return baseEntityClassName;
+	}
+
+	public void setBaseEntityClassName(String baseEntityClassName) {
+		this.baseEntityClassName = baseEntityClassName;
+	}
+
+	public String getIndexStr() {
+		return indexStr;
+	}
+
+	public void setIndexStr(String indexStr) {
+		this.indexStr = indexStr;
 	}
 	
+	
+
 }

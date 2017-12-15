@@ -3,7 +3,7 @@
   <parent>
 		<artifactId>common-util-parent</artifactId>
 		<groupId>org.bana</groupId>
-		<version>1.0.4-SNAPSHOT</version>
+		<version>1.0.5-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>common-util-code</artifactId>
@@ -54,5 +54,13 @@
 		<scope>provided</scope>
 	</dependency>
 	<!-- jdbc数据库连接池依赖的链接池 end  -->
+	
+	<!-- 生成jpa实体依赖 -->
+	<dependency>
+		<groupId>org.hibernate.javax.persistence</groupId>
+		<artifactId>hibernate-jpa-2.1-api</artifactId>
+		<version>1.0.0.Final</version>
+	</dependency>
+	<!-- 生成jpa实体依赖 end -->
   </dependencies>
 </project>
