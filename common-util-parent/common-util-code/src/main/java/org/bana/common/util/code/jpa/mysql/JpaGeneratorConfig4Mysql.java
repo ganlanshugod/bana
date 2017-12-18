@@ -213,9 +213,9 @@ public class JpaGeneratorConfig4Mysql extends MybatisGeneratorConfig {
 		for (Object value : this.indexList.values()) { 
 			Map<String, Object> indexItem = (Map<String, Object>) value;
 			List<String> fields = (List<String>) indexItem.get("fields");
-			indexStrList.add("@Index(name=\""+indexItem.get("name")+"\",columnList=\""+String.join(",", fields)+"\",unique="+indexItem.get("unique")+")");
+			indexStrList.add("@Index(name=\""+indexItem.get("name")+"\",columnList=\""+StringUtils.join(fields,",")+"\",unique="+indexItem.get("unique")+")");
 		}
-		this.indexStr = String.join(",", indexStrList);
+		this.indexStr = StringUtils.join(indexStrList, ",");
 	}
 	private void initIndex(ResultSet rs){
 		Map<String, Object> indexItem = new HashMap<String, Object>();
