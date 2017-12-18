@@ -1,5 +1,5 @@
 /**
-* @Company 青鸟软通
+* @Company JBINFO
 * @Title: ${Function}Repository.java 
 * @Package ${packageName} 
 * @author ${user}   
@@ -11,7 +11,7 @@ package ${packageName};
 import ${Entity_packageName}.${Function}Entity;
 import org.springframework.stereotype.Repository;
 
-import com.jbinfo.oasis.system.plugin.jpa.OasisRepository;
+import cn.jbinfo.oasis.system.plugin.jpa.OasisRepository;
 
 /** 
 * @ClassName: ${Function}Repository
