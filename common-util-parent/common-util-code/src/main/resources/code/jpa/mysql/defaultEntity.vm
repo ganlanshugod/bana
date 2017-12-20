@@ -52,7 +52,9 @@ public class ${Function}Entity #if(${this.isHasBaseEntity()})extends ${this.getB
 	*/
 #if(${column.isPriColumn()})
 	@Id
+#if("auto_increment" == ${column.getExtra()})
 	@GeneratedValue
+#end
 #end
 	@Column(name="${column.getColumnName()}" #if(!${column.isNullAble()}),nullable=${column.isNullAble()}#end #if(${column.getColumnLength()} > 0),length=${column.getColumnLength()}#end)
 	private ${column.getJavaType()} ${column.getJavaName()};
