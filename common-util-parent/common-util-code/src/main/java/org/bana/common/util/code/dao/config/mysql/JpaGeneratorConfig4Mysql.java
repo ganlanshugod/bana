@@ -6,7 +6,7 @@
 * @date 2017-12-11 14:53:22
 * @version V1.0   
 */ 
-package org.bana.common.util.code.jpa.mysql;
+package org.bana.common.util.code.dao.config.mysql;
 
 import java.lang.reflect.Field;
 import java.sql.Connection;
@@ -47,25 +47,30 @@ public class JpaGeneratorConfig4Mysql extends MybatisGeneratorConfig {
 	* @Fields databaseName : 所属的数据库名称 
 	*/ 
 	private String databaseName;
-	
-	
-	/**
-	 * @Fields baseEntityName : entity继承的父类,带包名 
-	 */
-	private String baseEntityName;
-	
-	private String baseEntityClassName;
 	/** 
 	* @Fields table : table对象，解析后的对象
 	*/ 
 	private Table table;
+	
+	
+	private boolean hasBaseEntity;
+
+	private String baseEntityName;
+	
+	private String baseEntityClassName;
+	
+	
+	private String baseRepositoryName = "cn.jbinfo.oasis.common.jpa.OasisRepository";
+	
+	private String baseRepositoryClassName = "OasisRepository";
+
 	
 	/**
 	 * @Fields defaultColumList : 设置entity继承父类时需要排除的字段
 	 */
 	private List<String> defaultColumList;
 	
-	private boolean hasBaseEntity;
+	
 	
 	private Map<String, Object> indexList; 
 	
@@ -82,19 +87,41 @@ public class JpaGeneratorConfig4Mysql extends MybatisGeneratorConfig {
 	 * @Fields default_repository : repository主键模板
 	 */
 	public static CodeTemplateConfig default_repository = new CodeTemplateConfig(GeneratorFileType.Repository,"","code/jpa/mysql/defaultRepository.vm");
-
+	
+	public static CodeTemplateConfig default_dao = new CodeTemplateConfig(GeneratorFileType.Config_Dao,"","code/jpa/mysql/defaultDao.vm");
+	
+	public static CodeTemplateConfig default_mapper = new CodeTemplateConfig(GeneratorFileType.Config_Mybatis_xml,"","code/jpa/mysql/defaultMapper.vm");
+	
+	public static CodeTemplateConfig default_service = new CodeTemplateConfig(GeneratorFileType.Config_Service,"","code/jpa/mysql/defaultService.vm");
+	
+	public static CodeTemplateConfig default_serviceImpl = new CodeTemplateConfig(GeneratorFileType.Config_ServiceImpl,"","code/jpa/mysql/defaultServiceImpl.vm");
+	
+	public static CodeTemplateConfig default_controller = new CodeTemplateConfig(GeneratorFileType.Config_Controller,"","code/jpa/mysql/defaultController.vm");
+	
 	/**
 	 * @param tableName
 	 * @param databaseName
 	 * @param baseEntityName
 	 */
-	public JpaGeneratorConfig4Mysql(String tableName, String databaseName, String baseEntityName){
+	public JpaGeneratorConfig4Mysql(String tableName, String databaseName, Map<String,String> baseName){
 		this.tableName = tableName;
 		this.databaseName = databaseName;
-		//设置继承父类则从父类查找应排除的字段
-		if(org.bana.common.util.basic.StringUtils.isNotBlank(baseEntityName)){
-			this.baseEntityName = baseEntityName;
-			findDefaultColumnByClassName();
+		
+		if(baseName != null){
+			if(org.bana.common.util.basic.StringUtils.isNotBlank(baseName.get("baseEntityName"))){
+				this.baseEntityName = baseName.get("baseEntityName");
+				findDefaultColumnByClassName();
+			}
+			//repository设置继承父类则从父类查找应排除的字段
+			if(org.bana.common.util.basic.StringUtils.isNotBlank(baseName.get("baseRepositoryName"))){
+				try {
+					Class<?> obj = Class.forName(baseName.get("baseRepositoryName"));
+					this.baseRepositoryClassName = obj.getSimpleName();
+					this.baseRepositoryName =baseName.get("baseRepositoryName");
+				} catch (ClassNotFoundException e) {
+					throw new BanaUtilException("baseRepositoryName参数错误",e);
+				}
+			}
 		}
 		
 		try {
@@ -104,7 +131,6 @@ public class JpaGeneratorConfig4Mysql extends MybatisGeneratorConfig {
 		}
 		initCodeTemplateConfig();
 	}
-	
 	/** 
 	* <p>Description: </p> 
 	* @author liuwenjie   
@@ -389,6 +415,23 @@ public class JpaGeneratorConfig4Mysql extends MybatisGeneratorConfig {
 	public void setIndexStr(String indexStr) {
 		this.indexStr = indexStr;
 	}
+
+	public String getBaseRepositoryName() {
+		return baseRepositoryName;
+	}
+
+	public void setBaseRepositoryName(String baseRepositoryName) {
+		this.baseRepositoryName = baseRepositoryName;
+	}
+
+	public String getBaseRepositoryClassName() {
+		return baseRepositoryClassName;
+	}
+
+	public void setBaseRepositoryClassName(String baseRepositoryClassName) {
+		this.baseRepositoryClassName = baseRepositoryClassName;
+	}
+	
 	
 	
 

@@ -1,0 +1,18 @@
+/**
+ * @Company JBINFO
+ * @Title: I${Function}Service.java
+ * @Package  ${packageName}
+ * @author ${user}
+ * @date ${date}
+ * @version V1.0
+ */
+package ${packageName};
+
+/** 
+ * @ClassName: I${Function}Service
+ * @Description: ${Function}的Service接口定义类
+ *  
+ */
+public interface I${Function}Service {
+
+}

@@ -11,7 +11,7 @@ package ${packageName};
 import ${Entity_packageName}.${Function}Entity;
 import org.springframework.stereotype.Repository;
 
-import cn.jbinfo.oasis.system.plugin.jpa.OasisRepository;
+import ${this.getBaseRepositoryName()};
 
 /** 
 * @ClassName: ${Function}Repository
@@ -19,6 +19,6 @@ import cn.jbinfo.oasis.system.plugin.jpa.OasisRepository;
 * @author ${user}
 */
 @Repository
-public interface ${Function}Repository extends OasisRepository<${Function}Entity,Long>{
+public interface ${Function}Repository extends ${this.getBaseRepositoryClassName()}<${Function}Entity, Long>{
 
 }

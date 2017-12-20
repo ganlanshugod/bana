@@ -1,0 +1,37 @@
+/**
+ * @Company JBINFO
+ * @Title: ${Function}ServiceImpl.java
+ * @Package  ${packageName}
+ * @author ${user}
+ * @date ${date}
+ * @version V1.0
+ */
+package ${packageName};
+
+import ${Config_Service_packageName}.I${Function}Service;
+import ${Repository_packageName}.${Function}Repository;
+import ${Config_Dao_packageName}.${Function}Mapper;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+/** 
+ * @ClassName: ${Function}Service
+ * @Description: ${Function}的Service接口实现
+ *  
+ */
+@Service(value="${function}Service")
+public class ${Function}ServiceImpl implements I${Function}Service{
+
+	private static final Logger LOG = LoggerFactory.getLogger(${Function}ServiceImpl.class);
+	
+	@Autowired
+	private ${Function}Repository ${function}Repository;
+	
+	@Autowired
+	private ${Function}Mapper ${function}Mapper;
+	
+	
+}

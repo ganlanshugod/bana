@@ -1,0 +1,22 @@
+/**
+ * @Company JBINFO  
+ * @Title: ${Function}Mapper.java 
+ * @Package  ${packageName}
+ * @author ${user}   
+ * @date ${date}
+ * @version V1.0   
+ */
+package ${packageName};
+
+import org.apache.ibatis.annotations.Mapper;
+
+/** 
+ * @ClassName: ${Function}Mapper
+ * @Description: ${Function}的DAO接口定义类
+ *  
+ */
+ 
+@Mapper
+public interface ${Function}Mapper{
+
+}

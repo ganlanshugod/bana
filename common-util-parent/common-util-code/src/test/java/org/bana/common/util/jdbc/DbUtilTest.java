@@ -18,11 +18,11 @@ import java.util.Map;
 import org.apache.commons.lang.BooleanUtils;
 import org.bana.common.util.basic.StringUtils;
 import org.bana.common.util.code.CodeGenerator;
+import org.bana.common.util.code.dao.config.mysql.JpaGeneratorConfig4Mysql;
 import org.bana.common.util.code.impl.CodeTemplateConfig;
 import org.bana.common.util.code.impl.GeneratorOptions;
-import org.bana.common.util.code.impl.GeneratorOptions.CoverResourceFile;
 import org.bana.common.util.code.impl.SimpleCodeGenerator;
-import org.bana.common.util.code.jpa.mysql.JpaGeneratorConfig4Mysql;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /** 
@@ -44,27 +44,42 @@ public class DbUtilTest {
 	private String userName = "TEST";
 	boolean generatorEntity;
 	boolean generatorRepository;
-
+	boolean generatorMapper;
+	boolean generatorService;
+	boolean generatorController;
+	boolean isCover;
+	
 	@Test
-//	@Ignore
+	@Ignore
 	public void generatorCode(){
 		Map<String,Object> config = new HashMap<String,Object>();
 		//是否生成entity
 		generatorEntity = true;
 		//是否生成repository
 		generatorRepository = true;
-		
+		//是否生成dao和mapper
+		generatorMapper = true;	
+		//是否生成service
+		generatorService = true;
+		//是否生成controller
+		generatorController = true;
+		//是否覆盖文件 true为覆盖，谨慎使用
+		isCover = false;
+
 		//数据结构配置
 		config.put("database", "oasis_sys");//数据库名称
 		config.put("table", "t_bi_position");//表名
 		config.put("module", "position");//模块名称
+		config.put("function", "function1"); //功能级别的名称，没有则不需要设置
+		config.put("functionPackage", true);//是否将function属性生成一层目录,模式是true
 		
-		//mybatis生成内容配置
-		config.put("functionPackage", false);//是否将function属性生成一层目录,模式是true
-//		config.put("functionPath", false);//设置生成配置文件的文件夹，是否包含function。默认是false，即不包含function路径
-//		config.put("includeCommonDao", true);//是否生成CommonDao，第一次生成时使用它，之后就不要使用这个参数
-		config.put("defaultOnly", true); //是否只生成默认的Domain类和CommonMapper
+		//entity继承的父类，根据实际情况设置；没有需要继承的则不使用这个参数
+//		config.put("baseEntity", AbstractEntity.class.getName());
+		//repository继承的父类，根据实际情况设置；没有需要继承的则不使用这个参数
+//		config.put("baseRepository", OasisRepository.class.getName());
 		
+
+		//执行
 		if(generatorEntity || generatorRepository){
 			generatorEntity(config);
 		}
@@ -74,12 +89,27 @@ public class DbUtilTest {
 	private void generatorEntity(Map<String, Object> config){
 		String database = (String)config.get("database");
 		String table = (String)config.get("table");
-		JpaGeneratorConfig4Mysql jpaGeneratorConfig = new JpaGeneratorConfig4Mysql(table, database/*,"org.bana.common.util.code.jpa.mysql.AbstractAuditingEntity"*/);
+		boolean hasBase = false;
+		Map<String, String> baseMap = new HashMap<String, String>();
+		if(StringUtils.isNotBlank((String)config.get("baseEntity"))){
+			baseMap.put("baseEntityName", (String)config.get("baseEntity"));
+			hasBase = true;
+		}
+		if(StringUtils.isNotBlank((String)config.get("baseRepository"))){
+			baseMap.put("baseRepositoryName", (String)config.get("baseRepository"));
+			hasBase = true;
+		}
 		
+		JpaGeneratorConfig4Mysql jpaGeneratorConfig;
+		if(hasBase){
+			jpaGeneratorConfig = new JpaGeneratorConfig4Mysql(table, database, baseMap);
+		}else{
+			jpaGeneratorConfig = new JpaGeneratorConfig4Mysql(table, database);
+		}
+
 		jpaGeneratorConfig.setProjectBasePath(baseProjectPath);
 		jpaGeneratorConfig.setBasePackage(basePackage);
 		jpaGeneratorConfig.setModule((String)config.get("module"));
-//		mybatisGeneratorConfig.setFunctionPacage("monitor");
 		if(StringUtils.isNotBlank((String)config.get("function"))){
 			jpaGeneratorConfig.setFunction((String)config.get("function"));
 		}
@@ -97,23 +127,31 @@ public class DbUtilTest {
 		//生成器的调用
 		//生成时的选项，是否覆盖已有的文件，请慎用
 		GeneratorOptions option = new GeneratorOptions();
-		option.setCoverCodeFile(true);
-		option.setCoverResourceFile(CoverResourceFile.覆盖);
+		option.setCoverCodeFile(isCover);
 		jpaGeneratorConfig.setGeneratorOptions(option);
 		
-		/*List<CodeTemplateConfig> codeList = new ArrayList<CodeTemplateConfig>();
+		List<CodeTemplateConfig> codeList;
 		if(generatorEntity){
-			codeList.add(JpaGeneratorConfig4Mysql.default_entity);
+			codeList = jpaGeneratorConfig.getCodeVelocities();
+		}else{
+			codeList = new ArrayList<CodeTemplateConfig>();
 		}
 		if(generatorRepository){
 			codeList.add(JpaGeneratorConfig4Mysql.default_repository);
 		}
-		
-		jpaGeneratorConfig.setCodeVelocities(codeList);*/
-		
-		
-//		不生成代码文件
-//		mybatisGeneratorConfig.setCodeVelocities(null);
+		if(generatorMapper){
+			codeList.add(JpaGeneratorConfig4Mysql.default_dao);
+			codeList.add(JpaGeneratorConfig4Mysql.default_mapper);
+		}
+		if(generatorService){
+			codeList.add(JpaGeneratorConfig4Mysql.default_service);
+			codeList.add(JpaGeneratorConfig4Mysql.default_serviceImpl);
+		}
+		if(generatorController){
+			codeList.add(JpaGeneratorConfig4Mysql.default_controller);
+		}
+		jpaGeneratorConfig.setCodeVelocities(codeList);
+
 //		配置制定的配置文件模板
 		CodeGenerator codeGenerator = new SimpleCodeGenerator();
 		codeGenerator.setGeneratorConfig(jpaGeneratorConfig);

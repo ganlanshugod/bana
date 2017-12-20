@@ -74,12 +74,19 @@ public class CodeTemplateConfig {
 		Mybatis_Common_xml("/mybatis/mappers/${module}","${Function}4CommonMapper",".xml",TYPE_RESOURCE),
 		Mybatis_xml("/mybatis/mappers/${module}","${Function}Mapper",".xml",TYPE_RESOURCE),
 		
-		//jpa实体和接口
+		WS_Spring_Factory_xml("/spring_ws/${module}","spring-${function}",".xml",TYPE_RESOURCE),
+		
+		//javaconfig方式的jpa实体和接口
 		Entity("entity","${Function}Entity",".java",TYPE_CODE),
 		PKEntity("entity","${Function}PKEntity",".java",TYPE_CODE),
 		Repository("dao","${Function}Repository",".java",TYPE_CODE),
+		Config_Dao("dao","${Function}Mapper",".java",TYPE_CODE),
+		Config_Mybatis_xml("dao","${Function}Mapper",".xml",TYPE_CODE),
+		Config_Service("service","I${Function}Service",".java",TYPE_CODE),
+		Config_ServiceImpl("service/impl","${Function}ServiceImpl",".java",TYPE_CODE),
+		Config_Controller("controller","${Function}Controller",".java",TYPE_CODE);
 		
-		WS_Spring_Factory_xml("/spring_ws/${module}","spring-${function}",".xml",TYPE_RESOURCE);
+		
 		private String packageName;//包名
 		private String classConfig;//类名
 		private String classExtName;//扩展名
