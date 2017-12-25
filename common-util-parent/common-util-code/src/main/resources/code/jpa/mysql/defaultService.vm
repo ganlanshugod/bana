@@ -10,8 +10,8 @@ package ${packageName};
 
 /** 
  * @ClassName: I${Function}Service
- * @Description: ${Function}的Service接口定义类
- *  
+ * @Description: TODO 
+ * @author ${user}
  */
 public interface I${Function}Service {
 

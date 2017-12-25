@@ -19,8 +19,8 @@ import org.slf4j.LoggerFactory;
 
 /** 
  * @ClassName: ${Function}Service
- * @Description: ${Function}的Service接口实现
- *  
+ * @Description: TODO 
+ * @author ${user}
  */
 @Service(value="${function}Service")
 public class ${Function}ServiceImpl implements I${Function}Service{

@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import ${Config_Service_packageName}.I${Function}Service;
 /** 
  * @ClassName: ${Function}Controller
- * @Description: 
- *  
+ * @Description: TODO
+ * @author ${user} 
  */
  
 @RestController

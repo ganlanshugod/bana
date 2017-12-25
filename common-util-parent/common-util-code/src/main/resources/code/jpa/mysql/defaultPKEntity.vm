@@ -15,7 +15,7 @@ import javax.persistence.Embeddable;
 /** 
  * @ClassName: ${Function}PKEntity 
  * @Description: ${this.getTableName()} 自动生成的对应的实体对象的联合主键对象
- *  
+ * @author ${user}
  */
  
 @Embeddable

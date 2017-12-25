@@ -1,10 +1,10 @@
 /**
- * @Company JBINFO  
- * @Title: ${Function}Mapper.java 
+ * @Company JBINFO
+ * @Title: ${Function}Mapper.java
  * @Package  ${packageName}
- * @author ${user}   
+ * @author ${user}
  * @date ${date}
- * @version V1.0   
+ * @version V1.0
  */
 package ${packageName};
 
@@ -13,7 +13,7 @@ import org.apache.ibatis.annotations.Mapper;
 /** 
  * @ClassName: ${Function}Mapper
  * @Description: ${Function}的DAO接口定义类
- *  
+ * @author ${user}
  */
  
 @Mapper

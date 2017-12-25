@@ -1,0 +1,55 @@
+/**
+* @Company JBINFO
+* @Title: ${Function}Model.java
+* @Package ${packageName}
+* @author ${user}
+* @date ${date}
+* @version V1.0
+*/ 
+package ${packageName};
+
+import java.io.Serializable;
+
+/** 
+ * @ClassName: ${Function}Model
+ * @Description: TODO 根据数据库自动生成的业务实体，需要按照实际业务修改类名及属性
+ * @author ${user}
+ */
+public class ${Function}Model implements Serializable{
+	
+	private static final long serialVersionUID = ${serialVersionUID};
+
+#foreach (${column} in ${this.getTable().getColumnList()})
+	/** 
+	* @Fields ${column.getJavaName()} : ${column.getColumnComment()}
+	*/
+	private ${column.getJavaType()} ${column.getJavaName()};
+#end
+
+	/*=========================getter and setter ===================*/
+
+#foreach (${column} in ${this.getTable().getColumnList()})
+
+	public ${column.getJavaType()} ${column.findFieldGetMethod()}() {
+		return this.${column.getJavaName()};
+	}
+
+	public void ${column.findFieldSetMethod()}(${column.getJavaType()} ${column.getJavaName()}) {
+		this.${column.getJavaName()} = ${column.getJavaName()};
+	}
+#end
+
+	/*==================== toString() ====================*/
+
+	@Override
+	public String toString() {
+		return "${Function}Entity [" +
+#foreach (${column} in ${this.getTable().getColumnList()}) 
+				"${column.getJavaName()}=" + ${column.getJavaName()} + "," + 
+#end
+		"]";
+	}
+	
+	
+
+}

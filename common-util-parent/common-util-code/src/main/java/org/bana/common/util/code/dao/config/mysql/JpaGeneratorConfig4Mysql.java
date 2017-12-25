@@ -75,6 +75,8 @@ public class JpaGeneratorConfig4Mysql extends MybatisGeneratorConfig {
 	private Map<String, Object> indexList; 
 	
 	private String indexStr;
+	
+	private String idType;
 	/**
 	 * @Fields default_entity : entity模板
 	 */
@@ -98,6 +100,7 @@ public class JpaGeneratorConfig4Mysql extends MybatisGeneratorConfig {
 	
 	public static CodeTemplateConfig default_controller = new CodeTemplateConfig(GeneratorFileType.Config_Controller,"","code/jpa/mysql/defaultController.vm");
 	
+	public static CodeTemplateConfig default_model = new CodeTemplateConfig(GeneratorFileType.Model, "", "code/jpa/mysql/defaultModel.vm");
 	/**
 	 * @param tableName
 	 * @param databaseName
@@ -126,6 +129,10 @@ public class JpaGeneratorConfig4Mysql extends MybatisGeneratorConfig {
 		
 		try {
 			initTableAttribute();
+			List<Column> priList = table.findPriColumnList();
+			if(priList.size() > 0){
+				idType = priList.get(0).getJavaType();
+			}
 		} catch (Exception e) {
 			throw new BanaUtilException("初始化表结构内容时出错",e);
 		}
@@ -165,6 +172,7 @@ public class JpaGeneratorConfig4Mysql extends MybatisGeneratorConfig {
 	*/ 
 	private void initTableAttribute() throws Exception{
 		this.checkParams();
+		idType = "Long";
 		Connection connection = DbUtil.getConnection();
 		//验证表结构是否存在
 		String sql = "SELECT TABLE_NAME" +
@@ -430,6 +438,12 @@ public class JpaGeneratorConfig4Mysql extends MybatisGeneratorConfig {
 
 	public void setBaseRepositoryClassName(String baseRepositoryClassName) {
 		this.baseRepositoryClassName = baseRepositoryClassName;
+	}
+	public String getIdType() {
+		return idType;
+	}
+	public void setIdType(String idType) {
+		this.idType = idType;
 	}
 	
 	

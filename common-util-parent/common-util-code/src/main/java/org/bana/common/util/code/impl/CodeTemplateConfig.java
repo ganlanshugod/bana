@@ -84,7 +84,8 @@ public class CodeTemplateConfig {
 		Config_Mybatis_xml("dao","${Function}Mapper",".xml",TYPE_CODE),
 		Config_Service("service","I${Function}Service",".java",TYPE_CODE),
 		Config_ServiceImpl("service/impl","${Function}ServiceImpl",".java",TYPE_CODE),
-		Config_Controller("controller","${Function}Controller",".java",TYPE_CODE);
+		Config_Controller("controller","${Function}Controller",".java",TYPE_CODE),
+		Model("model","${Function}Model",".java",TYPE_CODE);
 		
 		
 		private String packageName;//包名
