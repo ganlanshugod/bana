@@ -75,6 +75,7 @@ public class Column {
 		CHAR(new String[]{"String"},new int[]{0},"CHAR"),
 		TIMESTAMP(new String[]{"java.util.Date"},new int[]{0},"TIMESTAMP"),
 		DATETIME(new String[]{"java.util.Date"},new int[]{0},""),
+		DATE(new String[]{"java.util.Date"},new int[]{0},""),
 		TEXT(new String[]{"String"},new int[]{0},""),
 		BIT(new String[]{"Boolean"},new int[]{0},"BIT"),
 		DECIMAL(new String[]{"java.math.BigDecimal"},new int[]{0},"DECIMAL"),
