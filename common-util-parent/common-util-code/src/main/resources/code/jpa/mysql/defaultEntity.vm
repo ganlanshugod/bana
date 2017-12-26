@@ -83,17 +83,10 @@ public class ${Function}Entity #if(${this.isHasBaseEntity()})extends ${this.getB
 #foreach (${column} in ${this.getTable().getColumnList()})
 #if(${this.getTable().hasPkDomain()} && ${column.isPriColumn()})
 #else
-	/**
-	 * @Description: 属性 ${column.getJavaName()} 的get方法 
-	 * @return id
-	 */
+
 	public ${column.getJavaType()} ${column.findFieldGetMethod()}() {
 		return this.${column.getJavaName()};
 	}
-	/**
-	 * @Description: 属性 ${column.getJavaName()} 的set方法 
-	 * @param id 
-	 */
 	public void ${column.findFieldSetMethod()}(${column.getJavaType()} ${column.getJavaName()}) {
 		this.${column.getJavaName()} = ${column.getJavaName()};
 	}
