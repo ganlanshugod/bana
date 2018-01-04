@@ -1,11 +1,11 @@
 /**
-* @Company JBINFO
-* @Title: ${Function}Model.java
-* @Package ${packageName}
-* @author ${user}
-* @date ${date}
-* @version V1.0
-*/ 
+ * @Company JBINFO
+ * @Title: ${Function}Model.java
+ * @Package ${packageName}
+ * @author ${user}
+ * @date ${date}
+ * @version V1.0
+ */ 
 package ${packageName};
 
 import java.io.Serializable;
@@ -21,8 +21,8 @@ public class ${Function}Model implements Serializable{
 
 #foreach (${column} in ${this.getTable().getColumnList()})
 	/** 
-	* @Fields ${column.getJavaName()} : ${column.getColumnComment()}
-	*/
+	 * @Fields ${column.getJavaName()} : ${column.getColumnComment()}
+	 */
 	private ${column.getJavaType()} ${column.getJavaName()};
 #end
 

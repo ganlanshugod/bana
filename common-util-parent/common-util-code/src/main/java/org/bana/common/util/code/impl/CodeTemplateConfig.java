@@ -82,6 +82,7 @@ public class CodeTemplateConfig {
 		Repository("dao","${Function}Repository",".java",TYPE_CODE),
 		Config_Dao("dao","${Function}Mapper",".java",TYPE_CODE),
 		Config_Mybatis_xml("dao","${Function}Mapper",".xml",TYPE_CODE),
+		Config_Mybatis_Common_xml("dao","${Function}CommonMapper",".xml",TYPE_CODE),
 		Config_Service("service","I${Function}Service",".java",TYPE_CODE),
 		Config_ServiceImpl("service/impl","${Function}ServiceImpl",".java",TYPE_CODE),
 		Config_Controller("controller","${Function}Controller",".java",TYPE_CODE),

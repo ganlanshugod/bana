@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- =========================================================== -->
+<!-- Bana 自动生成 -->
+<!-- =========================================================== -->
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="${Config_Dao_packageName}.${Function}Mapper">
+	<!-- =========================================================== -->
+	<!-- 定义resultMap -->
+	<!-- =========================================================== -->
+	<resultMap id="${Function}DefaultResultMap" type="${Model_packageName}.${Function}Model">
+#foreach (${column} in ${this.getTable().getColumnList()})
+#if( ${column.isPriColumn()})
+		<id column="${column.getColumnName()}" property="#if(${this.getTable().hasPkDomain()})id.#end${column.getJavaName()}" #if(!${column.getJdbcType().equals("")}) jdbcType="${column.getJdbcType().toUpperCase()}" #end />
+#else
+		<result column="${column.getColumnName()}" property="${column.getJavaName()}" #if(!${column.getJdbcType().equals("")}) jdbcType="${column.getJdbcType().toUpperCase()}" #end />
+#end
+#end
+	</resultMap>
+</mapper>

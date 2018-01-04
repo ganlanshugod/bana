@@ -1,11 +1,11 @@
 /**
-* @Company JBINFO
-* @Title: ${Function}Entity.java
-* @Package ${packageName}
-* @author ${user}
-* @date ${date}
-* @version V1.0
-*/ 
+ * @Company JBINFO
+ * @Title: ${Function}Entity.java
+ * @Package ${packageName}
+ * @author ${user}
+ * @date ${date}
+ * @version V1.0
+ */ 
 package ${packageName};
 #if(${this.isHasBaseEntity()})
 import ${this.getBaseEntityName()};
@@ -14,11 +14,20 @@ import java.io.Serializable;
 #end
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 #if(${this.getTable().hasPkDomain()})
 import javax.persistence.EmbeddedId;
 #else
 import javax.persistence.Id;
+#end
+#foreach (${column} in ${this.getTable().getColumnList()})
+#if(${this.getTable().hasPkDomain()} && ${column.isPriColumn()})
+#else
+#if(${column.isPriColumn()})
+#if("auto_increment" == ${column.getExtra()})
+import javax.persistence.GeneratedValue;
+#end
+#end
+#end
 #end
 #if(${this.getIndexStr()})
 import javax.persistence.Index;
@@ -38,8 +47,8 @@ public class ${Function}Entity #if(${this.isHasBaseEntity()})extends ${this.getB
 	
 #if(${this.getTable().hasPkDomain()})
 	/** 
-	* @Fields id : 生成的联合主键类
-	*/
+	 * @Fields id : 生成的联合主键类
+	 */
 	@EmbeddedId
 	private ${PKEntity_packageName}.${Function}PKEntity id;
 #end
@@ -48,8 +57,8 @@ public class ${Function}Entity #if(${this.isHasBaseEntity()})extends ${this.getB
 #if(${this.getTable().hasPkDomain()} && ${column.isPriColumn()})
 #else
 	/** 
-	* @Fields ${column.getJavaName()} : ${column.getColumnComment()}
-	*/
+	 * @Fields ${column.getJavaName()} : ${column.getColumnComment()}
+	 */
 #if(${column.isPriColumn()})
 	@Id
 #if("auto_increment" == ${column.getExtra()})
@@ -98,12 +107,12 @@ public class ${Function}Entity #if(${this.isHasBaseEntity()})extends ${this.getB
 	
 	/*====================hashCode and equals ====================*/
 	/**
-	* <p>Description: ${Function}Entity 自动生成的hashcode方法</p> 
-	* @author ${user}   
-	* @date ${date}
-	* @return 
-	* @see java.lang.Object#hashCode() 
-	*/ 
+	 * <p>Description: ${Function}Entity 自动生成的hashcode方法</p> 
+	 * @author ${user}   
+	 * @date ${date}
+	 * @return 
+	 * @see java.lang.Object#hashCode() 
+	 */ 
 	@Override
 	public int hashCode() {
 		int result = 1;
@@ -118,21 +127,24 @@ public class ${Function}Entity #if(${this.isHasBaseEntity()})extends ${this.getB
 		return result;
 	}
 	/**
-	* <p>Description:${Function}Entity 自动生成的equals方法 </p> 
-	* @author ${user}   
-	* @date ${date}
-	* @param obj
-	* @return 
-	* @see java.lang.Object#equals(java.lang.Object) 
-	*/ 
+	 * <p>Description:${Function}Entity 自动生成的equals方法 </p> 
+	 * @author ${user}   
+	 * @date ${date}
+	 * @param obj
+	 * @return 
+	 * @see java.lang.Object#equals(java.lang.Object) 
+	 */ 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj){
 			return true;
-		if (obj == null)
+		}
+		if (obj == null){
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()){
 			return false;
+		}
 		${Function}Entity other =(${Function}Entity) obj;
 #if(${this.getTable().hasPkDomain()})
 		if (id == null) {if (other.id != null){ return false;} }else if (!id.equals(other.id)){ return false;}
@@ -147,12 +159,12 @@ public class ${Function}Entity #if(${this.isHasBaseEntity()})extends ${this.getB
 	
 	/*==================== toString() ====================*/
 	/**
-	* <p>Description:${Function}Entity 自动生成的toString方法 </p> 
-	* @author ${user}   
-	* @date ${date} 
-	* @return 
-	* @see java.lang.Object#toString() 
-	*/ 
+	 * <p>Description:${Function}Entity 自动生成的toString方法 </p> 
+	 * @author ${user}   
+	 * @date ${date} 
+	 * @return 
+	 * @see java.lang.Object#toString() 
+	 */ 
 	@Override
 	public String toString() {
 		return "${Function}Entity [" +

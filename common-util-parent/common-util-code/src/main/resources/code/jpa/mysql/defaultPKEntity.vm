@@ -1,11 +1,11 @@
 /**
-* @Company JBINFO
-* @Title: ${Function}PKEntity.java 
-* @Package ${packageName}
-* @author ${user}
-* @date ${date}
-* @version V1.0
-*/ 
+ * @Company JBINFO
+ * @Title: ${Function}PKEntity.java 
+ * @Package ${packageName}
+ * @author ${user}
+ * @date ${date}
+ * @version V1.0
+ */ 
 package ${packageName};
 
 import java.io.Serializable;
@@ -24,27 +24,27 @@ public class ${Function}PKEntity implements Serializable{
 
 	#foreach (${column} in ${this.getTable().findPriColumnList()}) 
 	/** 
-	* @Fields ${column.getJavaName()} : ${column.getColumnComment()}
-	*/
+	 * @Fields ${column.getJavaName()} : ${column.getColumnComment()}
+	 */
 	@Column(name="${column.getColumnName()}" #if(!${column.isNullAble()}),nullable=${column.isNullAble()}#end #if(${column.getColumnLength()} > 0),length=${column.getColumnLength()}#end)
 	private ${column.getJavaType()} ${column.getJavaName()};
 	#end
 	
 	
 	/** 
-	* <p>Description: 默认的构造函数</p> 
-	* @author ${user}   
-	* @date ${date}   
-	*/ 
+	 * <p>Description: 默认的构造函数</p> 
+	 * @author ${user}
+	 * @date ${date}
+	 */ 
 	public ${Function}PKEntity(){}
 	
 	
 	/** 
-	* <p>Description: 全部属性的一个构造函数</p> 
-	* @author ${user}     
-	* @date ${date}  
+	 * <p>Description: 全部属性的一个构造函数</p> 
+	 * @author ${user}
+	 * @date ${date}
 #foreach (${column} in ${this.getTable().findPriColumnList()})
-	* @param ${column.getJavaName()} : ${column.getColumnComment()}
+	 * @param ${column.getJavaName()} : ${column.getColumnComment()}
 	#end
 */ 
 	public ${Function}PKEntity(#foreach (${column} in ${this.getTable().findPriColumnList()})${column.getJavaType()} ${column.getJavaName()}#if ($velocityCount < ${this.getTable().findPriColumnList().size()}),#end #end) {
@@ -74,12 +74,12 @@ public class ${Function}PKEntity implements Serializable{
 	
 	/*====================hashCode and equals ====================*/
 	/**
-	* <p>Description: ${Function}PKEntity 自动生成的hashcode方法</p> 
-	* @author ${user}   
-	* @date ${date}
-	* @return 
-	* @see java.lang.Object#hashCode() 
-	*/ 
+	 * <p>Description: ${Function}PKEntity 自动生成的hashcode方法</p> 
+	 * @author ${user}
+	 * @date ${date}
+	 * @return
+	 * @see java.lang.Object#hashCode()
+	 */ 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -90,21 +90,24 @@ public class ${Function}PKEntity implements Serializable{
 		return result;
 	}
 	/**
-	* <p>Description:${Function}PKEntity 自动生成的equals方法 </p> 
-	* @author ${user}   
-	* @date ${date}
-	* @param obj
-	* @return 
-	* @see java.lang.Object#equals(java.lang.Object) 
-	*/ 
+	 * <p>Description:${Function}PKEntity 自动生成的equals方法 </p> 
+	 * @author ${user}
+	 * @date ${date}
+	 * @param obj
+	 * @return
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */ 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj){
 			return true;
-		if (obj == null)
+		}
+		if (obj == null){
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()){
 			return false;
+		}
 		${Function}PKEntity other =(${Function}PKEntity) obj;
 		#foreach (${column} in ${this.getTable().findPriColumnList()})
 		${column.getEquelsString()}

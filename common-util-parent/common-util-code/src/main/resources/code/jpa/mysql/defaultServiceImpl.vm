@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** 
+/**
  * @ClassName: ${Function}Service
  * @Description: TODO 
  * @author ${user}
@@ -32,6 +32,5 @@ public class ${Function}ServiceImpl implements I${Function}Service{
 	
 	@Autowired
 	private ${Function}Mapper ${function}Mapper;
-	
-	
+
 }

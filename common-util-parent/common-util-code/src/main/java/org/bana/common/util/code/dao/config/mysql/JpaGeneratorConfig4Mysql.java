@@ -101,6 +101,9 @@ public class JpaGeneratorConfig4Mysql extends MybatisGeneratorConfig {
 	public static CodeTemplateConfig default_controller = new CodeTemplateConfig(GeneratorFileType.Config_Controller,"","code/jpa/mysql/defaultController.vm");
 	
 	public static CodeTemplateConfig default_model = new CodeTemplateConfig(GeneratorFileType.Model, "", "code/jpa/mysql/defaultModel.vm");
+	
+	public static CodeTemplateConfig default_common_mapper = new CodeTemplateConfig(GeneratorFileType.Config_Mybatis_Common_xml,"","code/jpa/mysql/defaultCommonMapper.vm");
+	
 	/**
 	 * @param tableName
 	 * @param databaseName
@@ -152,7 +155,7 @@ public class JpaGeneratorConfig4Mysql extends MybatisGeneratorConfig {
 	/** 
 	* @Description: 初始化对应
 	* @author Liu Wenjie   
-	* @date 2014-11-2 下午11:26:33   
+	* @date 2014-11-2 下午11:26:33
 	*/ 
 	private void initCodeTemplateConfig() {
 		if(this.codeVelocities == null){

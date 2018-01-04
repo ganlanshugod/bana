@@ -1,11 +1,11 @@
 /**
-* @Company JBINFO
-* @Title: ${Function}Repository.java
-* @Package ${packageName}
-* @author ${user}
-* @date ${date}
-* @version V1.0
-*/ 
+ * @Company JBINFO
+ * @Title: ${Function}Repository.java
+ * @Package ${packageName}
+ * @author ${user}
+ * @date ${date}
+ * @version V1.0
+ */ 
 package ${packageName};
 
 import ${Entity_packageName}.${Function}Entity;
@@ -14,10 +14,10 @@ import org.springframework.stereotype.Repository;
 import ${this.getBaseRepositoryName()};
 
 /** 
-* @ClassName: ${Function}Repository
-* @Description: 
-* @author ${user}
-*/
+ * @ClassName: ${Function}Repository
+ * @Description:
+ * @author ${user}
+ */
 @Repository
 public interface ${Function}Repository extends ${this.getBaseRepositoryClassName()}<${Function}Entity,#if(${this.getTable().hasPkDomain()}) ${PKEntity_packageName}.${Function}PKEntity #else ${this.getIdType()} #end>{
 

@@ -51,10 +51,11 @@ public class DbUtilTest {
     boolean generatorService;
     boolean generatorController;
     boolean generatorModel;
+    boolean generatorCommonMapper;
     boolean isCover;
 
     @Test
-  //  @Ignore
+    @Ignore
     public void generatorCode(){
         Map<String,Object> config = new HashMap<String,Object>();
         //是否生成entity
@@ -62,20 +63,22 @@ public class DbUtilTest {
         //是否生成repository
         generatorRepository = true;
         //是否生成dao和mapper
-        generatorMapper = false;    
+        generatorMapper = true;    
         //是否生成service
-        generatorService = false;
+        generatorService = true;
         //是否生成controller
-        generatorController = false;
+        generatorController = true;
         //是否生成全字段的业务实体
         generatorModel = true;
+        //是否生成commonmapper,仅做参考返回resultMap使用
+        generatorCommonMapper = false;
         //是否覆盖文件 true为覆盖，谨慎使用
-        isCover = true;
+        isCover = false;
 
         //数据结构配置
         config.put("database", "oasis_sys");//数据库名称
-        config.put("table", "authority");//表名
-        config.put("module", "auth");//模块名称
+        config.put("table", "t_bi_menu");//表名
+        config.put("module", "test");//模块名称
 //        config.put("function", "function1"); //功能级别的名称，没有则不需要设置
 //        config.put("functionPackage", false);//是否将function属性生成一层目录,模式是true
 
@@ -146,6 +149,9 @@ public class DbUtilTest {
         if(generatorMapper){
             codeList.add(JpaGeneratorConfig4Mysql.default_dao);
             codeList.add(JpaGeneratorConfig4Mysql.default_mapper);
+        }
+        if(generatorCommonMapper){
+        	codeList.add(JpaGeneratorConfig4Mysql.default_common_mapper);
         }
         if(generatorService){
             codeList.add(JpaGeneratorConfig4Mysql.default_service);
