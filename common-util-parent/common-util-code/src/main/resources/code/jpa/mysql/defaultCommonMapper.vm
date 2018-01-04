@@ -18,4 +18,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 #end
 #end
 	</resultMap>
+	
+	<!-- 查询的所有列 -->
+	<sql id="all_Column_List">
+#foreach (${column} in ${this.getTable().getColumnList()})
+	_THIS.${column.getColumnName().toUpperCase()}	#if ($velocityCount < ${this.getTable().getColumnList().size()}),
+#else
+	
+#end
+#end
+	</sql>
 </mapper>
