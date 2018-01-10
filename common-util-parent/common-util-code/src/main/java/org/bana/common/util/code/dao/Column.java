@@ -71,6 +71,7 @@ public class Column {
 	public enum ColumnToJava {
 		BIGINT(new String[]{"Long"},new int[]{0},"BIGINT"),
 		INT(new String[]{"Integer"},new int[]{0},"INTEGER"),
+		TINYINT(new String[]{"Integer"},new int[]{0},"INTEGER"),
 		VARCHAR(new String[]{"String"},new int[]{0},"VARCHAR"),
 		CHAR(new String[]{"String"},new int[]{0},"CHAR"),
 		TIMESTAMP(new String[]{"java.util.Date"},new int[]{0},"TIMESTAMP"),
