@@ -53,6 +53,7 @@ public class DbUtilTest {
     boolean generatorModel;
     boolean generatorCommonMapper;
     boolean isCover;
+    boolean withCatalog;
 
     @Test
     @Ignore
@@ -73,12 +74,13 @@ public class DbUtilTest {
         //是否生成commonmapper,仅做参考返回resultMap使用
         generatorCommonMapper = false;
         //是否覆盖文件 true为覆盖，谨慎使用
-        isCover = false;
-
+        isCover = true;
+        //entity是否需要设置catalog
+        withCatalog = false;
         //数据结构配置
         config.put("database", "oasis_sys");//数据库名称
-        config.put("table", "t_bi_menu");//表名
-        config.put("module", "test");//模块名称
+        config.put("table", "t_bi_role");//表名
+        config.put("module", "role3");//模块名称
 //        config.put("function", "function1"); //功能级别的名称，没有则不需要设置
 //        config.put("functionPackage", false);//是否将function属性生成一层目录,模式是true
 
@@ -96,23 +98,17 @@ public class DbUtilTest {
     private void generatorEntity(Map<String, Object> config){
         String database = (String)config.get("database");
         String table = (String)config.get("table");
-        boolean hasBase = false;
         Map<String, String> baseMap = new HashMap<String, String>();
         if(StringUtils.isNotBlank((String)config.get("baseEntity"))){
             baseMap.put("baseEntityName", (String)config.get("baseEntity"));
-            hasBase = true;
         }
         if(StringUtils.isNotBlank((String)config.get("baseRepository"))){
             baseMap.put("baseRepositoryName", (String)config.get("baseRepository"));
-            hasBase = true;
         }
 
         JpaGeneratorConfig4Mysql jpaGeneratorConfig;
-        if(hasBase){
-            jpaGeneratorConfig = new JpaGeneratorConfig4Mysql(table, database, baseMap);
-        }else{
-            jpaGeneratorConfig = new JpaGeneratorConfig4Mysql(table, database);
-        }
+        
+        jpaGeneratorConfig = new JpaGeneratorConfig4Mysql(table, database, baseMap,withCatalog);
 
         jpaGeneratorConfig.setProjectBasePath(baseProjectPath);
         jpaGeneratorConfig.setBasePackage(basePackage);

@@ -77,6 +77,8 @@ public class JpaGeneratorConfig4Mysql extends MybatisGeneratorConfig {
 	private String indexStr;
 	
 	private String idType;
+	
+	private boolean hasCatalog;
 	/**
 	 * @Fields default_entity : entity模板
 	 */
@@ -109,11 +111,12 @@ public class JpaGeneratorConfig4Mysql extends MybatisGeneratorConfig {
 	 * @param databaseName
 	 * @param baseEntityName
 	 */
-	public JpaGeneratorConfig4Mysql(String tableName, String databaseName, Map<String,String> baseName){
+	public JpaGeneratorConfig4Mysql(String tableName, String databaseName, Map<String, String> baseName,
+			boolean hasCatalog) {
 		this.tableName = tableName;
 		this.databaseName = databaseName;
-		
-		if(baseName != null){
+		this.hasCatalog = hasCatalog;
+		if(baseName != null && !baseName.isEmpty()){
 			if(org.bana.common.util.basic.StringUtils.isNotBlank(baseName.get("baseEntityName"))){
 				this.baseEntityName = baseName.get("baseEntityName");
 				findDefaultColumnByClassName();
@@ -140,7 +143,15 @@ public class JpaGeneratorConfig4Mysql extends MybatisGeneratorConfig {
 			throw new BanaUtilException("初始化表结构内容时出错",e);
 		}
 		initCodeTemplateConfig();
+		
 	}
+
+	@Deprecated
+	public JpaGeneratorConfig4Mysql(String tableName, String databaseName, Map<String,String> baseName){
+		
+		this(tableName, databaseName, baseName, false);
+	}
+
 	/** 
 	* <p>Description: </p> 
 	* @author liuwenjie   
@@ -448,8 +459,16 @@ public class JpaGeneratorConfig4Mysql extends MybatisGeneratorConfig {
 	public void setIdType(String idType) {
 		this.idType = idType;
 	}
-	
-	
+
+	public boolean isHasCatalog() {
+		return hasCatalog;
+	}
+
+	public void setHasCatalog(boolean hasCatalog) {
+		this.hasCatalog = hasCatalog;
+	}
+
+
 	
 
 }
