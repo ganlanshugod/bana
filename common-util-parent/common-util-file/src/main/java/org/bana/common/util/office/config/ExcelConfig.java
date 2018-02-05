@@ -8,6 +8,7 @@
 */ 
 package org.bana.common.util.office.config;
 
+import java.io.Serializable;
 import java.util.List;
 
 /** 
@@ -15,7 +16,7 @@ import java.util.List;
  * @Description: Excel的配置项
  *  
  */
-public interface ExcelConfig {
+public interface ExcelConfig extends Serializable{
 
 	
 	List<SheetConfig> getSheetConfigList();

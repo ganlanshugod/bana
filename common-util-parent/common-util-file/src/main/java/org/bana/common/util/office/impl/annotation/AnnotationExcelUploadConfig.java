@@ -22,6 +22,11 @@ import org.bana.common.util.office.config.SheetConfig;
  */
 public class AnnotationExcelUploadConfig implements ExcelUploadConfig{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6490574846980009474L;
+
 	private Class<?>[] clsArr;
 	
 	/** 
