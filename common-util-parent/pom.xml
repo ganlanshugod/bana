@@ -345,30 +345,28 @@
 			</testResource>
 		</testResources>
   </build>
-  <!-- Maven私服配置 -->
-
-	<distributionManagement>
-			<repository>
-				<id>releases</id>
-				<name>hosts-release</name>
-				<url>http://118.190.61.243:8081/nexus/content/repositories/releases/</url>
-			</repository>
-			<snapshotRepository>
-				<id>snapshots</id>
-				<name>hosts-snapshot</name>
-				<url>http://118.190.61.243:8081/nexus/content/repositories/snapshots/</url>
-			</snapshotRepository>
-		</distributionManagement>
-	<!-- ~~~~~~~~~~Maven私服配置结束 -->
 	
 	<modules>
-  		<module>common-util-basic</module>
-  		<module>common-util-template</module>
-  		<module>common-util-database</module>
+	 	<module>common-util-basic</module>
+	 	<module>common-util-template</module>
+	 	<module>common-util-database</module>
 	  	<module>common-util-app</module>
 	  	<module>common-util-email</module>
 	  	<module>common-util-file</module>
 	  	<module>common-util-code</module>
 	  	<module>common-util</module>
 	</modules>
+	
+	<distributionManagement>
+	  	 <repository>    
+	        <id>releases</id>    
+	        <name>Nexus Release Repository</name>    
+	        <url>http://118.178.92.11:8089/nexus/content/repositories/releases</url>    
+	     </repository>    
+	     <snapshotRepository>    
+	        <id>snapshots</id>    
+	       <name>Nexus Snapshot Repository</name>    
+	       <url>http://118.178.92.11:8089/nexus/content/repositories/snapshots</url>    
+	    </snapshotRepository> 
+	  </distributionManagement>
 </project>
