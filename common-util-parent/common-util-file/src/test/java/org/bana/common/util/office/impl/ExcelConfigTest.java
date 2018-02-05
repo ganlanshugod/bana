@@ -10,8 +10,8 @@ package org.bana.common.util.office.impl;
 
 import java.util.List;
 
-import org.bana.common.util.office.impl.config.ExcelConfig;
-import org.bana.common.util.office.impl.config.SheetConfig;
+import org.bana.common.util.office.config.SheetConfig;
+import org.bana.common.util.office.impl.config.XmlExcelConfig;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -23,11 +23,11 @@ import org.junit.Test;
 public class ExcelConfigTest {
 
 	/**
-	 * Test method for {@link org.bana.common.util.office.impl.config.ExcelConfig#init()}.
+	 * Test method for {@link org.bana.common.util.office.config.ExcelConfig#init()}.
 	 */
 	@Test
 	public void testInit() {
-		ExcelConfig excelConfig = new ExcelConfig();
+		XmlExcelConfig excelConfig = new XmlExcelConfig();
 		excelConfig.setConfigFile("/office/excelConfig.xml");
 		excelConfig.init();
 		Assert.assertEquals("测试名称", excelConfig.getName());

@@ -15,7 +15,6 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -39,12 +38,13 @@ import org.bana.common.util.basic.StringUtils;
 import org.bana.common.util.exception.BanaUtilException;
 import org.bana.common.util.office.ExcelGenerator;
 import org.bana.common.util.office.ExcelObject;
-import org.bana.common.util.office.impl.config.ColumnConfig;
-import org.bana.common.util.office.impl.config.ExcelConfig;
-import org.bana.common.util.office.impl.config.ExcelConfig.ExcelType;
-import org.bana.common.util.office.impl.config.RowConfig;
-import org.bana.common.util.office.impl.config.RowConfig.RowType;
-import org.bana.common.util.office.impl.config.SheetConfig;
+import org.bana.common.util.office.config.ColumnConfig;
+import org.bana.common.util.office.config.ExcelDownloadConfig;
+import org.bana.common.util.office.config.ExcelType;
+import org.bana.common.util.office.config.ExcelUploadConfig;
+import org.bana.common.util.office.config.RowConfig;
+import org.bana.common.util.office.config.RowConfig.RowType;
+import org.bana.common.util.office.config.SheetConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,10 +57,7 @@ public class BasicExcelGenerator implements ExcelGenerator {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(BasicExcelGenerator.class);
 	
-	/** 
-	* @Fields excelConfig : excel的配置
-	*/ 
-	protected ExcelConfig excelConfig;
+	private int allowEmptyRow = 10;
 
 	/**
 	 * <p>Description: </p> 
@@ -72,16 +69,17 @@ public class BasicExcelGenerator implements ExcelGenerator {
 	 */
 	@Override
 	public void generatorExcel(OutputStream outputStream, ExcelObject excelObject) {
+		ExcelDownloadConfig excelConfig = excelObject.getExcelConfig();
 		if(excelConfig == null){
 			throw new BanaUtilException("没有指定excelConfig");
 		}
 		//创建一个文件对象(根据type类型获取)
-		Workbook workbook = getWorkBook();
+		Workbook workbook = getWorkBook(excelConfig);
 		//根据excelConfig进行创建excel文件
 		List<SheetConfig> sheetConfigList = excelConfig.getSheetConfigList();
 		if(sheetConfigList != null){
 			for (SheetConfig sheetConfig : sheetConfigList) {
-				createSheet(workbook, sheetConfig,excelObject);
+				createSheet(workbook,excelConfig,sheetConfig,excelObject);
 			}
 		}else{
 			LOG.warn("excelConfig中没有或地区到sheetConfigList " + excelConfig);
@@ -89,7 +87,7 @@ public class BasicExcelGenerator implements ExcelGenerator {
 		try {
 			workbook.write(outputStream);
 		} catch (IOException e) {
-			throw new BanaUtilException("将生成的Excel写入到指定的流时出现读写错误" + this.excelConfig);
+			throw new BanaUtilException("将生成的Excel写入到指定的流时出现读写错误" + excelConfig);
 		}finally{
 			excelConfig.clear();
 		}
@@ -104,7 +102,7 @@ public class BasicExcelGenerator implements ExcelGenerator {
 	* @param sheetConfig  
 	 * @param excelObject 
 	*/ 
-	private void createSheet(Workbook workbook, SheetConfig sheetConfig, ExcelObject excelObject) {
+	private void createSheet(Workbook workbook,ExcelDownloadConfig excelConfig, SheetConfig sheetConfig, ExcelObject excelObject) {
 		Sheet sheet = workbook.createSheet(sheetConfig.getName());
 		//根据sheet的行配置文件，创建对应的行信息
 		List<RowConfig> rowConfigList = sheetConfig.getRowConfigList();
@@ -120,7 +118,7 @@ public class BasicExcelGenerator implements ExcelGenerator {
 				}
 				//创建一行记录
 				if(RowType.标题.equals(rowConfig.getType())){
-					createTitleRow(workbook,sheet,sheetConfig,rowConfig,currentRowNum++);
+					createTitleRow(workbook,sheet,excelConfig,sheetConfig,rowConfig,currentRowNum++);
 				}else{
 					//根据数据集合，循环创建数据行
 					List<? extends Object> data = excelObject.getData(sheetConfig.getName());
@@ -128,7 +126,7 @@ public class BasicExcelGenerator implements ExcelGenerator {
 						for (int i = 0; i < data.size(); i++) {
 							Object object = data.get(i);
 							if(Map.class.isInstance(object) || object.getClass().getName().equals(rowConfig.getClassName())){
-								int currentColumnSize = createDataRow(workbook,sheet,sheetConfig,rowConfig,object,currentRowNum++,i);
+								int currentColumnSize = createDataRow(workbook,sheet,excelConfig,sheetConfig,rowConfig,object,currentRowNum++,i);
 								//获取总列数
 								if(currentColumnSize > columnSize){
 									columnSize = currentColumnSize;
@@ -198,8 +196,8 @@ public class BasicExcelGenerator implements ExcelGenerator {
 	* @param object
 	* @param i  
 	*/ 
-	private int createDataRow(Workbook workbook, Sheet sheet, SheetConfig sheetConfig, RowConfig rowConfig, Object object, int currentRowNum,int index) {
-		return createRow(workbook, sheet, sheetConfig, rowConfig, object, currentRowNum,index);
+	private int createDataRow(Workbook workbook, Sheet sheet,ExcelDownloadConfig excelConfig, SheetConfig sheetConfig, RowConfig rowConfig, Object object, int currentRowNum,int index) {
+		return createRow(workbook, sheet, excelConfig,sheetConfig, rowConfig, object, currentRowNum,index);
 	}
 
 	/** 
@@ -212,8 +210,8 @@ public class BasicExcelGenerator implements ExcelGenerator {
 	 * @param rowConfig 
 	* @param currentRowNum  
 	*/ 
-	private int createTitleRow(Workbook workbook, Sheet sheet, SheetConfig sheetConfig, RowConfig rowConfig, int currentRowNum) {
-		return createRow(workbook, sheet, sheetConfig, rowConfig, null, currentRowNum,1);
+	private int createTitleRow(Workbook workbook, Sheet sheet,ExcelDownloadConfig excelConfig, SheetConfig sheetConfig, RowConfig rowConfig, int currentRowNum) {
+		return createRow(workbook, sheet, excelConfig,sheetConfig, rowConfig, null, currentRowNum,1);
 	}
 	
 	/** 
@@ -228,7 +226,7 @@ public class BasicExcelGenerator implements ExcelGenerator {
 	 * @param index 
 	* @return 创建的总列数，单元格个数
 	*/ 
-	private int createRow(Workbook workbook, Sheet sheet, SheetConfig sheetConfig, RowConfig rowConfig,Object object, int currentRowNum, int index){
+	private int createRow(Workbook workbook, Sheet sheet,ExcelDownloadConfig excelConfig,SheetConfig sheetConfig, RowConfig rowConfig,Object object, int currentRowNum, int index){
 		Row row = sheet.createRow(currentRowNum);
 		row.setHeightInPoints(rowConfig.getRowHieght());
 		int currentColNum = 0;
@@ -237,10 +235,10 @@ public class BasicExcelGenerator implements ExcelGenerator {
 	    	List<String> mutiMapColumnNameList = rowConfig.getMutiMapColumnName();//所有mutiMap指向的列名
 	    	for (ColumnConfig columnConfig : columnConfigList) {
 	    		//如果标题列的对应关系不为空，则执行按照列配置设置名字的类型
-	    		Map<String, List<String>> mutiTitleMap = this.excelConfig.getMutiTitleMap();
+	    		Map<String, List<String>> mutiTitleMap = excelConfig.getMutiTitleMap();
     			String configName = columnConfig.getName();
     			ColumnConfig targetColumnConfig = columnConfig;
-    			if(this.excelConfig.getMutiTitleMap() != null){
+    			if(excelConfig.getMutiTitleMap() != null){
     				List<String> list = mutiTitleMap.get(configName);
     				if(mutiMapColumnNameList.contains(configName)){
     					String sourceConfigName = rowConfig.getColumnNameUseMutiMapName(configName);
@@ -260,13 +258,13 @@ public class BasicExcelGenerator implements ExcelGenerator {
     							}
     						}
     						//按照当前的列进行创建单元格
-    						currentColNum = createCurrentCell(workbook,sheet,row,sheetConfig,rowConfig,targetColumnConfig,cellKey,object,currentRowNum,currentColNum,index);
+    						currentColNum = createCurrentCell(workbook,sheet,row,excelConfig,sheetConfig,rowConfig,targetColumnConfig,cellKey,object,currentRowNum,currentColNum,index);
     					}
     				}else{//使用固定列值来设置内容
-    					currentColNum = createCurrentCell(workbook,sheet,row,sheetConfig,rowConfig,targetColumnConfig,configName,object,currentRowNum,currentColNum,index);
+    					currentColNum = createCurrentCell(workbook,sheet,row,excelConfig,sheetConfig,rowConfig,targetColumnConfig,configName,object,currentRowNum,currentColNum,index);
     				}
     			}else{//使用固定内容来设置对应的内容
-    				currentColNum = createCurrentCell(workbook,sheet,row,sheetConfig,rowConfig,targetColumnConfig,configName,object,currentRowNum,currentColNum,index);
+    				currentColNum = createCurrentCell(workbook,sheet,row,excelConfig,sheetConfig,rowConfig,targetColumnConfig,configName,object,currentRowNum,currentColNum,index);
     			}
 			}
 	    }
@@ -289,9 +287,9 @@ public class BasicExcelGenerator implements ExcelGenerator {
 	* @param index  
 	 * @param index2 
 	*/ 
-	private int createCurrentCell(Workbook workbook, Sheet sheet, Row row, SheetConfig sheetConfig, RowConfig rowConfig, ColumnConfig columnConfig, String cellKey, Object object, int currentRowNum, int currentColNum, int index) {
+	private int createCurrentCell(Workbook workbook, Sheet sheet, Row row,ExcelDownloadConfig excelConfig, SheetConfig sheetConfig, RowConfig rowConfig, ColumnConfig columnConfig, String cellKey, Object object, int currentRowNum, int currentColNum, int index) {
 		//设置单元格样式
-		CellStyle cellStyle = this.excelConfig.getCellStyle(workbook,sheetConfig,rowConfig,columnConfig);
+		CellStyle cellStyle = excelConfig.getCellStyle(workbook,sheetConfig,rowConfig,columnConfig);
 		//创建单元格，并付上样式
 		Integer colspan = columnConfig.getColspan();
 		Cell cell = row.createCell(currentColNum++);
@@ -320,7 +318,7 @@ public class BasicExcelGenerator implements ExcelGenerator {
 				value = columnConfig.getCellValue(object,cellKey);
 				//如果使用字典，那么将字典值进行转化
 				if(value instanceof String && columnConfig.isUseDic()){
-					value = this.excelConfig.getDicValue((String)value,columnConfig);
+					value = excelConfig.getDicValue((String)value,columnConfig);
 				}
 			}
 			if(value != null){//控制时，不进行任何设置
@@ -350,7 +348,7 @@ public class BasicExcelGenerator implements ExcelGenerator {
 	* @date 2015-7-7 下午5:17:16 
 	* @return  
 	*/ 
-	private Workbook getWorkBook() {
+	private Workbook getWorkBook(ExcelDownloadConfig excelConfig) {
 		if(StringUtils.isNotBlank(excelConfig.getBaseFile())){
 			try {
 				return WorkbookFactory.create(BasicExcelGenerator.class.getResourceAsStream(excelConfig.getBaseFile()));
@@ -400,7 +398,7 @@ public class BasicExcelGenerator implements ExcelGenerator {
 	 * @see org.bana.common.util.poi.POIHXSSFGenerator#generatorObject(java.io.InputStream) 
 	 */
 	@Override
-	public ExcelObject generatorObject(InputStream inputStream) {
+	public ExcelObject generatorObject(InputStream inputStream,ExcelUploadConfig excelConfig) {
 		if(inputStream == null){
 			return null;
 		}
@@ -409,18 +407,31 @@ public class BasicExcelGenerator implements ExcelGenerator {
 		}
 		//创建workBook，根据配置，读取内容
 		Workbook workBook = getWorkBook(inputStream);
-		List<SheetConfig> sheetConfigList = this.excelConfig.getSheetConfigList();
+		List<SheetConfig> sheetConfigList = excelConfig.getSheetConfigList();
 		if(sheetConfigList == null){
 			return null;
 		}
 		ExcelObject excelObject = new ExcelObject();
 		for (SheetConfig sheetConfig : sheetConfigList) {
+			Sheet sheet;
 			String name = sheetConfig.getName();
-			Sheet sheet = workBook.getSheet(name);
-			if(sheet == null){
-				throw new BanaUtilException("没有找到指定的excel的sheet页 " + name);
+			if(StringUtils.isBlank(name)){
+				Integer index = sheetConfig.getIndex();
+				if(index != null){
+					sheet = workBook.getSheetAt(index);
+					if(sheet == null){
+						throw new BanaUtilException("没有excel的index为" + index + "的sheet页 ");
+					}
+				}else{
+					throw new BanaUtilException("sheet页的配置name和index不能同时为空 ");
+				}
+			}else{
+				sheet = workBook.getSheet(name);
+				if(sheet == null){
+					throw new BanaUtilException("没有找到指定的excel的sheet页 " + name);
+				}
 			}
-			List<? extends Object> readSheet = readSheet(sheet,sheetConfig);
+			List<? extends Object> readSheet = readSheet(sheet,excelConfig,sheetConfig);
 			excelObject.putData(name, readSheet);
 		}
 		return excelObject;
@@ -435,7 +446,7 @@ public class BasicExcelGenerator implements ExcelGenerator {
 	* @param sheetConfig
 	* @return  
 	*/ 
-	private List<? extends Object> readSheet(Sheet sheet,SheetConfig sheetConfig){
+	private List<? extends Object> readSheet(Sheet sheet,ExcelUploadConfig excelConfig,SheetConfig sheetConfig){
 		//根据sheet的行配置文件，创建对应的行信息
 		List<RowConfig> rowConfigList = sheetConfig.getRowConfigList();
 		int currentRowNum = 0;
@@ -456,21 +467,26 @@ public class BasicExcelGenerator implements ExcelGenerator {
 				//获取一行记录或验证该行记录
 				Row row = sheet.getRow(currentRowNum++);
 				LOG.info("标题行，当前行数: " + currentRowNum);
-				colNameList = readTitleRow(row,sheetConfig,rowConfig);
+				colNameList = readTitleRow(row,excelConfig,sheetConfig,rowConfig);
 			}else{
-				//根据excel内容，循环读取数据，如果遇到一行空数据，则停止此次读取
+				//根据excel内容，循环读取数据，如果遇到超过allowEmptyRow行空数据，则停止此次读取
 				boolean hasRecordValue = true;
+				int emptyRow = 0;
 				while(hasRecordValue){
 					Row row = sheet.getRow(currentRowNum++);
-					LOG.info("获取数据行。。。，当前行数: " + currentRowNum);
+					LOG.info("=====获取数据行当前行数: " + currentRowNum);
 					if(row == null){
 						hasRecordValue = false;
 						break;
 					}
-					Object value = readDataRow(row,sheetConfig,rowConfig,colNameList);
+					Object value = readDataRow(row,excelConfig,sheetConfig,rowConfig,colNameList);
 					if(value == null){
-						hasRecordValue = false;
+						emptyRow ++;
+						if(emptyRow > this.allowEmptyRow){
+							hasRecordValue = false;
+						}
 					}else{
+						emptyRow = 0;
 						if(Map.class.isInstance(value)){//返回值是否为一个map对象
 							//如果是map对象
 							LOG.info("返回值是一个Map对象");
@@ -496,31 +512,27 @@ public class BasicExcelGenerator implements ExcelGenerator {
 	 * @param colNameList 
 	* @return  
 	*/ 
-	private Object readDataRow(Row row, SheetConfig sheetConfig, RowConfig rowConfig, List<String> colNameList) {
-		if(colNameList != null && !colNameList.isEmpty()){
-			//如果返回对象是按照map列值获取的
-			return readDataRowAsMap(row,sheetConfig,rowConfig,colNameList);
-		}
-		List<ColumnConfig> columnConfigList = rowConfig.getColumnConfigList();
-		if(columnConfigList == null){
-			return null;
-		}
-		int currentColumnNum = 0;
+	private Object readDataRow(Row row, ExcelUploadConfig excelConfig,SheetConfig sheetConfig, RowConfig rowConfig, List<String> colNameList) {
 		Object object;
 		try {
 			object = Class.forName(rowConfig.getClassName()).newInstance();
 		} catch (Exception e) {
 			throw new BanaUtilException("使用" + rowConfig.getClassName() + " 名称创建类时失败 ",e);
 		}
+		if(colNameList != null && !colNameList.isEmpty()){
+			//如果返回对象是按照map列值获取的
+			return readDataRowAsMap(object,row,excelConfig,sheetConfig,rowConfig,colNameList);
+		}
+		List<ColumnConfig> columnConfigList = rowConfig.getColumnConfigList();
+		if(columnConfigList == null){
+			return null;
+		}
+		int currentColumnNum = 0;
 		boolean isEmpty = true;
 		for (ColumnConfig columnConfig : columnConfigList) {
 			Cell cell = row.getCell(currentColumnNum++);
 			Object value = readCellValue(cell,columnConfig);
-			if(value == null){
-				continue;
-			}
-			isEmpty = false;
-			columnConfig.setColumnValue(value,object);
+			
 			Integer colspan = columnConfig.getColspan();
 			if(colspan != null && colspan > 1){
 				for (int i = 0; i < colspan - 1; i++) {
@@ -531,6 +543,11 @@ public class BasicExcelGenerator implements ExcelGenerator {
 					}
 				}
 			}
+			if(value == null){
+				continue;
+			}
+			isEmpty = false;
+			columnConfig.setColumnValue(value,object);
 		}
 		if(isEmpty){
 			return null;
@@ -548,16 +565,17 @@ public class BasicExcelGenerator implements ExcelGenerator {
 	* @param colNameList
 	* @return  
 	*/ 
-	private Object readDataRowAsMap(Row row, SheetConfig sheetConfig, RowConfig rowConfig, List<String> colNameList) {
-		Map<String,Object> oneData = new HashMap<String, Object>();
+	private Object readDataRowAsMap(Object obj,Row row,ExcelUploadConfig excelConfig, SheetConfig sheetConfig, RowConfig rowConfig, List<String> colNameList) {
+//		Map<String,Object> oneData = new HashMap<String, Object>();
 		boolean isEmpty = true;
+		int cellNum = 0;
 		for (int i = 0; i < colNameList.size(); i++) {
 			String colName = colNameList.get(i);
-			Cell cell = row.getCell(i);
+			Cell cell = row.getCell(cellNum++);
 			ColumnConfig columnConfig = rowConfig.getColumnConfigMap().get(colName);
 			//没有找到指定名字的columnConfig的时候，根据map值去获取对应的map对象的值
 			if(columnConfig == null){
-				String configName = this.excelConfig.getMutiConfigNameUseColName(colName);
+				String configName = excelConfig.getMutiConfigNameUseColName(colName);
 				if(StringUtils.isBlank(configName)){
 					throw new BanaUtilException("根据动态列名 “" + colName + "” 获取配置对象列的配置内容时没有获取到");
 				}
@@ -574,21 +592,33 @@ public class BasicExcelGenerator implements ExcelGenerator {
 					throw new BanaUtilException("动态列 “" + configName + "”  指定的mutiMap 值" + mutiMapName + " 没有配置信息");
 				}
 			}
-			//动态列excel中不允许读取合并单元格的内容
-			if(columnConfig.getColspan() != null && columnConfig.getColspan() > 1){
-				throw new BanaUtilException("动态列excel中不允许读取合并单元格的内容，" + columnConfig.getName() + "Colspan 的值是" + columnConfig.getColspan());
-			}
 			Object value = readCellValue(cell,columnConfig);
 			if(value != null){
 				isEmpty = false;
 			}
-			oneData.put(colName, columnConfig.parseTypeValue(value));
+			columnConfig.setColumnValue(value, obj);
+//			oneData.put(colName, columnConfig.parseTypeValue(value));
+			//动态列excel中不允许读取合并单元格的内容
+			if(columnConfig.getColspan() != null && columnConfig.getColspan() > 1){
+				//throw new BanaUtilException("动态列excel中不允许读取合并单元格的内容，" + columnConfig.getName() + "Colspan 的值是" + columnConfig.getColspan());
+				for (int j = 0; j < columnConfig.getColspan()-1 ; j++) {
+					Cell emptyCell = row.getCell(cellNum++);
+					if(emptyCell == null){
+						throw new BanaUtilException("Excel中列名为“ " + colName +" ”的模板中要求有 " + columnConfig.getColspan() + " 列合并单元格，而实际的内容没有包含合并单元格，或内容不符 ");
+					}
+					String stringCellValue = emptyCell.getStringCellValue();
+					if(!StringUtils.isEmpty(stringCellValue) && !stringCellValue.equals(value)){
+						throw new BanaUtilException("Excel中列名为“ " + colName +" ”的模板中要求有合并单元格，而实际的内容没有包含合并单元格，或内容不符 ");
+					}
+				}
+			}
+			
 		}
 		//验证改行是否至少有一个数据，如果是空行，则返回空值
 		if(isEmpty){
 			return null;
 		}else{
-			return oneData;
+			return obj;
 		}
 	}
 
@@ -651,29 +681,29 @@ public class BasicExcelGenerator implements ExcelGenerator {
 	* @param sheetConfig
 	* @param rowConfig  
 	*/ 
-	private List<String> readTitleRow(Row row, SheetConfig sheetConfig, RowConfig rowConfig) {
-		if(sheetConfig.isCheckTitle()){
-			if(rowConfig.isMutiTitle()){
-				//如果excel的列是可能多列动态设置，那么根据数据的配置进行解析
-				List<String> colNameList = new ArrayList<String>();
-				int currentColumnNum = 0;
-				while(true){
-					Cell cell = row.getCell(currentColumnNum++);
-					if(cell == null){
-						break;
-					}
-					String colName = cell.getStringCellValue();
-					if(cell == null || StringUtils.isBlank(colName)){
-						continue;
-					}
-					//添加每列的名称到一个集合
-					colNameList.add(StringUtils.trimAll(colName));
+	private List<String> readTitleRow(Row row,ExcelUploadConfig excelConfig, SheetConfig sheetConfig, RowConfig rowConfig) {
+		//动态列的，无法校验列名
+		if(rowConfig.isMutiTitle()){
+			//如果excel的列是可能多列动态设置，那么根据数据的配置进行解析
+			List<String> colNameList = new ArrayList<String>();
+			int currentColumnNum = 0;
+			while(true){
+				Cell cell = row.getCell(currentColumnNum++);
+				if(cell == null){
+					break;
 				}
-				//验证获取到的列名称中，是否包含所有指定的列名，如果都包含则是正确，如果不包含，必须都不包含，而且需要验证是否是指定范围内容的列，如果不是，则抛出错误
-				if(checkMutiTitle(sheetConfig, rowConfig,colNameList)){
-					return colNameList;
+				String colName = cell.getStringCellValue();
+				if(cell == null || StringUtils.isBlank(colName)){
+					continue;
 				}
-			}else{
+				//添加每列的名称到一个集合
+				colNameList.add(StringUtils.trimAll(colName));
+			}
+			//验证获取到的列名称中，是否包含所有指定的列名，如果都包含则是正确，如果不包含，必须都不包含，而且需要验证是否是指定范围内容的列，如果不是，则抛出错误
+			checkMutiTitle(excelConfig,sheetConfig, rowConfig,colNameList);
+			return colNameList;
+		}else{
+			if(sheetConfig.isCheckTitle()){
 				List<ColumnConfig> columnConfigList = rowConfig.getColumnConfigList();
 				if(columnConfigList != null){
 					int currentColumnNum = 0;
@@ -700,8 +730,8 @@ public class BasicExcelGenerator implements ExcelGenerator {
 					}
 				}
 			}
+			return null;
 		}
-		return null;
 	}
 
 	/** 
@@ -712,7 +742,7 @@ public class BasicExcelGenerator implements ExcelGenerator {
 	* @param rowConfig
 	* @param colNameList  
 	*/ 
-	private boolean checkMutiTitle(SheetConfig sheetConfig, RowConfig rowConfig, List<String> colNameList) {
+	private boolean checkMutiTitle(ExcelUploadConfig excelConfig,SheetConfig sheetConfig, RowConfig rowConfig, List<String> colNameList) {
 		//验证是否包含重复的列
 		List<String> findDuplicateList = CollectionUtils.findDuplicateList(colNameList);
 		if(findDuplicateList != null && !findDuplicateList.isEmpty()){
@@ -726,13 +756,13 @@ public class BasicExcelGenerator implements ExcelGenerator {
 				//验证正确，使用的是全部对应的列名，没有动态列名
 				return false;
 			}else{
-				throw new BanaUtilException("固定模板只允许的列名为" + allColumnName + ", 而在上传的文件中发现了不合法的列名 " + colNameList);
+				throw new BanaUtilException("固定模板只允许的列名为" + allColumnName + ", 而在上传的文件中发现了不合法的列名 " + CollectionUtils.disjunction(colNameList, allColumnName));
 			}
 		}
 		//如果列名不包含所有列名，说明使用的是动态模板，动态模板不能包含动态指定的任何一列
 		List<String> mutiColumnNameList = rowConfig.getMutiIncludeMapColumnName();
 			//获取所有指定的动态列名
-		Map<String, List<String>> mutiTitleMap = this.excelConfig.getMutiTitleMap();
+		Map<String, List<String>> mutiTitleMap = excelConfig.getMutiTitleMap();
 		List<String> allowColumnList = new ArrayList<String>();
 		if(mutiTitleMap != null){
 			Set<Entry<String, List<String>>> entrySet = mutiTitleMap.entrySet();
@@ -754,22 +784,8 @@ public class BasicExcelGenerator implements ExcelGenerator {
 		return true;
 	}
 
-	/** 
-	* @Description:  设置配置项，生成Excel的配置方法
-	* @author Liu Wenjie   
-	* @date 2015-7-2 上午11:19:18 
-	* @param excelConfig  
-	*/ 
-	public void setExcelConfig(ExcelConfig excelConfig) {
-		this.excelConfig = excelConfig;
+	public void setAllowEmptyRow(int allowEmptyRow) {
+		this.allowEmptyRow = allowEmptyRow;
 	}
 
-	/**
-	 * @Description: 属性 excelConfig 的get方法 
-	 * @return excelConfig
-	 */
-	public ExcelConfig getExcelConfig() {
-		return excelConfig;
-	}
-	
 }

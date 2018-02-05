@@ -6,7 +6,7 @@
 * @date 2015-7-7 下午3:48:17 
 * @version V1.0   
 */ 
-package org.bana.common.util.office.impl.config;
+package org.bana.common.util.office.config;
 
 import java.io.Serializable;
 import java.util.List;
@@ -28,6 +28,11 @@ public class SheetConfig implements Serializable {
 	* @Fields name : sheet页的名称
 	*/ 
 	private String name;
+	
+	/**
+	 * sheet 页的序号
+	 */
+	private Integer index;
 	/** 
 	* @Fields rowConfigList : 行配置的集合
 	*/ 
@@ -101,15 +106,15 @@ public class SheetConfig implements Serializable {
 		this.checkTitle = checkTitle;
 	}
 	
-	/**
-	* <p>Description: </p> 
-	* @author Liu Wenjie   
-	* @date 2015-7-8 上午11:28:29 
-	* @return 
-	* @see java.lang.Object#toString() 
-	*/ 
+	public Integer getIndex() {
+		return index;
+	}
+	public void setIndex(Integer index) {
+		this.index = index;
+	}
 	@Override
 	public String toString() {
-		return "SheetConfig [name=" + name + ", rowConfigList=" + rowConfigList + ", style=" + style + "]";
+		return "SheetConfig [name=" + name + ", index=" + index + ", rowConfigList=" + rowConfigList + ", style="
+				+ style + ", checkTitle=" + checkTitle + "]";
 	}
 }

@@ -39,9 +39,10 @@ public class CodeUtilTest {
 //			System.out.println(code);
 			hashSet.add(code);
 		}
+		System.out.println(CodeUtil.generatorNumberCode());
 		System.out.println(System.currentTimeMillis() - begin);
 		System.out.println(hashSet.size());
-//		System.out.println(arrayList);
+		System.out.println(arrayList);
 	}
 	
 	@Test

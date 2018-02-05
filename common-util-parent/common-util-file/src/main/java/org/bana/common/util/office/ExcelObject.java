@@ -9,11 +9,14 @@
 package org.bana.common.util.office;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bana.common.util.office.impl.config.ExcelConfig.ExcelType;
+import org.bana.common.util.basic.StringUtils;
+import org.bana.common.util.office.config.ExcelDownloadConfig;
+import org.bana.common.util.office.config.ExcelType;
 
 /** 
  * @ClassName: ExcelObject 
@@ -30,10 +33,20 @@ public class ExcelObject implements Serializable{
 	
 	private Map<String,List<? extends Object>> dataMap;
 	
+	/**
+	 * 如果没有指定sheet页的名字的话，使用list来保存
+	 */
+	private List<List<? extends Object>> dataList;
+	
 	/** 
 	* @Fields type : 指定excel的生成類型，xlxs或xls類型
 	*/ 
 	private ExcelType type;
+	
+	/**
+	 * @Fields type : excel的配置类
+	 */
+	private ExcelDownloadConfig excelConfig;
 	
 	/** 
 	* @Description: 添加一条数据记录，key值为sheet页名称
@@ -43,10 +56,17 @@ public class ExcelObject implements Serializable{
 	* @param dataList  
 	*/ 
 	public void putData(String sheetName,List<? extends Object> dataList){
-		if(dataMap == null){
-			dataMap = new HashMap<String, List<? extends Object>>();
+		if(StringUtils.isNotBlank(sheetName)){
+			if(dataMap == null){
+				dataMap = new HashMap<String, List<? extends Object>>();
+			}
+			dataMap.put(sheetName,dataList);
+		}else{
+			if(this.dataList == null){
+				this.dataList = new ArrayList<List<? extends Object>>();
+			}
+			this.dataList.add(dataList);
 		}
-		dataMap.put(sheetName,dataList);
 	}
 	
 	/** 
@@ -62,7 +82,21 @@ public class ExcelObject implements Serializable{
 		return dataMap.get(sheetName);
 	}
 	
+	public List<? extends Object> getData(int index){
+		if(dataList != null){
+			return dataList.get(index);
+		}
+		return null;
+	}
 	
 	/*=================getter and setter ===============*/
 
+	public ExcelDownloadConfig getExcelConfig() {
+		return excelConfig;
+	}
+
+	public void setExcelConfig(ExcelDownloadConfig excelConfig) {
+		this.excelConfig = excelConfig;
+	}
+	
 }

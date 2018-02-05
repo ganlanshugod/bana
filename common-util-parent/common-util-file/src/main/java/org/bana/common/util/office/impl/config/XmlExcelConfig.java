@@ -23,7 +23,14 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.bana.common.util.basic.StringUtils;
 import org.bana.common.util.basic.XmlLoader;
 import org.bana.common.util.exception.BanaUtilException;
-import org.bana.common.util.office.impl.config.RowConfig.RowType;
+import org.bana.common.util.office.config.ColumnConfig;
+import org.bana.common.util.office.config.ExcelConfig;
+import org.bana.common.util.office.config.ExcelDownloadConfig;
+import org.bana.common.util.office.config.ExcelType;
+import org.bana.common.util.office.config.ExcelUploadConfig;
+import org.bana.common.util.office.config.RowConfig;
+import org.bana.common.util.office.config.SheetConfig;
+import org.bana.common.util.office.config.RowConfig.RowType;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.slf4j.Logger;
@@ -36,9 +43,9 @@ import com.alibaba.fastjson.JSON;
  * @Description: Excel的配置项
  *  
  */
-public class ExcelConfig {
+public class XmlExcelConfig implements ExcelDownloadConfig,ExcelUploadConfig{
 	/*========加载的配置实用的信息 begin ========*/
-	private static final String XSD_FILE = "/office/excelConfig.xsd";
+//	private static final String XSD_FILE = "/office/excelConfig.xsd";
 	
 	private static final Logger LOG = LoggerFactory.getLogger(ExcelConfig.class);
 	/** 
@@ -543,30 +550,5 @@ public class ExcelConfig {
 	public String toString() {
 		return "ExcelConfig [configFile=" + configFile + ", name=" + name + ", type=" + type + ", style=" + style + ", sheetConfigList=" + sheetConfigList + "]";
 	}
-
-
-
-
-
-	/*==============其他本类中实用的配置信息 =============*/
-	public static enum ExcelType{
-		XLS("xls"),XLSX("xlsx");
-		private String extName ; //后缀名称
-		private ExcelType(String extName){
-			this.extName = extName;
-		}
-		public String getExtName(){
-			return this.extName;
-		}
-		public static ExcelType getInstance(String extName){
-			for (ExcelType excelType : values()) {
-				if(excelType.getExtName().equals(extName)){
-					return excelType;
-				}
-			}
-			return XLS;
-		}
-	}
-
 
 }

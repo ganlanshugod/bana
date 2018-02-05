@@ -15,7 +15,7 @@ type="xls" name="测试名称" style="border:all;fontName:微软雅黑;" baseFil
 			<column name="住址" colspan="1" style="fillForegroundColor:dark_blue;"/>
 			<column name="日期" colspan="1"/>
 		</row>
-		<row type="data" class="org.bana.common.util.office.impl.TestData" rowIndex="-1">
+		<row type="data" class="org.bana.common.util.office.annotation.TestData" rowIndex="-1">
 			<column mappedBy="@index"/>
 			<column mappedBy="name"/>
 			<column mappedBy="sex" colspan="2"/>

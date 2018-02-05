@@ -6,7 +6,7 @@
 * @date 2015-7-7 下午3:48:59 
 * @version V1.0   
 */ 
-package org.bana.common.util.office.impl.config;
+package org.bana.common.util.office.config;
 
 import java.io.Serializable;
 import java.util.ArrayList;

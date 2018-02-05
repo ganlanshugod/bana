@@ -10,7 +10,6 @@ package org.bana.common.util.office.impl;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,7 +21,8 @@ import java.util.Map;
 import java.util.Random;
 
 import org.bana.common.util.office.ExcelObject;
-import org.bana.common.util.office.impl.config.ExcelConfig;
+import org.bana.common.util.office.annotation.TestData;
+import org.bana.common.util.office.impl.config.XmlExcelConfig;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -35,14 +35,14 @@ import org.junit.Test;
  */
 public class BasicExcelGeneratorTest {
 	private BasicExcelGenerator excelGenerator;
+	private XmlExcelConfig excelConfig;
 	@Before
 	public void init(){
 		excelGenerator = new BasicExcelGenerator();
 		//构造excelConfig
-		ExcelConfig excelConfig = new ExcelConfig();
+		excelConfig = new XmlExcelConfig();
 		excelConfig.setConfigFile("/office/excelConfig.xml");
 		excelConfig.init();
-		excelGenerator.setExcelConfig(excelConfig);
 	}
 	
 	@Test
@@ -53,13 +53,12 @@ public class BasicExcelGeneratorTest {
 	@Test
 	@Ignore
 	public void testReadExcel2() throws IOException{
-		ExcelConfig excelConfig = new ExcelConfig();
+		XmlExcelConfig excelConfig = new XmlExcelConfig();
 		excelConfig.setConfigFile("/office/excelConfigStudentScore.xml");
 		excelConfig.init();
-		excelGenerator.setExcelConfig(excelConfig);
 		FileInputStream inputStream = new FileInputStream(new File("C:/Users/liuwenjie/Desktop/成绩上传的测试excel.xls"));
 		
-		ExcelObject generatorObject = excelGenerator.generatorObject(inputStream);
+		ExcelObject generatorObject = excelGenerator.generatorObject(inputStream,excelConfig);
 		Assert.assertNotNull(generatorObject);
 		List<? extends Object> data = generatorObject.getData("学生成绩单");
 //		System.out.println();
@@ -68,10 +67,10 @@ public class BasicExcelGeneratorTest {
 	}
 	
 	@Test
-	@Ignore
+//	@Ignore
 	public void testReadExcel() throws IOException {
 		FileInputStream inputStream = new FileInputStream(new File("D:/test.xls"));
-		ExcelObject generatorObject = excelGenerator.generatorObject(inputStream);
+		ExcelObject generatorObject = excelGenerator.generatorObject(inputStream,excelConfig);
 		Assert.assertNotNull(generatorObject);
 		List<? extends Object> data = generatorObject.getData("sheet1-test");
 		Assert.assertEquals(1000, data.size());
@@ -81,15 +80,14 @@ public class BasicExcelGeneratorTest {
 	@Test
 	@Ignore
 	public void testReadMutiExcel() throws IOException {
-		ExcelConfig excelConfig = new ExcelConfig();
+		XmlExcelConfig excelConfig = new XmlExcelConfig();
 		excelConfig.setConfigFile("/office/excelMutiConfig.xml");
 		excelConfig.init();
 		Map<String,List<String>> mutiMap = new HashMap<String, List<String>>();
 		mutiMap.put("性别", Arrays.asList("男","女"));
 		excelConfig.setMutiTitleMap(mutiMap);
-		excelGenerator.setExcelConfig(excelConfig);
 		FileInputStream inputStream = new FileInputStream(new File("D:/test.xls"));
-		ExcelObject generatorObject = excelGenerator.generatorObject(inputStream);
+		ExcelObject generatorObject = excelGenerator.generatorObject(inputStream,excelConfig);
 		Assert.assertNotNull(generatorObject);
 		List<? extends Object> data = generatorObject.getData("sheet1-test");
 		Assert.assertEquals(1000, data.size());
@@ -99,15 +97,14 @@ public class BasicExcelGeneratorTest {
 	@Test
 	@Ignore
 	public void testReadMutiExcel2() throws IOException {
-		ExcelConfig excelConfig = new ExcelConfig();
+		XmlExcelConfig excelConfig = new XmlExcelConfig();
 		excelConfig.setConfigFile("/office/excelConfigStudentScore.xml");
 		excelConfig.init();
 		Map<String,List<String>> mutiMap = new HashMap<String, List<String>>();
 		mutiMap.put("科目", Arrays.asList("语文","数学","英语","总分","排名"));
 		excelConfig.setMutiTitleMap(mutiMap);
-		excelGenerator.setExcelConfig(excelConfig);
 		FileInputStream inputStream = new FileInputStream(new File("D:/成绩模版－横版.xls"));
-		ExcelObject generatorObject = excelGenerator.generatorObject(inputStream);
+		ExcelObject generatorObject = excelGenerator.generatorObject(inputStream,excelConfig);
 		Assert.assertNotNull(generatorObject);
 		List<? extends Object> data = generatorObject.getData("学生成绩单");
 		Assert.assertEquals(2007, data.size());
@@ -122,10 +119,9 @@ public class BasicExcelGeneratorTest {
 	*/ 
 	@Test
 	public void testGeneratorScore() throws IOException{
-		ExcelConfig excelConfig = new ExcelConfig();
+		XmlExcelConfig excelConfig = new XmlExcelConfig();
 		excelConfig.setConfigFile("/office/excelStudentAchievement.xml");
 		excelConfig.init();
-		excelGenerator.setExcelConfig(excelConfig);
 		FileOutputStream outputStream = new FileOutputStream(new File("D:/成绩页面.xls"));
 		ExcelObject excelObject = new ExcelObject();
 		List<StudentScoreDto4Query> dataList = new ArrayList<StudentScoreDto4Query>();
@@ -133,7 +129,7 @@ public class BasicExcelGeneratorTest {
 		excelObject.putData("学生成绩单", dataList);
 		excelGenerator.generatorExcel(outputStream, excelObject);
 		outputStream.close();
-		System.out.println("样式数量为" + excelGenerator.excelConfig.getCellStyleSize());
+		System.out.println("样式数量为" + excelConfig.getCellStyleSize());
 	}
 
 	/** 
@@ -176,18 +172,17 @@ public class BasicExcelGeneratorTest {
 		excelObject.putData("sheet1-test", dataList);
 		excelGenerator.generatorExcel(outputStream, excelObject);
 		outputStream.close();
-		System.out.println("样式数量为" + excelGenerator.excelConfig.getCellStyleSize());
+		System.out.println("样式数量为" + excelConfig.getCellStyleSize());
 	}
 	
 	@Test
 	public void testGeneratorMutiExcel() throws IOException {
-		ExcelConfig excelConfig = new ExcelConfig();
+		XmlExcelConfig excelConfig = new XmlExcelConfig();
 		excelConfig.setConfigFile("/office/excelMutiConfig.xml");
 		excelConfig.init();
 		Map<String,List<String>> mutiMap = new HashMap<String, List<String>>();
 		mutiMap.put("性别", Arrays.asList("性别：（男）","性别：（女）"));
 		excelConfig.setMutiTitleMap(mutiMap);
-		excelGenerator.setExcelConfig(excelConfig);
 		FileOutputStream outputStream = new FileOutputStream(new File("D:/test3.xls"));
 		ExcelObject excelObject = new ExcelObject();
 //		List<TestData> dataList = new ArrayList<TestData>();
@@ -197,11 +192,11 @@ public class BasicExcelGeneratorTest {
 		excelObject.putData("sheet1-test", dataList);
 		excelGenerator.generatorExcel(outputStream, excelObject);
 		outputStream.close();
-		System.out.println("样式数量为" + excelGenerator.excelConfig.getCellStyleSize());
+		System.out.println("样式数量为" + excelConfig.getCellStyleSize());
 	}
 	
 	/** 
-	* @Description: TODO (这里用一句话描述这个类的作用)
+	* @Description: 
 	* @author Liu Wenjie   
 	* @date 2015-11-29 下午4:50:49 
 	* @param dataList  

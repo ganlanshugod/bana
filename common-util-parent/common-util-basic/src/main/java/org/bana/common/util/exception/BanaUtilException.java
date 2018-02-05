@@ -23,6 +23,7 @@ public class BanaUtilException extends RuntimeException {
 	 * @date 2014-9-3 下午2:15:38  
 	 */
 	public BanaUtilException() {
+		super();
 	}
 
 	/** 
@@ -31,8 +32,8 @@ public class BanaUtilException extends RuntimeException {
 	 * @date 2014-9-3 下午2:15:38 
 	 * @param arg0 
 	 */
-	public BanaUtilException(String arg0) {
-		super(arg0);
+	public BanaUtilException(String message) {
+		super(message);
 	}
 
 	/** 
@@ -41,8 +42,8 @@ public class BanaUtilException extends RuntimeException {
 	 * @date 2014-9-3 下午2:15:38 
 	 * @param arg0 
 	 */
-	public BanaUtilException(Throwable arg0) {
-		super(arg0);
+	public BanaUtilException(Throwable e) {
+		super(e);
 	}
 
 	/** 
@@ -52,8 +53,8 @@ public class BanaUtilException extends RuntimeException {
 	 * @param arg0
 	 * @param arg1 
 	 */
-	public BanaUtilException(String arg0, Throwable arg1) {
-		super(arg0, arg1);
+	public BanaUtilException(String message, Throwable e) {
+		super(message, e);
 	}
 
 }

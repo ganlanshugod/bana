@@ -6,7 +6,7 @@
 * @date 2015-7-7 下午3:49:32 
 * @version V1.0   
 */ 
-package org.bana.common.util.office.impl.config;
+package org.bana.common.util.office.config;
 
 import java.beans.PropertyDescriptor;
 import java.io.Serializable;
@@ -127,7 +127,7 @@ public class ColumnConfig implements Serializable {
 			writeMethod.invoke(object,parseTypeValue(value));
 		} catch (Exception e) {
 			LOG.error("按照指定的属性名" + this.mappedBy + "使用" + value + " 设置对象 " + object.getClass().getName() + " 的属性值时失败",e);
-			throw new BanaUtilException("按照指定的属性名" + this.mappedBy + "使用" + value + " 设置对象 " + object.getClass().getName() + " 的属性值时失败",e);
+			throw new BanaUtilException("按照指定的属性名" + this.mappedBy + "使用" + value + "设置对象 " + object.getClass().getName() + " 的属性值时失败",e);
 		}
 	}
 	
@@ -148,7 +148,7 @@ public class ColumnConfig implements Serializable {
 			if(StringUtils.isBlank(str)){
 				return null;
 			}
-			if("int".equalsIgnoreCase(type)){
+			if("int".equalsIgnoreCase(type)||"Integer".equalsIgnoreCase(type)){
 				return Integer.parseInt(str);
 			}else if("long".equalsIgnoreCase(type)){
 				return Long.parseLong(str);

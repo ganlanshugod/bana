@@ -11,6 +11,8 @@ package org.bana.common.util.office;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.bana.common.util.office.config.ExcelUploadConfig;
+
 /** 
  * @ClassName: POIGenerator 
  * @Description: 利用POI参数,访问和操作Excel文档的接口方法
@@ -31,6 +33,6 @@ public interface ExcelGenerator {
 	* @date 2015-7-2 上午10:36:47 
 	* @return  
 	*/ 
-	public ExcelObject generatorObject(InputStream inputStream);
+	public ExcelObject generatorObject(InputStream inputStream,ExcelUploadConfig excelConfig);
 	
 }

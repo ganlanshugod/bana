@@ -6,22 +6,33 @@
 * @date 2015-7-9 下午1:01:48 
 * @version V1.0   
 */ 
-package org.bana.common.util.office.impl;
+package org.bana.common.util.office.annotation;
 
 import java.util.Date;
+
+import org.bana.common.util.office.impl.annotation.ExcelColumn;
+import org.bana.common.util.office.impl.annotation.Sheet;
+import org.bana.common.util.office.impl.annotation.TitleRow;
 
 /** 
  * @ClassName: TestData 
  * @Description: TODO(这里用一句话描述这个类的作用) 
  *  
  */
+@Sheet(index=2)
+@TitleRow(titleIndex=6,indexName="序号")
 public class TestData {
 
-	private String name;
-	private String sex ;
+	@ExcelColumn(name="年龄")
 	private Integer age;
+	@ExcelColumn(name="住址")
 	private String address;
+	@ExcelColumn(name="日期",style="dataFormat:yyyy年MM月dd日 HH时mm分ss秒;")
 	private Date date;
+	@ExcelColumn(name="姓名")
+	private String name;
+	@ExcelColumn(name="性别",colspan=2)
+	private String sex ;
 	/**
 	 * @Description: 属性 name 的get方法 
 	 * @return name
@@ -92,16 +103,10 @@ public class TestData {
 	public void setDate(Date date) {
 		this.date = date;
 	}
-	/**
-	* <p>Description: </p> 
-	* @author Liu Wenjie   
-	* @date 2015-7-13 下午2:40:28 
-	* @return 
-	* @see java.lang.Object#toString() 
-	*/ 
 	@Override
 	public String toString() {
-		return "TestData [name=" + name + ", sex=" + sex + ", age=" + age + ", address=" + address + "]";
+		return "TestData [age=" + age + ", address=" + address + ", date=" + date + ", name=" + name + ", sex=" + sex
+				+ "]";
 	}
 	
 }
