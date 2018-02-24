@@ -9,6 +9,7 @@
 package org.bana.common.util.office.annotation;
 
 import java.util.Date;
+import java.util.Map;
 
 import org.bana.common.util.office.impl.annotation.ExcelColumn;
 import org.bana.common.util.office.impl.annotation.Sheet;
@@ -33,6 +34,9 @@ public class TestData {
 	private String name;
 	@ExcelColumn(name="性别",colspan=2)
 	private String sex ;
+	
+	@ExcelColumn(name="额外配置",mutiMap="额外配置")
+	private Map<String,Object> mutiMap;
 	/**
 	 * @Description: 属性 name 的get方法 
 	 * @return name
@@ -103,10 +107,17 @@ public class TestData {
 	public void setDate(Date date) {
 		this.date = date;
 	}
+	public Map<String, Object> getMutiMap() {
+		return mutiMap;
+	}
+	public void setMutiMap(Map<String, Object> mutiMap) {
+		this.mutiMap = mutiMap;
+	}
 	@Override
 	public String toString() {
 		return "TestData [age=" + age + ", address=" + address + ", date=" + date + ", name=" + name + ", sex=" + sex
-				+ "]";
+				+ ", mutiMap=" + mutiMap + "]";
 	}
+	
 	
 }

@@ -136,6 +136,7 @@ public class AnnotationExcelUploadConfig implements ExcelUploadConfig{
 			columnConfig.setStyle(StringUtils.parseStyleStr(style));
 			columnConfig.setType(field.getType().getSimpleName());
 			columnConfig.setMutiMap(column.mutiMap());
+			columnConfig.setMuti(StringUtils.isNotBlank(column.mutiMap()));
 			columnConfig.setUseDic(column.useDic());
 			columnConfig.setDicType(column.dicType());
 			columnConfigList.add(columnConfig);

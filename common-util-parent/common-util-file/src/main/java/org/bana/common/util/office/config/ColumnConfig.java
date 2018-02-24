@@ -11,6 +11,7 @@ package org.bana.common.util.office.config;
 import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.bana.common.util.basic.DateUtil;
@@ -66,6 +67,11 @@ public class ColumnConfig implements Serializable {
     */ 
     private boolean useDic;
     
+    /**
+     * 导入列是否是动态列
+     */
+    private boolean isMuti;
+    
     /** 
     * @Fields dicType : 如果使用字典项，那么使用的字典项的值是什么
     */ 
@@ -102,6 +108,10 @@ public class ColumnConfig implements Serializable {
 		} 
 	}
 	
+    public void setColumnValue(Object value, Object obj) {
+    	setColumnValue(value,obj,null);
+	}
+
 
 	/** 
 	* @Description: 设置当前列对应的属性值
@@ -110,7 +120,7 @@ public class ColumnConfig implements Serializable {
 	* @param value
 	* @param object  
 	*/ 
-	public void setColumnValue(Object value, Object object) {
+	public void setColumnValue(Object value, Object object, String colName) {
 		if(object == null){
 			return;
 		}
@@ -123,8 +133,19 @@ public class ColumnConfig implements Serializable {
 		}
 		try {
 			PropertyDescriptor pd = new PropertyDescriptor(this.mappedBy, object.getClass());
-			Method writeMethod = pd.getWriteMethod();
-			writeMethod.invoke(object,parseTypeValue(value));
+			if(isMuti()){
+				Method readMethod = pd.getReadMethod();
+				Map<String,Object> map = (Map<String,Object>)readMethod.invoke(object);
+				if(map == null){
+					map = new HashMap<String,Object>();
+					Method writeMethod = pd.getWriteMethod();
+					writeMethod.invoke(object,map);
+				}
+				map.put(colName, parseTypeValue(value));
+			}else{
+				Method writeMethod = pd.getWriteMethod();
+				writeMethod.invoke(object,parseTypeValue(value));
+			}
 		} catch (Exception e) {
 			LOG.error("按照指定的属性名" + this.mappedBy + "使用" + value + " 设置对象 " + object.getClass().getName() + " 的属性值时失败",e);
 			throw new BanaUtilException("按照指定的属性名" + this.mappedBy + "使用" + value + "设置对象 " + object.getClass().getName() + " 的属性值时失败",e);
@@ -256,6 +277,15 @@ public class ColumnConfig implements Serializable {
 		return mutiMap;
 	}
 
+	public boolean isMuti() {
+		return isMuti;
+	}
+
+
+	public void setMuti(boolean isMuti) {
+		this.isMuti = isMuti;
+	}
+
 
 	/**
 	 * @Description: 属性 mutiMap 的set方法 
@@ -313,5 +343,6 @@ public class ColumnConfig implements Serializable {
 	public String toString() {
 		return "ColumnConfig [name=" + name + ", colspan=" + colspan + ", mappedBy=" + mappedBy + ", style=" + style + "]";
 	}
+
 
 }

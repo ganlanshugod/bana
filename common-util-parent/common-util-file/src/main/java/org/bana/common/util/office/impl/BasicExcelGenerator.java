@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -596,7 +597,7 @@ public class BasicExcelGenerator implements ExcelGenerator {
 			if(value != null){
 				isEmpty = false;
 			}
-			columnConfig.setColumnValue(value, obj);
+			columnConfig.setColumnValue(value, obj,colName);
 //			oneData.put(colName, columnConfig.parseTypeValue(value));
 			//动态列excel中不允许读取合并单元格的内容
 			if(columnConfig.getColspan() != null && columnConfig.getColspan() > 1){
@@ -620,6 +621,16 @@ public class BasicExcelGenerator implements ExcelGenerator {
 		}else{
 			return obj;
 		}
+	}
+	
+	private NumberFormat nf;
+	
+	private NumberFormat getNumberFormat() {
+		if(nf == null){
+			nf = NumberFormat.getInstance();
+	        nf.setGroupingUsed(false);//true时的格式：1,234,567,890
+		}
+        return nf;
 	}
 
 	/** 
@@ -658,7 +669,7 @@ public class BasicExcelGenerator implements ExcelGenerator {
 					return df.format(cell.getNumericCellValue());
 				}
 			}
-			return String.valueOf(cell.getNumericCellValue());
+			return getNumberFormat().format(cell.getNumericCellValue());
 		case Cell.CELL_TYPE_STRING://字符串类型
 			return cell.getStringCellValue();
 		case Cell.CELL_TYPE_BOOLEAN:////布尔值

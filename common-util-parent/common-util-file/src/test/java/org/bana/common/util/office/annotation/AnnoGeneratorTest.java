@@ -3,7 +3,10 @@ package org.bana.common.util.office.annotation;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bana.common.util.office.ExcelGenerator;
 import org.bana.common.util.office.ExcelObject;
@@ -25,8 +28,10 @@ public class AnnoGeneratorTest {
 	@Test
 	public void testSimpleUpload() throws FileNotFoundException{
 		FileInputStream inputStream = new FileInputStream(new File("D:/test.xls"));
-		
+		Map<String,List<String>> mutiMap = new HashMap<String,List<String>>();
+		mutiMap.put("额外配置", Arrays.asList("身份证","联系电话"));
 		AnnotationExcelUploadConfig excelConfig = new AnnotationExcelUploadConfig(TestData.class);
+		excelConfig.setMutiTitleMap(mutiMap);
 		ExcelObject generatorObject = excelGenerator.generatorObject(inputStream,excelConfig);
 		
 		Assert.assertNotNull(generatorObject);

@@ -9,6 +9,7 @@
   
   <properties>
   	<cxf.version>2.7.13</cxf.version>
+  	<httpclient.version>4.5.3</httpclient.version>
   </properties>
   
   <dependencyManagement>
@@ -52,6 +53,20 @@
 	  	<artifactId>common-util-file</artifactId>
 	  	<version>${project.version}</version>
 	  </dependency>
+	  
+	  <dependency>
+		<groupId>org.apache.httpcomponents</groupId>
+		<artifactId>httpmime</artifactId>
+		<version>${httpclient.version}</version>
+	  </dependency>
+	  
+	  <!-- 解析html的方法 -->
+	  <dependency>
+	    <groupId>org.jsoup</groupId>
+	    <artifactId>jsoup</artifactId>
+	    <version>1.11.2</version>
+	  </dependency>
+	  
   	
   
 	<!-- apache 读取配置的工具  -->
