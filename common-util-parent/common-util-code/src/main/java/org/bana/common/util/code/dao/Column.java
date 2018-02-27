@@ -80,12 +80,13 @@ public class Column {
 		TEXT(new String[]{"String"},new int[]{0},""),
 		BIT(new String[]{"Boolean"},new int[]{0},"BIT"),
 		DECIMAL(new String[]{"java.math.BigDecimal"},new int[]{0},"DECIMAL"),
-		LONGTEXT(new String[]{"String"},new int[]{0},"")
+		LONGTEXT(new String[]{"String"},new int[]{0},""),
+		DOUBLE(new String[]{"Double"},new int[]{0},"DOUBLE")
 		;
 		private String[] javaTypes;
 		private int[] columnLengths;
 		private String jdbcType;
-		
+
 		private ColumnToJava(String[] javaTypes,int[] columnLengths,String jdbcType){
 			this.javaTypes = javaTypes;
 			this.columnLengths = columnLengths;
