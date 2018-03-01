@@ -75,6 +75,42 @@ public class AnnoGeneratorTest {
 	}
 	
 	
+	@Test
+	public void testAddErrors()throws IOException{
+		//输入流（源文件）
+//		File file1 = new File(basePath + "/test2.xls");
+		File file1 = new File("D:/test.xls");
+		FileInputStream inputStream = new FileInputStream(file1);
+		//输出流（保存位置）
+		File file = new File(basePath + "/test3.xls");
+		if(!file.getParentFile().exists()){
+        	file.getParentFile().mkdirs();
+        }
+		FileOutputStream outputStream = new FileOutputStream(file);
+		//读取配置信息
+		AnnotationExcelUploadConfig excelConfig = new AnnotationExcelUploadConfig(TestData.class);
+		Map<String,List<String>> mutiMap = new HashMap<String,List<String>>();
+		mutiMap.put("额外配置", Arrays.asList("身份证","联系电话"));
+		excelConfig.setMutiTitleMap(mutiMap);
+		//错误信息
+		List<Map<Integer,String>> errorRecords = new ArrayList<Map<Integer,String>>();
+		errorRecords.add(getErrorMessage());
+		//执行方法
+		excelGenerator.addErrorResult(inputStream, outputStream, excelConfig, errorRecords);
+	}
+	
+	private Map<Integer,String> getErrorMessage(){
+		Random random = new Random();
+		Map<Integer,String> errors = new HashMap<Integer,String>();
+		for (int i = 0; i < 1000; i++) {
+			if(random.nextInt(100)< 30){
+				errors.put(i, "在第" +i + "有错误");
+			}
+		}
+		return errors;
+	}
+	
+	
 	private void addDate(List<TestDownData> dataList){
 		Random random = new Random();
 		for (int i = 0; i < 1000; i++) {

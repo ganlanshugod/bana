@@ -821,4 +821,132 @@ public class BasicExcelGenerator implements ExcelGenerator {
 		this.allowEmptyRow = allowEmptyRow;
 	}
 
+	
+	@Override
+	public void addErrorResult(InputStream inputStream, OutputStream outputStream, ExcelUploadConfig excelUploadConfig,
+			List<Map<Integer, String>> errorRecords) {
+		Workbook workbook = getWorkBook(inputStream);
+		List<SheetConfig> sheetConfigList = excelUploadConfig.getSheetConfigList();
+		if(sheetConfigList != null){
+			int index = 0;
+			for (SheetConfig sheetConfig : sheetConfigList) {
+				Sheet sheet;
+				String name = sheetConfig.getName();
+				if(StringUtils.isBlank(name)){
+					Integer sheetIndex = sheetConfig.getIndex();
+					if(sheetIndex != null){
+						sheet = workbook.getSheetAt(sheetIndex);
+						if(sheet == null){
+							throw new BanaUtilException("没有excel的index为" + sheetIndex + "的sheet页 ");
+						}
+					}else{
+						throw new BanaUtilException("sheet页的配置name和index不能同时为空 ");
+					}
+				}else{
+					sheet = workbook.getSheet(name);
+					if(sheet == null){
+						throw new BanaUtilException("没有找到指定的excel的sheet页 " + name);
+					}
+				}
+				addSheetError(workbook,sheet,excelUploadConfig,sheetConfig,errorRecords.get(index));
+				index ++;
+			}
+		}else{
+			LOG.warn("excelConfig中没有或地区到sheetConfigList " + excelUploadConfig);
+		}
+		try {
+			workbook.write(outputStream);
+		} catch (IOException e) {
+			throw new BanaUtilException("将生成的Excel写入到指定的流时出现读写错误" + excelUploadConfig);
+		}
+	}
+
+	/**
+	 * 添加一个sheet页中的错误信息
+	 * @param workbook
+	 * @param sheet 
+	 * @param excelUploadConfig
+	 * @param sheetConfig
+	 * @param map
+	 */
+	private void addSheetError(Workbook workbook, Sheet sheet, ExcelUploadConfig excelUploadConfig, SheetConfig sheetConfig,
+			Map<Integer, String> errorRecords) {
+//		List<? extends Object> readSheet = readSheet(sheet,excelUploadConfig,sheetConfig);
+		List<RowConfig> rowConfigList = sheetConfig.getRowConfigList();
+		
+		if(rowConfigList == null || rowConfigList.isEmpty()){
+			 throw new BanaUtilException("没有获取数据行配置文件");
+		}
+		int size = rowConfigList.size();
+		if(size < 2){
+			throw new BanaUtilException("rowConfigList 最少要有两行配置，标题行和数据行，而实际只找到了" + size);
+		}
+		//获取最后一个标题行，设置错误信息的表头，倒数第二个为标题配置
+		int errorColumn = 0;
+		int currentRowNum = 0;
+		for (RowConfig rowConfig : rowConfigList) {
+			Integer rowIndex = rowConfig.getRowIndex();
+			if(rowIndex != null && !rowIndex.equals(new Integer(-1))){
+				//如果指定了特定的生成行数，则跳到指定的行进行生成
+				currentRowNum = rowIndex - 1;
+			}
+			if(RowType.标题.equals(rowConfig.getType())){//标题行
+				Row row = sheet.getRow(currentRowNum);
+				errorColumn = addErrorTitle(sheet,row);
+			}else{
+				int dataIndex = 0;
+				boolean hasData = true;
+				while(hasData){
+					Row row = sheet.getRow(currentRowNum+dataIndex);
+					if(row == null){
+						break;
+					}
+					hasData = addDataError(sheet,row,errorColumn,errorRecords.get(dataIndex));
+					dataIndex ++;
+				}
+				LOG.info("处理了" + dataIndex + "行数据，添加了" + errorRecords.size() + "行错误数据");
+			}
+			currentRowNum++;
+		}
+		
+	}
+
+	/**
+	 * 添加数据行的异常数据
+	 * @param sheet
+	 * @param row
+	 * @param errorColumn
+	 * @param rowConfig 
+	 * @param string
+	 */
+	private boolean addDataError(Sheet sheet, Row row, int errorColumn, String error) {
+		if(StringUtils.isNotBlank(error)){
+			Cell createCell = row.createCell(errorColumn);
+			createCell.setCellValue(error);
+			return true;
+		}
+		for (int i = 0; i < errorColumn; i++) {
+			Cell cell = row.getCell(i);
+			if(cell !=null && cell.getCellType() != Cell.CELL_TYPE_BLANK){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * 添加异常列列名
+	 * @param workbook
+	 * @param sheet
+	 * @param row
+	 * @param rowConfig 
+	 * @return
+	 */
+	private int addErrorTitle(Sheet sheet, Row row) {
+		int lastNum = row.getLastCellNum();
+		int errorIndex = lastNum;
+		Cell errorTitle = row.createCell(errorIndex);
+		errorTitle.setCellValue("异常信息");
+		return errorIndex;
+	}
 }
