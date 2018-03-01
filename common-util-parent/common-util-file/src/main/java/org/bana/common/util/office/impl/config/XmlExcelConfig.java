@@ -29,8 +29,9 @@ import org.bana.common.util.office.config.ExcelDownloadConfig;
 import org.bana.common.util.office.config.ExcelType;
 import org.bana.common.util.office.config.ExcelUploadConfig;
 import org.bana.common.util.office.config.RowConfig;
-import org.bana.common.util.office.config.SheetConfig;
 import org.bana.common.util.office.config.RowConfig.RowType;
+import org.bana.common.util.office.config.SheetConfig;
+import org.bana.common.util.office.impl.StyleSerializer;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.slf4j.Logger;
@@ -116,7 +117,7 @@ public class XmlExcelConfig implements ExcelDownloadConfig,ExcelUploadConfig{
 		//初始化excelConfig属性
 		this.name = excel.attributeValue("name");
 		this.type = ExcelType.getInstance(excel.attributeValue("type"));
-		this.style = StringUtils.parseStyleStr(excel.attributeValue("style"));
+		this.style = StyleSerializer.parseStyleStr(excel.attributeValue("style"));
 		this.baseFile = excel.attributeValue("baseFile");
 		//init SheetConfigList
 		this.sheetConfigList = initSheetConfigList(document);
@@ -175,7 +176,7 @@ public class XmlExcelConfig implements ExcelDownloadConfig,ExcelUploadConfig{
 			}
 			CellStyle cellStyle = styleMap.get(styleKey);
 			if(cellStyle == null){
-				cellStyle = generatorCellStyle(workbook,cellMap);
+				cellStyle = StyleSerializer.generatorCellStyle(workbook,cellMap);
 				styleMap.put(styleKey, cellStyle);
 				return cellStyle;
 			}else{
@@ -206,121 +207,6 @@ public class XmlExcelConfig implements ExcelDownloadConfig,ExcelUploadConfig{
 	}
 	
 	/** 
-	* @Description: 创建一个cellMap 的集合
-	* @author Liu Wenjie   
-	 * @param workbook 
-	* @date 2015-7-8 下午12:01:37 
-	* @param cellMap
-	* @return  
-	*/ 
-	private CellStyle generatorCellStyle(Workbook workbook, Map<String, String> cellMap) {
-		LOG.info("构造一个样式文件，内容为" + cellMap);
-		CellStyle cellStyle = workbook.createCellStyle();
-		Font createFont = workbook.createFont();
-		Set<Entry<String, String>> entrySet = cellMap.entrySet();
-		for (Entry<String, String> entry : entrySet) {
-			/*=====font样式======*/
-			if("fontName".equalsIgnoreCase(entry.getKey())){//字体名称
-				createFont.setFontName(entry.getValue());
-			}else if("fontHeightInPoints".equalsIgnoreCase(entry.getKey())){//字体大小
-				createFont.setFontHeightInPoints(Short.parseShort(entry.getValue()));
-			}else if("fontWeight".equalsIgnoreCase(entry.getKey())){//字体是否加粗
-				if("BOLD".equalsIgnoreCase(entry.getValue())){
-					createFont.setBoldweight(Font.BOLDWEIGHT_BOLD);
-				}else{
-					createFont.setBoldweight(Font.BOLDWEIGHT_NORMAL);
-				}
-			}else if("color".equalsIgnoreCase(entry.getKey())){//字体颜色
-				if("RED".equalsIgnoreCase(entry.getKey())){
-					createFont.setColor(Font.COLOR_RED);
-				}else if("NORMAL".equalsIgnoreCase(entry.getKey())){
-					createFont.setColor(Font.COLOR_NORMAL);
-				}else{
-					createFont.setColor(Short.parseShort(entry.getKey()));
-				}
-			}else if("italic".equalsIgnoreCase(entry.getKey())){//是否使用斜体
-				createFont.setItalic("true".equalsIgnoreCase(entry.getKey()));
-			}else if("strikeout".equalsIgnoreCase(entry.getKey())){//是否使用划线
-				createFont.setStrikeout("true".equalsIgnoreCase(entry.getKey()));
-			}
-			/*=====单元格样式======*/
-			else if("border".equalsIgnoreCase(entry.getKey())){//外框
-				String value = entry.getValue();
-				if(value.contains("left")){
-					cellStyle.setBorderLeft(CellStyle.BORDER_THIN);
-				}
-				if(value.contains("top")){
-					cellStyle.setBorderTop(CellStyle.BORDER_THIN);
-				}
-				if(value.contains("right")){
-					cellStyle.setBorderRight(CellStyle.BORDER_THIN);
-				}
-				if(value.contains("bottom")){
-					cellStyle.setBorderBottom(CellStyle.BORDER_THIN);
-				}
-				if("all".equalsIgnoreCase(value)){
-					cellStyle.setBorderTop(CellStyle.BORDER_THIN);
-					cellStyle.setBorderLeft(CellStyle.BORDER_THIN);
-					cellStyle.setBorderRight(CellStyle.BORDER_THIN);
-					cellStyle.setBorderBottom(CellStyle.BORDER_THIN);
-				}
-			}else if("alignment".equalsIgnoreCase(entry.getKey())){////水平布局
-				if("CENTER".equalsIgnoreCase(entry.getKey())){
-					cellStyle.setAlignment(CellStyle.ALIGN_CENTER);
-				}else if("RIGHT".equalsIgnoreCase(entry.getKey())){
-					cellStyle.setAlignment(CellStyle.ALIGN_RIGHT);
-				}else if("LEFT".equalsIgnoreCase(entry.getKey())){
-					cellStyle.setAlignment(CellStyle.ALIGN_LEFT);
-				}else if("FILL".equalsIgnoreCase(entry.getKey())){
-					cellStyle.setAlignment(CellStyle.ALIGN_FILL);
-				}else if("GENERAL".equalsIgnoreCase(entry.getKey())){
-					cellStyle.setAlignment(CellStyle.ALIGN_GENERAL);
-				}else if("JUSTIFY".equalsIgnoreCase(entry.getKey())){
-					cellStyle.setAlignment(CellStyle.ALIGN_JUSTIFY);
-				}
-			}else if("wrapText".equalsIgnoreCase(entry.getKey())){//文本是否被包装，我也不知道是什么意思
-				cellStyle.setWrapText("true".equalsIgnoreCase(entry.getValue()));
-			}else if("dataFormat".equalsIgnoreCase(entry.getKey())){
-				DataFormat dataFormat = workbook.createDataFormat();
-	            cellStyle.setDataFormat(dataFormat.getFormat(entry.getValue()));
-			}else if("fillForegroundColor".equalsIgnoreCase(entry.getKey())){//单元格背景颜色
-				String colorValue = entry.getValue();
-				cellStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
-//				cellStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
-//				cellStyle.setFillForegroundColor(HSSFColor.YELLOW.index);
-//				cellStyle.setFillBackgroundColor(HSSFColor.YELLOW.index);
-				if("RED".equalsIgnoreCase(colorValue)){
-					cellStyle.setFillForegroundColor(HSSFColor.RED.index);
-				}else if("LIGHT_YELLOW".equalsIgnoreCase(colorValue)){
-					cellStyle.setFillForegroundColor(HSSFColor.LIGHT_YELLOW.index);
-				}else if("DARK_YELLOW".equalsIgnoreCase(colorValue)){
-					cellStyle.setFillForegroundColor(HSSFColor.DARK_YELLOW.index);
-				}else if("YELLOW".equalsIgnoreCase(colorValue)){
-					cellStyle.setFillForegroundColor(HSSFColor.YELLOW.index);
-				}else if("BLUE".equalsIgnoreCase(colorValue)){
-					cellStyle.setFillForegroundColor(HSSFColor.BLUE.index);
-				}else if("LIGHT_BLUE".equalsIgnoreCase(colorValue)){
-					cellStyle.setFillForegroundColor(HSSFColor.LIGHT_BLUE.index);
-				}else if("DARK_BLUE".equalsIgnoreCase(colorValue)){
-					cellStyle.setFillForegroundColor(HSSFColor.DARK_BLUE.index);
-				}else if("GREEN".equalsIgnoreCase(colorValue)){
-					cellStyle.setFillForegroundColor(HSSFColor.GREEN.index);
-				}else if("LIGHT_GREEN".equalsIgnoreCase(colorValue)){
-					cellStyle.setFillForegroundColor(HSSFColor.LIGHT_GREEN.index);
-				}else if("DARK_GREEN".equalsIgnoreCase(colorValue)){
-					cellStyle.setFillForegroundColor(HSSFColor.DARK_GREEN.index);
-				}else{
-//					cellStyle.setFillForegroundColor(Short.parseShort(colorValue));
-				}
-			}else{
-				throw new BanaUtilException("不支持的样式属性" + entry.getKey());
-			}
-		}
-		cellStyle.setFont(createFont);
-		return cellStyle;
-	}
-
-	/** 
 	* @Description: 初始化加载sheetConfig对象
 	* @author Liu Wenjie   
 	* @date 2015-7-7 下午4:24:57 
@@ -337,7 +223,7 @@ public class XmlExcelConfig implements ExcelDownloadConfig,ExcelUploadConfig{
 			//加载每个sheet配置
 			SheetConfig sheetConfig = new SheetConfig();
 			sheetConfig.setName(sheet.attributeValue("name"));
-			sheetConfig.setStyle(StringUtils.parseStyleStr(sheet.attributeValue("style")));
+			sheetConfig.setStyle(StyleSerializer.parseStyleStr(sheet.attributeValue("style")));
 			sheetConfig.setCheckTitle(Boolean.parseBoolean(sheet.attributeValue("checkTitle")));
 			sheetConfig.setRowConfigList(initRowConfigList(sheet));
 			sheetConfigList.add(sheetConfig);
@@ -361,7 +247,7 @@ public class XmlExcelConfig implements ExcelDownloadConfig,ExcelUploadConfig{
 			rowConfig.setClassName(row.attributeValue("class"));
 			rowConfig.setRowIndex(Integer.parseInt(row.attributeValue("rowIndex")));
 			rowConfig.setType(RowType.getInstance(row.attributeValue("type")));
-			rowConfig.setStyle(StringUtils.parseStyleStr(row.attributeValue("style")));
+			rowConfig.setStyle(StyleSerializer.parseStyleStr(row.attributeValue("style")));
 			rowConfig.setMutiTitle(Boolean.parseBoolean(row.attributeValue("mutiTitle")));
 			rowConfig.setColumnConfigList(initColumnConfigList(row));
 			rowConfigList.add(rowConfig);
@@ -388,7 +274,7 @@ public class XmlExcelConfig implements ExcelDownloadConfig,ExcelUploadConfig{
 			}
 			columnConfig.setName(column.attributeValue("name"));
 			columnConfig.setMappedBy(column.attributeValue("mappedBy"));
-			columnConfig.setStyle(StringUtils.parseStyleStr(column.attributeValue("style")));
+			columnConfig.setStyle(StyleSerializer.parseStyleStr(column.attributeValue("style")));
 			columnConfig.setType(column.attributeValue("type"));
 			columnConfig.setMutiMap(column.attributeValue("mutiMap"));
 			columnConfig.setUseDic(Boolean.parseBoolean(column.attributeValue("useDic")));

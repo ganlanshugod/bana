@@ -69,6 +69,10 @@ public class ExcelObject implements Serializable{
 		}
 	}
 	
+	public void putData(List<? extends Object> dataList){
+		putData(null,dataList);
+	}
+	
 	/** 
 	* @Description: 根据sheetname 获取指定的数据
 	* @author Liu Wenjie   

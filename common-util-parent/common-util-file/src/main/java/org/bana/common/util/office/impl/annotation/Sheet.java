@@ -26,7 +26,7 @@ public @interface Sheet {
 	/**
 	 * @return 样式配置对象
 	 */
-	String style() default "";
+	String style() default "border:all;fontName:微软雅黑;";
 	
 	/**
 	 * 是否验证表头

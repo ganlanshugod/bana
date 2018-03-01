@@ -15,9 +15,4 @@ public interface ExcelUploadConfig extends ExcelConfig{
 	 */
 	String getMutiConfigNameUseColName(String colName);
 
-	/**
-	 * @return 动态列的配置对象
-	 */
-	Map<String, List<String>> getMutiTitleMap();
-	
 }

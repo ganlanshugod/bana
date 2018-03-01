@@ -20,6 +20,8 @@ import org.bana.common.util.exception.BanaUtilException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.alibaba.fastjson.JSONObject;
+
 /** 
  * @ClassName: ColumnConfig 
  * @Description: 列配置信息 
@@ -33,6 +35,11 @@ public class ColumnConfig implements Serializable {
 	* @Fields serialVersionUID : 
 	*/ 
 	private static final long serialVersionUID = -8631063741810490588L;
+	
+	/**
+	 * 列的排序值
+	 */
+	private int sort;
 
 	/** 
 	* @Fields name : 列名
@@ -101,11 +108,18 @@ public class ColumnConfig implements Serializable {
 		try {
 			PropertyDescriptor pd = new PropertyDescriptor(this.mappedBy, object.getClass());
 			Method readMethod = pd.getReadMethod();
-			return readMethod.invoke(object);
+			Object columnValue = readMethod.invoke(object);
+			if(isMuti()&&StringUtils.isNotBlank(cellKey) && Map.class.isInstance(columnValue)){
+				Map mapObject = (Map)columnValue;
+				return mapObject.get(cellKey);
+			}else{
+				return columnValue;
+			}
 		} catch (Exception e) {
 			LOG.error("按照指定的属性名" + this.mappedBy + " 从对象 " + object.getClass().getName() + " 中获取值时失败",e);
 			throw new BanaUtilException("按照指定的属性名" + this.mappedBy + " 从对象 " + object.getClass().getName() + " 中获取值时失败",e);
 		} 
+		
 	}
 	
     public void setColumnValue(Object value, Object obj) {
@@ -131,24 +145,38 @@ public class ColumnConfig implements Serializable {
 			LOG.debug("当前值为 " + value + ",因为使用的是特殊公式 @index, 所以实际对象中不包含此数据");
 			return;
 		}
-		try {
-			PropertyDescriptor pd = new PropertyDescriptor(this.mappedBy, object.getClass());
+		if(object instanceof JSONObject){//如果是jsonObject进行设置
+			JSONObject jsonObject = (JSONObject)object;
 			if(isMuti()){
-				Method readMethod = pd.getReadMethod();
-				Map<String,Object> map = (Map<String,Object>)readMethod.invoke(object);
+				Map<String,Object> map = jsonObject.getObject(this.mappedBy, Map.class);
 				if(map == null){
 					map = new HashMap<String,Object>();
-					Method writeMethod = pd.getWriteMethod();
-					writeMethod.invoke(object,map);
+					jsonObject.put(this.mappedBy, map);
 				}
 				map.put(colName, parseTypeValue(value));
 			}else{
-				Method writeMethod = pd.getWriteMethod();
-				writeMethod.invoke(object,parseTypeValue(value));
+				jsonObject.put(this.mappedBy, parseTypeValue(value));
 			}
-		} catch (Exception e) {
-			LOG.error("按照指定的属性名" + this.mappedBy + "使用" + value + " 设置对象 " + object.getClass().getName() + " 的属性值时失败",e);
-			throw new BanaUtilException("按照指定的属性名" + this.mappedBy + "使用" + value + "设置对象 " + object.getClass().getName() + " 的属性值时失败",e);
+		}else{//通过反射设置对象的属性
+			try {
+				PropertyDescriptor pd = new PropertyDescriptor(this.mappedBy, object.getClass());
+				if(isMuti()){
+					Method readMethod = pd.getReadMethod();
+					Map<String,Object> map = (Map<String,Object>)readMethod.invoke(object);
+					if(map == null){
+						map = new HashMap<String,Object>();
+						Method writeMethod = pd.getWriteMethod();
+						writeMethod.invoke(object,map);
+					}
+					map.put(colName, parseTypeValue(value));
+				}else{
+					Method writeMethod = pd.getWriteMethod();
+					writeMethod.invoke(object,parseTypeValue(value));
+				}
+			} catch (Exception e) {
+				LOG.error("按照指定的属性名" + this.mappedBy + "使用" + value + " 设置对象 " + object.getClass().getName() + " 的属性值时失败",e);
+				throw new BanaUtilException("按照指定的属性名" + this.mappedBy + "使用" + value + "设置对象 " + object.getClass().getName() + " 的属性值时失败",e);
+			}
 		}
 	}
 	
@@ -330,18 +358,20 @@ public class ColumnConfig implements Serializable {
 	public void setDicType(String dicType) {
 		this.dicType = dicType;
 	}
+	
+	public int getSort() {
+		return sort;
+	}
 
+	public void setSort(int sort) {
+		this.sort = sort;
+	}
 
-	/**
-	* <p>Description: </p> 
-	* @author Liu Wenjie   
-	* @date 2015-7-8 上午11:26:30 
-	* @return 
-	* @see java.lang.Object#toString() 
-	*/ 
 	@Override
 	public String toString() {
-		return "ColumnConfig [name=" + name + ", colspan=" + colspan + ", mappedBy=" + mappedBy + ", style=" + style + "]";
+		return "ColumnConfig [sort=" + sort + ", name=" + name + ", colspan=" + colspan + ", mappedBy=" + mappedBy
+				+ ", type=" + type + ", style=" + style + ", mutiMap=" + mutiMap + ", useDic=" + useDic + ", isMuti="
+				+ isMuti + ", dicType=" + dicType + "]";
 	}
 
 

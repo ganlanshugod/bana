@@ -30,8 +30,6 @@ public interface ExcelDownloadConfig extends ExcelConfig{
 	 */
 	void clear();
 
-	Map<String, List<String>> getMutiTitleMap();
-
 	/**
 	 * 根据配置获取单元格样式，样式保存在配置内部，防止重复生成同样的样式对象
 	 * @param workbook

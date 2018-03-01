@@ -10,6 +10,7 @@ package org.bana.common.util.office.config;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /** 
  * @ClassName: ExcelConfig 
@@ -20,5 +21,10 @@ public interface ExcelConfig extends Serializable{
 
 	
 	List<SheetConfig> getSheetConfigList();
-
+	
+	
+	/**
+	 * @return 动态列的配置对象
+	 */
+	Map<String, List<String>> getMutiTitleMap();
 }

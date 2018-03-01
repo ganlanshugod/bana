@@ -19,7 +19,7 @@ public @interface TitleRow {
 	 * 标题行样式
 	 * @return
 	 */
-	String style() default "";
+	String style() default "fontWeight:bold;";
 	
 	/**
 	 * 表格上是否有动态列
@@ -30,4 +30,10 @@ public @interface TitleRow {
 	 * 序号的列名称
 	 */
 	String indexName() default "";
+	
+	/**
+	 * 序号的列的顺序值
+	 * @return
+	 */
+	int indexSort() default 0;
 }

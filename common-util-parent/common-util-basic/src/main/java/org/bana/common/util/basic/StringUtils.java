@@ -391,34 +391,6 @@ public class StringUtils extends org.apache.commons.lang.StringUtils{
 	}
 	
 	/** 
-	* @Description: 将形如 test:sdfg;test2:sdfwe的常用在样式定义中的写法字符串，转化为一个map对象
-	* @author Liu Wenjie   
-	* @date 2015-7-8 上午11:44:19 
-	* @param style
-	* @return  
-	*/ 
-	public static Map<String,String> parseStyleStr(String style){
-		if(!StringUtils.isEmpty(style)){
-			Map<String,String> styleMap = new HashMap<String, String>();
-			String[] split = style.split(";");
-			if(split != null){
-				for (String str : split) {
-					if(isEmpty(str)){
-						continue;
-					}
-					String[] split2 = str.split(":");
-					if(split2 == null || split2.length != 2){
-						throw new BanaUtilException("不合法的样式定义方式 " + str);
-					}
-					styleMap.put(split2[0], split2[1]);
-				}
-			}
-			return styleMap;
-		}
-		return null;
-	}
-	
-	/** 
 	* @Description: 将一个strList转化为Long类型的集合
 	* @author Liu Wenjie   
 	* @date 2015-9-21 下午1:53:46 

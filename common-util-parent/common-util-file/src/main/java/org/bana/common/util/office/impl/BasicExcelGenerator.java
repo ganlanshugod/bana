@@ -49,6 +49,8 @@ import org.bana.common.util.office.config.SheetConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.alibaba.fastjson.JSONObject;
+
 /** 
  * @ClassName: BasicExcelGenerator 
  * @Description: Excel生成方法的基本实现类
@@ -79,8 +81,10 @@ public class BasicExcelGenerator implements ExcelGenerator {
 		//根据excelConfig进行创建excel文件
 		List<SheetConfig> sheetConfigList = excelConfig.getSheetConfigList();
 		if(sheetConfigList != null){
+			int index = 0;
 			for (SheetConfig sheetConfig : sheetConfigList) {
-				createSheet(workbook,excelConfig,sheetConfig,excelObject);
+				createSheet(workbook,excelConfig,sheetConfig,excelObject,index);
+				index ++;
 			}
 		}else{
 			LOG.warn("excelConfig中没有或地区到sheetConfigList " + excelConfig);
@@ -102,9 +106,17 @@ public class BasicExcelGenerator implements ExcelGenerator {
 	* @param workbook
 	* @param sheetConfig  
 	 * @param excelObject 
+	 * @param index 
 	*/ 
-	private void createSheet(Workbook workbook,ExcelDownloadConfig excelConfig, SheetConfig sheetConfig, ExcelObject excelObject) {
-		Sheet sheet = workbook.createSheet(sheetConfig.getName());
+	private void createSheet(Workbook workbook,ExcelDownloadConfig excelConfig, SheetConfig sheetConfig, ExcelObject excelObject, int index) {
+		Sheet sheet;
+		if(StringUtils.isNotBlank(sheetConfig.getName())){
+			sheetConfig.getIndex();
+			sheet = workbook.createSheet(sheetConfig.getName());
+		}else{
+			sheet = workbook.createSheet();
+		}
+		
 		//根据sheet的行配置文件，创建对应的行信息
 		List<RowConfig> rowConfigList = sheetConfig.getRowConfigList();
 		int currentRowNum = 0;
@@ -121,8 +133,14 @@ public class BasicExcelGenerator implements ExcelGenerator {
 				if(RowType.标题.equals(rowConfig.getType())){
 					createTitleRow(workbook,sheet,excelConfig,sheetConfig,rowConfig,currentRowNum++);
 				}else{
+					List<? extends Object> data ;
 					//根据数据集合，循环创建数据行
-					List<? extends Object> data = excelObject.getData(sheetConfig.getName());
+					if(StringUtils.isNotBlank(sheetConfig.getName())){
+						data = excelObject.getData(sheetConfig.getName());
+					}else{
+						data = excelObject.getData(index);
+					}
+					
 					if(data != null){
 						for (int i = 0; i < data.size(); i++) {
 							Object object = data.get(i);
@@ -239,14 +257,15 @@ public class BasicExcelGenerator implements ExcelGenerator {
 	    		Map<String, List<String>> mutiTitleMap = excelConfig.getMutiTitleMap();
     			String configName = columnConfig.getName();
     			ColumnConfig targetColumnConfig = columnConfig;
-    			if(excelConfig.getMutiTitleMap() != null){
+    			if(mutiTitleMap != null){
     				List<String> list = mutiTitleMap.get(configName);
-    				if(mutiMapColumnNameList.contains(configName)){
-    					String sourceConfigName = rowConfig.getColumnNameUseMutiMapName(configName);
-    					if(mutiTitleMap.get(sourceConfigName) != null && !mutiTitleMap.get(sourceConfigName).isEmpty()){
-    						continue;
-    					}
-					}
+//    				if(mutiMapColumnNameList.contains(configName)){
+//    					String sourceConfigName = rowConfig.getColumnNameUseMutiMapName(configName);
+//    					List<String> list2 = mutiTitleMap.get(sourceConfigName);
+//    					if(list2 != null && !list2.isEmpty()){
+//    						continue;
+//    					}
+//					}
     				if(list != null && !list.isEmpty()){
     					//如果指定动态列中对应的mutiMap包含当前列，则此列不进行列值创建
     					for (String cellKey : list) {//动态循环对应的内容来设置cell
@@ -518,7 +537,10 @@ public class BasicExcelGenerator implements ExcelGenerator {
 		try {
 			object = Class.forName(rowConfig.getClassName()).newInstance();
 		} catch (Exception e) {
-			throw new BanaUtilException("使用" + rowConfig.getClassName() + " 名称创建类时失败 ",e);
+			//
+			LOG.warn("没有找到指定的类名" + rowConfig.getClassName());
+			object = new JSONObject();
+//			throw new BanaUtilException("使用" + rowConfig.getClassName() + " 名称创建类时失败 ",e);
 		}
 		if(colNameList != null && !colNameList.isEmpty()){
 			//如果返回对象是按照map列值获取的

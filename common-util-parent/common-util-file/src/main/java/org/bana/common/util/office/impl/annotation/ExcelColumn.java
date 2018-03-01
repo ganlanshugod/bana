@@ -18,7 +18,7 @@ public @interface ExcelColumn {
 	 * 当前列在数据中的顺序
 	 * @return
 	 */
-	int index() default -1;
+	int sort() default 0;
 
 	/**
 	 * 当前列占据的宽度
