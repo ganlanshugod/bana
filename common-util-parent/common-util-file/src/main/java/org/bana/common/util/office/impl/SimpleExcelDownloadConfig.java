@@ -149,4 +149,8 @@ public class SimpleExcelDownloadConfig extends SimpleExcelConfig implements Exce
 		return styleMap == null ? 0 :styleMap.size();
 	}
 
+	public void setDicMap(Map<String, Map<String, Object>> dicMap) {
+		this.dicMap = dicMap;
+	}
+	
 }

@@ -84,8 +84,8 @@ public class BasicExcelGeneratorTest {
 		excelConfig.setConfigFile("/office/excelMutiConfig.xml");
 		excelConfig.init();
 		Map<String,List<String>> mutiMap = new HashMap<String, List<String>>();
-		mutiMap.put("性别", Arrays.asList("男","女"));
-		excelConfig.setMutiTitleMap(mutiMap);
+//		mutiMap.put("性别", Arrays.asList("男","女"));
+//		excelConfig.setMutiTitleMap(mutiMap);
 		FileInputStream inputStream = new FileInputStream(new File("D:/test.xls"));
 		ExcelObject generatorObject = excelGenerator.generatorObject(inputStream,excelConfig);
 		Assert.assertNotNull(generatorObject);
@@ -102,7 +102,7 @@ public class BasicExcelGeneratorTest {
 		excelConfig.init();
 		Map<String,List<String>> mutiMap = new HashMap<String, List<String>>();
 		mutiMap.put("科目", Arrays.asList("语文","数学","英语","总分","排名"));
-		excelConfig.setMutiTitleMap(mutiMap);
+//		excelConfig.setMutiTitleMap(mutiMap);
 		FileInputStream inputStream = new FileInputStream(new File("D:/成绩模版－横版.xls"));
 		ExcelObject generatorObject = excelGenerator.generatorObject(inputStream,excelConfig);
 		Assert.assertNotNull(generatorObject);
@@ -182,7 +182,7 @@ public class BasicExcelGeneratorTest {
 		excelConfig.init();
 		Map<String,List<String>> mutiMap = new HashMap<String, List<String>>();
 		mutiMap.put("性别", Arrays.asList("性别：（男）","性别：（女）"));
-		excelConfig.setMutiTitleMap(mutiMap);
+//		excelConfig.setMutiTitleMap(mutiMap);
 		FileOutputStream outputStream = new FileOutputStream(new File("D:/test3.xls"));
 		ExcelObject excelObject = new ExcelObject();
 //		List<TestData> dataList = new ArrayList<TestData>();

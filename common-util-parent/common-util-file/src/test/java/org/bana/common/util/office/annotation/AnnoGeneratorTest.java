@@ -12,9 +12,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 import org.bana.common.util.office.ExcelGenerator;
 import org.bana.common.util.office.ExcelObject;
+import org.bana.common.util.office.config.ColumnConfig;
 import org.bana.common.util.office.impl.BasicExcelGenerator;
 import org.bana.common.util.office.impl.annotation.AnnotationExcelDownloadConfig;
 import org.bana.common.util.office.impl.annotation.AnnotationExcelUploadConfig;
@@ -33,13 +35,22 @@ public class AnnoGeneratorTest {
 		excelGenerator = new BasicExcelGenerator();
 	}
 	
+	private Map<String,List<ColumnConfig>> getMutiMap(){
+		Map<String,List<ColumnConfig>> mutiMap = new HashMap<String,List<ColumnConfig>>();
+		mutiMap.put("额外配置", 
+				Arrays.asList(
+						ColumnConfig.parseString("身份证(dicType:idCard)"),
+						ColumnConfig.parseString("联系电话")
+						));
+		return mutiMap;
+	}
+	
 	@Test
 	public void testSimpleUpload() throws FileNotFoundException{
 		FileInputStream inputStream = new FileInputStream(new File("D:/test.xls"));
-		Map<String,List<String>> mutiMap = new HashMap<String,List<String>>();
-		mutiMap.put("额外配置", Arrays.asList("身份证","联系电话"));
+		
 		AnnotationExcelUploadConfig excelConfig = new AnnotationExcelUploadConfig(TestData.class);
-		excelConfig.setMutiTitleMap(mutiMap);
+		excelConfig.setMutiTitleMap(getMutiMap());
 		ExcelObject generatorObject = excelGenerator.generatorObject(inputStream,excelConfig.toSimpleExcelUploadConfig());
 		
 		Assert.assertNotNull(generatorObject);
@@ -56,9 +67,19 @@ public class AnnoGeneratorTest {
 		AnnotationExcelDownloadConfig excelConfig = new AnnotationExcelDownloadConfig(TestDownData.class);
 //        System.out.println(System.getProperty("user.dir"));
 		excelConfig.setBaseFile("/office/学生成绩单模版-科目横版-v1.1.xls");
-		Map<String,List<String>> mutiMap = new HashMap<String,List<String>>();
-		mutiMap.put("额外配置", Arrays.asList("身份证","联系电话"));
-		excelConfig.setMutiTitleMap(mutiMap);
+		Map<String,Map<String,Object>> dicMap = new HashMap<String, Map<String,Object>>();
+		Map<String,Object> sexMap = new HashMap<String, Object>();
+		sexMap.put("1", "男");
+		sexMap.put("2", "女");
+		sexMap.put("0", "未知");
+		dicMap.put("sex", sexMap);
+		Map<String,Object> idCard = new HashMap<String, Object>();
+		idCard.put("18263906395:0", "刘文杰");
+		dicMap.put("idCard", idCard);
+		excelConfig.setMutiTitleMap(getMutiMap());
+		excelConfig.setDicMap(dicMap);
+		Set<String> dicKey = excelConfig.getDicKey();
+		System.out.println("配置的字典值是" + dicKey);
         File file = new File(basePath + "/test2.xls");
         if(!file.getParentFile().exists()){
         	file.getParentFile().mkdirs();
@@ -89,9 +110,7 @@ public class AnnoGeneratorTest {
 		FileOutputStream outputStream = new FileOutputStream(file);
 		//读取配置信息
 		AnnotationExcelUploadConfig excelConfig = new AnnotationExcelUploadConfig(TestData.class);
-		Map<String,List<String>> mutiMap = new HashMap<String,List<String>>();
-		mutiMap.put("额外配置", Arrays.asList("身份证","联系电话"));
-		excelConfig.setMutiTitleMap(mutiMap);
+		excelConfig.setMutiTitleMap(getMutiMap());
 		//错误信息
 		List<Map<Integer,String>> errorRecords = new ArrayList<Map<Integer,String>>();
 		errorRecords.add(getErrorMessage());
@@ -118,7 +137,7 @@ public class AnnoGeneratorTest {
 			testData.setAddress("地址内容，看看"+i+":" + random.nextInt(100));
 			testData.setAge(random.nextInt(100));
 			testData.setName("name"+i+":" + random.nextInt(100));
-			testData.setSex("性别，弄个长一点的"+i+":" + random.nextInt(100));
+			testData.setSex(random.nextInt(2)+"");
 			testData.setDate(new Date());
 			Map<String,Object> mutiMap = new HashMap<String,Object>();
 			mutiMap.put("身份证", "18263906395:"+i);

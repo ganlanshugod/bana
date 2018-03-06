@@ -254,11 +254,11 @@ public class BasicExcelGenerator implements ExcelGenerator {
 	    	List<String> mutiMapColumnNameList = rowConfig.getMutiMapColumnName();//所有mutiMap指向的列名
 	    	for (ColumnConfig columnConfig : columnConfigList) {
 	    		//如果标题列的对应关系不为空，则执行按照列配置设置名字的类型
-	    		Map<String, List<String>> mutiTitleMap = excelConfig.getMutiTitleMap();
+	    		Map<String, List<ColumnConfig>> mutiTitleMap = excelConfig.getMutiTitleMap();
     			String configName = columnConfig.getName();
     			ColumnConfig targetColumnConfig = columnConfig;
     			if(mutiTitleMap != null){
-    				List<String> list = mutiTitleMap.get(configName);
+    				List<ColumnConfig> list = mutiTitleMap.get(configName);
 //    				if(mutiMapColumnNameList.contains(configName)){
 //    					String sourceConfigName = rowConfig.getColumnNameUseMutiMapName(configName);
 //    					List<String> list2 = mutiTitleMap.get(sourceConfigName);
@@ -268,7 +268,8 @@ public class BasicExcelGenerator implements ExcelGenerator {
 //					}
     				if(list != null && !list.isEmpty()){
     					//如果指定动态列中对应的mutiMap包含当前列，则此列不进行列值创建
-    					for (String cellKey : list) {//动态循环对应的内容来设置cell
+    					for (ColumnConfig cellConfig : list) {//动态循环对应的内容来设置cell
+    						String cellKey = cellConfig.getName();
     						//标题使用自己的column配置，如果是数据，则使用mutiMap的配置
     						if(!RowType.标题.equals(rowConfig.getType())){
     							String mutiMapColumnName = columnConfig.getMutiMap();
@@ -278,7 +279,7 @@ public class BasicExcelGenerator implements ExcelGenerator {
     							}
     						}
     						//按照当前的列进行创建单元格
-    						currentColNum = createCurrentCell(workbook,sheet,row,excelConfig,sheetConfig,rowConfig,targetColumnConfig,cellKey,object,currentRowNum,currentColNum,index);
+    						currentColNum = createCurrentCell(workbook,sheet,row,excelConfig,sheetConfig,rowConfig,targetColumnConfig,cellKey,object,currentRowNum,currentColNum,index,cellConfig);
     					}
     				}else{//使用固定列值来设置内容
     					currentColNum = createCurrentCell(workbook,sheet,row,excelConfig,sheetConfig,rowConfig,targetColumnConfig,configName,object,currentRowNum,currentColNum,index);
@@ -289,6 +290,12 @@ public class BasicExcelGenerator implements ExcelGenerator {
 			}
 	    }
 	    return currentColNum;
+	}
+
+	private int createCurrentCell(Workbook workbook, Sheet sheet, Row row, ExcelDownloadConfig excelConfig,
+			SheetConfig sheetConfig, RowConfig rowConfig, ColumnConfig targetColumnConfig, String cellKey,
+			Object object, int currentRowNum, int currentColNum, int index) {
+		return createCurrentCell(workbook, sheet, row, excelConfig, sheetConfig, rowConfig, targetColumnConfig, cellKey, object, currentRowNum, currentColNum, index, null);
 	}
 
 	/** 
@@ -307,7 +314,7 @@ public class BasicExcelGenerator implements ExcelGenerator {
 	* @param index  
 	 * @param index2 
 	*/ 
-	private int createCurrentCell(Workbook workbook, Sheet sheet, Row row,ExcelDownloadConfig excelConfig, SheetConfig sheetConfig, RowConfig rowConfig, ColumnConfig columnConfig, String cellKey, Object object, int currentRowNum, int currentColNum, int index) {
+	private int createCurrentCell(Workbook workbook, Sheet sheet, Row row,ExcelDownloadConfig excelConfig, SheetConfig sheetConfig, RowConfig rowConfig, ColumnConfig columnConfig, String cellKey, Object object, int currentRowNum, int currentColNum, int index,ColumnConfig cellConfig) {
 		//设置单元格样式
 		CellStyle cellStyle = excelConfig.getCellStyle(workbook,sheetConfig,rowConfig,columnConfig);
 		//创建单元格，并付上样式
@@ -339,6 +346,10 @@ public class BasicExcelGenerator implements ExcelGenerator {
 				//如果使用字典，那么将字典值进行转化
 				if(value instanceof String && columnConfig.isUseDic()){
 					value = excelConfig.getDicValue((String)value,columnConfig);
+				}
+				//动态列中的字典获取
+				if(cellConfig != null && value instanceof String && cellConfig.isUseDic()){
+					value = excelConfig.getDicValue((String)value, cellConfig);
 				}
 			}
 			if(value != null){//控制时，不进行任何设置
@@ -795,12 +806,14 @@ public class BasicExcelGenerator implements ExcelGenerator {
 		//如果列名不包含所有列名，说明使用的是动态模板，动态模板不能包含动态指定的任何一列
 		List<String> mutiColumnNameList = rowConfig.getMutiIncludeMapColumnName();
 			//获取所有指定的动态列名
-		Map<String, List<String>> mutiTitleMap = excelConfig.getMutiTitleMap();
+		Map<String, List<ColumnConfig>> mutiTitleMap = excelConfig.getMutiTitleMap();
 		List<String> allowColumnList = new ArrayList<String>();
 		if(mutiTitleMap != null){
-			Set<Entry<String, List<String>>> entrySet = mutiTitleMap.entrySet();
-			for (Entry<String, List<String>> entry : entrySet) {
-				allowColumnList.addAll(entry.getValue());
+			Set<Entry<String, List<ColumnConfig>>> entrySet = mutiTitleMap.entrySet();
+			for (Entry<String, List<ColumnConfig>> entry : entrySet) {
+				for (ColumnConfig mutiTitleConfig : entry.getValue()) {
+					allowColumnList.add(mutiTitleConfig.getName());
+				}
 			}
 		}
 		for (String colName : colNameList) {

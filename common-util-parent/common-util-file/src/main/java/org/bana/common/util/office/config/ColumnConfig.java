@@ -14,6 +14,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.reflect.FieldUtils;
 import org.bana.common.util.basic.DateUtil;
 import org.bana.common.util.basic.StringUtils;
 import org.bana.common.util.exception.BanaUtilException;
@@ -366,7 +367,43 @@ public class ColumnConfig implements Serializable {
 	public void setSort(int sort) {
 		this.sort = sort;
 	}
-
+	
+	public static ColumnConfig parseString(String configString){
+		ColumnConfig columnConfig = new ColumnConfig();
+		if(StringUtils.isBlank(configString)){
+			throw new BanaUtilException("初始化ColumnCOnfig的字符串不能为空");
+		}
+		if(!configString.contains("(")){
+			columnConfig.setName(configString);
+		}else{
+			if(!configString.contains(")")){
+				throw new BanaUtilException("ColumnConfig的配置字符串不正确,没有右括号"+configString);
+			}else{
+				String configArr = configString.substring(configString.indexOf("(")+1,configString.lastIndexOf(")"));
+				String name = configString.substring(0,configString.indexOf("("));
+				columnConfig.setName(name);
+				for (String config : configArr.split(";")) {
+					int index = config.indexOf(":");
+					if(config.indexOf(":") != -1){
+						String configName = config.substring(0,index);
+						String configValue = config.substring(index+1);
+						if("dicType".equals(configName)){
+							columnConfig.setUseDic(true);
+						}
+						try {
+							FieldUtils.writeField(columnConfig, configName, configValue,true);
+						} catch (IllegalAccessException e) {
+							throw new BanaUtilException("写入配置属性出错"+configName+"="+configValue,e);
+						}
+					}else{
+						throw new BanaUtilException("配置错误，配置中需要用':' 分开");
+					}
+				}
+			}
+		}
+		return columnConfig;
+	}
+	
 	@Override
 	public String toString() {
 		return "ColumnConfig [sort=" + sort + ", name=" + name + ", colspan=" + colspan + ", mappedBy=" + mappedBy

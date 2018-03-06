@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import org.bana.common.util.office.config.ColumnConfig;
 import org.bana.common.util.office.config.ExcelConfig;
 import org.bana.common.util.office.config.SheetConfig;
 
@@ -20,7 +21,7 @@ public class SimpleExcelConfig implements ExcelConfig,Serializable {
 	/** 
 	* @Fields mutiTitleMap : 当一列支持多种列时，支持
 	*/ 
-	protected Map<String,List<String>> mutiTitleMap;
+	protected Map<String,List<ColumnConfig>> mutiTitleMap;
 
 	@Override
 	public List<SheetConfig> getSheetConfigList() {
@@ -28,11 +29,11 @@ public class SimpleExcelConfig implements ExcelConfig,Serializable {
 	}
 	
 	@Override
-	public Map<String, List<String>> getMutiTitleMap() {
+	public Map<String, List<ColumnConfig>> getMutiTitleMap() {
 		return this.mutiTitleMap;
 	}
 
-	public void setMutiTitleMap(Map<String, List<String>> mutiTitleMap) {
+	public void setMutiTitleMap(Map<String, List<ColumnConfig>> mutiTitleMap) {
 		this.mutiTitleMap = mutiTitleMap;
 	}
 

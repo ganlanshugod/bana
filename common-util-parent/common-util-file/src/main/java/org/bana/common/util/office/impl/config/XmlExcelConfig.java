@@ -57,7 +57,7 @@ public class XmlExcelConfig implements ExcelDownloadConfig,ExcelUploadConfig{
 	/** 
 	* @Fields mutiTitleMap : 当一列支持多种列时，支持
 	*/ 
-	private Map<String,List<String>> mutiTitleMap;
+	private Map<String,List<ColumnConfig>> mutiTitleMap;
 	
 	/** 
 	* @Fields dicMap : 导出时使用的一个map值，根据如果使用了useMap参数，那么根据dicKey去查找对应的价值对去设置此值
@@ -132,11 +132,13 @@ public class XmlExcelConfig implements ExcelDownloadConfig,ExcelUploadConfig{
 	*/ 
 	public String getMutiConfigNameUseColName(String colName){
 		if(this.mutiTitleMap != null){
-			Set<Entry<String, List<String>>> entrySet = mutiTitleMap.entrySet();
-			for (Entry<String, List<String>> entry : entrySet) {
-				List<String> mutiTilte = entry.getValue();
-				if(mutiTilte.contains(colName)){
-					return entry.getKey();
+			Set<Entry<String, List<ColumnConfig>>> entrySet = mutiTitleMap.entrySet();
+			for (Entry<String, List<ColumnConfig>> entry : entrySet) {
+				List<ColumnConfig> mutiTilte = entry.getValue();
+				for (ColumnConfig columnConfig : mutiTilte) {
+					if(columnConfig.getName().equals(colName)){
+						return entry.getKey();
+					}
 				}
 			}
 		}
@@ -380,7 +382,7 @@ public class XmlExcelConfig implements ExcelDownloadConfig,ExcelUploadConfig{
 	 * @Description: 属性 mutiTitleMap 的set方法 
 	 * @param mutiTitleMap 
 	 */
-	public void setMutiTitleMap(Map<String,List<String>> mutiTitleMap) {
+	public void setMutiTitleMap(Map<String,List<ColumnConfig>> mutiTitleMap) {
 		this.mutiTitleMap = mutiTitleMap;
 	}
 	
@@ -388,7 +390,7 @@ public class XmlExcelConfig implements ExcelDownloadConfig,ExcelUploadConfig{
 	 * @Description: 属性 mutiTitleMap 的get方法 
 	 * @return mutiTitleMap
 	 */
-	public Map<String, List<String>> getMutiTitleMap() {
+	public Map<String, List<ColumnConfig>> getMutiTitleMap() {
 		return mutiTitleMap;
 	}
 	
