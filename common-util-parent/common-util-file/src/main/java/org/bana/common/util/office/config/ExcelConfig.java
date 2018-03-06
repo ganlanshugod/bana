@@ -26,5 +26,5 @@ public interface ExcelConfig extends Serializable{
 	/**
 	 * @return 动态列的配置对象
 	 */
-	Map<String, List<String>> getMutiTitleMap();
+	Map<String, List<ColumnConfig>> getMutiTitleMap();
 }

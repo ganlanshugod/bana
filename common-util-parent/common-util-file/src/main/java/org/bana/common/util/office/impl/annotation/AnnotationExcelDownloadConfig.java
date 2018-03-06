@@ -1,8 +1,13 @@
 package org.bana.common.util.office.impl.annotation;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
+import org.bana.common.util.office.config.ColumnConfig;
 import org.bana.common.util.office.config.ExcelDownloadConfig;
+import org.bana.common.util.office.config.RowConfig;
 import org.bana.common.util.office.config.SheetConfig;
 import org.bana.common.util.office.impl.SimpleExcelDownloadConfig;
 import org.slf4j.Logger;
@@ -29,6 +34,27 @@ public class AnnotationExcelDownloadConfig extends SimpleExcelDownloadConfig imp
 			sheetConfigList = AnnotationExcelConfigSerializer.initSheetConfigList(this.clsArr);
 		}
 		return sheetConfigList;
+	}
+	
+	/**
+	 * 获取所有配置中指定的字典对象
+	 * @return
+	 */
+	public Set<String> getDicKey(){
+		Set<String> dicKey = new HashSet<String>();
+		List<SheetConfig> sheetConfigList = getSheetConfigList();
+		for (SheetConfig sheetConfig : sheetConfigList) {
+			List<RowConfig> rowConfigList = sheetConfig.getRowConfigList();
+			for (RowConfig rowConfig : rowConfigList) {
+				List<ColumnConfig> columnConfigList = rowConfig.getColumnConfigList();
+				for (ColumnConfig columnConfig : columnConfigList) {
+					if(columnConfig.isUseDic() && StringUtils.isNotBlank(columnConfig.getDicType())){
+						dicKey.add(columnConfig.getDicType());
+					}
+				}
+			}
+		}
+		return dicKey;
 	}
 
 }

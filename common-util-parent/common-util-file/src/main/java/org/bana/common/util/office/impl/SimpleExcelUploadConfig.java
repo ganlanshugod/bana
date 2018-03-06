@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.bana.common.util.office.config.ColumnConfig;
 import org.bana.common.util.office.config.ExcelUploadConfig;
 
 /**
@@ -17,11 +18,13 @@ public class SimpleExcelUploadConfig extends SimpleExcelConfig implements ExcelU
 	@Override
 	public String getMutiConfigNameUseColName(String colName) {
 		if(this.mutiTitleMap != null){
-			Set<Entry<String, List<String>>> entrySet = mutiTitleMap.entrySet();
-			for (Entry<String, List<String>> entry : entrySet) {
-				List<String> mutiTilte = entry.getValue();
-				if(mutiTilte.contains(colName)){
-					return entry.getKey();
+			Set<Entry<String, List<ColumnConfig>>> entrySet = mutiTitleMap.entrySet();
+			for (Entry<String, List<ColumnConfig>> entry : entrySet) {
+				List<ColumnConfig> mutiTilte = entry.getValue();
+				for (ColumnConfig columnConfig : mutiTilte) {
+					if(columnConfig.getName().equals(colName)){
+						return entry.getKey();
+					}
 				}
 			}
 		}
