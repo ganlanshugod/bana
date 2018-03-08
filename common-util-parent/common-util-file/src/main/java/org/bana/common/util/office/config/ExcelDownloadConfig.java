@@ -45,6 +45,6 @@ public interface ExcelDownloadConfig extends ExcelConfig{
 	 * @param columnConfig
 	 * @return
 	 */
-	Object getDicValue(String value, ColumnConfig columnConfig);
+	Object getDicValue(Object value, ColumnConfig columnConfig);
 
 }

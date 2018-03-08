@@ -295,7 +295,7 @@ public class XmlExcelConfig implements ExcelDownloadConfig,ExcelUploadConfig{
 	* @param columnConfig
 	* @return  
 	*/ 
-	public Object getDicValue(String key, ColumnConfig columnConfig) {
+	public Object getDicValue(Object key, ColumnConfig columnConfig) {
 		if(this.dicMap == null || this.dicMap.isEmpty()){
 			return key;
 		}

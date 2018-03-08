@@ -1,6 +1,9 @@
 package org.bana.common.util.office.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -121,7 +124,7 @@ public class SimpleExcelDownloadConfig extends SimpleExcelConfig implements Exce
 	* @return  
 	*/ 
 	@Override
-	public Object getDicValue(String key, ColumnConfig columnConfig) {
+	public Object getDicValue(Object key, ColumnConfig columnConfig) {
 		if(this.dicMap == null || this.dicMap.isEmpty()){
 			return key;
 		}
@@ -130,11 +133,37 @@ public class SimpleExcelDownloadConfig extends SimpleExcelConfig implements Exce
 		if(dic == null || dic.isEmpty()){
 			return key;
 		}
-		Object value = dic.get(key);
-		if(value == null){
-			return key;
+		if(key instanceof String[]){//数组数据
+			String[] keyArr = (String[])key;
+			List<Object> valueList = new ArrayList<Object>();
+			for (String object : keyArr) {
+				Object value = dic.get(object);
+				if(value == null){
+					valueList.add(object);
+				}else{
+					valueList.add(value);
+				}
+			}
+			return valueList;
+		}else if(key instanceof Collection<?>){//集合数据
+			Collection<?> collection = (Collection<?>)key;
+			List<Object> valueList = new ArrayList<Object>();
+			for (Object object : collection) {
+				Object value = dic.get(object);
+				if(value == null){
+					valueList.add(object);
+				}else{
+					valueList.add(value);
+				}
+			}
+			return valueList;
+		}else{ //正常的字段情况下
+			Object value = dic.get(key);
+			if(value == null){
+				return key;
+			}
+			return value;
 		}
-		return value;
 	}
 	
 	

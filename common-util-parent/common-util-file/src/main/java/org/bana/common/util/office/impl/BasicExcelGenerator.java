@@ -344,12 +344,12 @@ public class BasicExcelGenerator implements ExcelGenerator {
 			}else{
 				value = columnConfig.getCellValue(object,cellKey);
 				//如果使用字典，那么将字典值进行转化
-				if(value instanceof String && columnConfig.isUseDic()){
-					value = excelConfig.getDicValue((String)value,columnConfig);
+				if(columnConfig.isUseDic()){
+					value = excelConfig.getDicValue(value,columnConfig);
 				}
 				//动态列中的字典获取
-				if(cellConfig != null && value instanceof String && cellConfig.isUseDic()){
-					value = excelConfig.getDicValue((String)value, cellConfig);
+				if(cellConfig != null && cellConfig.isUseDic()){
+					value = excelConfig.getDicValue(value, cellConfig);
 				}
 			}
 			if(value != null){//控制时，不进行任何设置
