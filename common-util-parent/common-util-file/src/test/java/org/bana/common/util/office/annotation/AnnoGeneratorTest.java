@@ -67,8 +67,7 @@ public class AnnoGeneratorTest {
 		AnnotationExcelDownloadConfig excelConfig = new AnnotationExcelDownloadConfig(TestDownData.class);
 //        System.out.println(System.getProperty("user.dir"));
 		excelConfig.setBaseFile("/office/学生成绩单模版-科目横版-v1.1.xls");
-		Set<String> dicKey = excelConfig.getDicKey();
-		System.out.println("配置的字典值是" + dicKey);
+		
 		Map<String,Map<String,Object>> dicMap = new HashMap<String, Map<String,Object>>();
 		Map<String,Object> sexMap = new HashMap<String, Object>();
 		sexMap.put("1", "男");
@@ -79,6 +78,8 @@ public class AnnoGeneratorTest {
 		idCard.put("18263906395:0", "刘文杰");
 		dicMap.put("idCard", idCard);
 		excelConfig.setMutiTitleMap(getMutiMap());
+		Set<String> dicKey = excelConfig.getDicKey();
+		System.out.println("配置的字典值是" + dicKey);
 		excelConfig.setDicMap(dicMap);
         File file = new File(basePath + "/test2.xls");
         if(!file.getParentFile().exists()){

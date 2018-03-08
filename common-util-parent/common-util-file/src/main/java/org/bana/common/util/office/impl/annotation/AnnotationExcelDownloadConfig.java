@@ -1,7 +1,10 @@
 package org.bana.common.util.office.impl.annotation;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -48,6 +51,17 @@ public class AnnotationExcelDownloadConfig extends SimpleExcelDownloadConfig imp
 			for (RowConfig rowConfig : rowConfigList) {
 				List<ColumnConfig> columnConfigList = rowConfig.getColumnConfigList();
 				for (ColumnConfig columnConfig : columnConfigList) {
+					if(columnConfig.isUseDic() && StringUtils.isNotBlank(columnConfig.getDicType())){
+						dicKey.add(columnConfig.getDicType());
+					}
+				}
+			}
+		}
+		Map<String, List<ColumnConfig>> mutiTitleMap2 = this.getMutiTitleMap();
+		if(mutiTitleMap2 != null && !mutiTitleMap2.isEmpty()){
+			Collection<List<ColumnConfig>> values = mutiTitleMap2.values();
+			for (List<ColumnConfig> list : values) {
+				for (ColumnConfig columnConfig : list) {
 					if(columnConfig.isUseDic() && StringUtils.isNotBlank(columnConfig.getDicType())){
 						dicKey.add(columnConfig.getDicType());
 					}
