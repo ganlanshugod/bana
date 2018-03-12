@@ -1,0 +1,40 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+		<artifactId>common-util-parent</artifactId>
+		<groupId>org.bana</groupId>
+		<version>1.0.5-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
+  </parent>
+  <artifactId>common-util-configuration</artifactId>
+  <name>common-util-configuration</name>
+  <description>基础的公共类引用</description>
+  
+  
+  <dependencies>
+  	<!-- apache 读取配置的工具  -->
+    <dependency>
+		<groupId>org.apache.commons</groupId>
+    	<artifactId>commons-configuration2</artifactId>
+	</dependency>
+	
+	<!-- 解析dom元素 begin -->
+	<dependency>
+		<groupId>dom4j</groupId>
+		<artifactId>dom4j</artifactId>
+	</dependency> 
+	<!-- 在使用dom4j中的xpath读取节点时，需要使用的jar包 -->
+	<dependency>
+		<groupId>jaxen</groupId>
+		<artifactId>jaxen</artifactId>
+	</dependency>
+	
+	<!-- test 依赖 -->
+	<dependency>
+		<groupId>commons-codec</groupId>
+		<artifactId>commons-codec</artifactId>
+		<scope>test</scope>
+	</dependency>
+	 
+  </dependencies>
+</project>
