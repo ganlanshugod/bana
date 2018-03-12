@@ -837,7 +837,7 @@ public class BasicExcelGenerator implements ExcelGenerator {
 	
 	@Override
 	public void addErrorResult(InputStream inputStream, OutputStream outputStream, ExcelUploadConfig excelUploadConfig,
-			List<Map<Integer, String>> errorRecords) {
+			List<Map<Integer, String>> errorRecords,boolean includeCorrect) {
 		Workbook workbook = getWorkBook(inputStream);
 		List<SheetConfig> sheetConfigList = excelUploadConfig.getSheetConfigList();
 		if(sheetConfigList != null){
@@ -861,7 +861,7 @@ public class BasicExcelGenerator implements ExcelGenerator {
 						throw new BanaUtilException("没有找到指定的excel的sheet页 " + name);
 					}
 				}
-				addSheetError(workbook,sheet,excelUploadConfig,sheetConfig,errorRecords.get(index));
+				addSheetError(workbook,sheet,excelUploadConfig,sheetConfig,errorRecords.get(index),includeCorrect);
 				index ++;
 			}
 		}else{
@@ -880,10 +880,11 @@ public class BasicExcelGenerator implements ExcelGenerator {
 	 * @param sheet 
 	 * @param excelUploadConfig
 	 * @param sheetConfig
+	 * @param includeCorrect 
 	 * @param map
 	 */
 	private void addSheetError(Workbook workbook, Sheet sheet, ExcelUploadConfig excelUploadConfig, SheetConfig sheetConfig,
-			Map<Integer, String> errorRecords) {
+			Map<Integer, String> errorRecords, boolean includeCorrect) {
 //		List<? extends Object> readSheet = readSheet(sheet,excelUploadConfig,sheetConfig);
 		List<RowConfig> rowConfigList = sheetConfig.getRowConfigList();
 		
@@ -908,14 +909,27 @@ public class BasicExcelGenerator implements ExcelGenerator {
 				errorColumn = addErrorTitle(sheet,row);
 			}else{
 				int dataIndex = 0;
+				int currentDataRow = 0;
 				boolean hasData = true;
 				while(hasData){
-					Row row = sheet.getRow(currentRowNum+dataIndex);
+					int getDataRowNum = currentRowNum+currentDataRow;
+					Row row = sheet.getRow(getDataRowNum);
 					if(row == null){
 						break;
 					}
-					hasData = addDataError(sheet,row,errorColumn,errorRecords.get(dataIndex));
+					String errorMessage = errorRecords.get(dataIndex);
+					hasData = addDataError(sheet,row,errorColumn,errorMessage);
 					dataIndex ++;
+					if(includeCorrect){
+						currentDataRow ++;
+					}else{
+						if(StringUtils.isBlank(errorMessage)){
+//							sheet.removeRow(row); //这个删除会保留行
+							removeRow(sheet,getDataRowNum);
+						}else{
+							currentDataRow ++;
+						}
+					}
 				}
 				LOG.info("处理了" + dataIndex + "行数据，添加了" + errorRecords.size() + "行错误数据");
 			}
@@ -923,6 +937,22 @@ public class BasicExcelGenerator implements ExcelGenerator {
 		}
 		
 	}
+	
+	 /** 
+	 * Remove a row by its index 
+	 * @param sheet a Excel sheet 
+	 * @param rowIndex a 0 based index of removing row 
+	 */  
+	public static void removeRow(Sheet sheet, int rowIndex) {  
+	    int lastRowNum=sheet.getLastRowNum();  
+	    if(rowIndex>=0&&rowIndex<lastRowNum)  
+	        sheet.shiftRows(rowIndex+1,lastRowNum,-1);//将行号为rowIndex+1一直到行号为lastRowNum的单元格全部上移一行，以便删除rowIndex行  
+	    if(rowIndex==lastRowNum){  
+	        Row removingRow=sheet.getRow(rowIndex);  
+	        if(removingRow!=null)  
+	            sheet.removeRow(removingRow);  
+	    }  
+	} 
 
 	/**
 	 * 添加数据行的异常数据
@@ -961,5 +991,11 @@ public class BasicExcelGenerator implements ExcelGenerator {
 		Cell errorTitle = row.createCell(errorIndex);
 		errorTitle.setCellValue("异常信息");
 		return errorIndex;
+	}
+
+	@Override
+	public void addErrorResult(InputStream inputStream, OutputStream outputStream, ExcelUploadConfig excelUploadConfig,
+			List<Map<Integer, String>> errorRecords) {
+		addErrorResult(inputStream, outputStream, excelUploadConfig, errorRecords, true);
 	}
 }

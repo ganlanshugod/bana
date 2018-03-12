@@ -116,7 +116,7 @@ public class AnnoGeneratorTest {
 		List<Map<Integer,String>> errorRecords = new ArrayList<Map<Integer,String>>();
 		errorRecords.add(getErrorMessage());
 		//执行方法
-		excelGenerator.addErrorResult(inputStream, outputStream, excelConfig, errorRecords);
+		excelGenerator.addErrorResult(inputStream, outputStream, excelConfig, errorRecords, false);
 	}
 	
 	private Map<Integer,String> getErrorMessage(){
