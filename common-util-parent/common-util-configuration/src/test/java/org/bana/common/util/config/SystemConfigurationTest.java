@@ -7,8 +7,7 @@
 * @version V1.0   
 */ 
 package org.bana.common.util.config;
-
-import org.apache.commons.lang.SystemUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.junit.Test;
 
 /** 

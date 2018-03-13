@@ -9,12 +9,14 @@
 package org.bana.common.util.basic;
 
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import org.apache.commons.codec.binary.Base64;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -201,6 +203,17 @@ public class StringUtilsTest {
 	public void testRandom(){
 		String random = "";
 		System.out.println(StringUtils.getRandomStr());
-		System.out.println(org.apache.commons.lang.StringUtils.isBlank(""));
+		System.out.println(StringUtils.isBlank(""));
+	}
+	
+	@Test
+	public void testBase64() throws UnsupportedEncodingException{
+		System.out.println(new String(Base64.encodeBase64("11113".getBytes("utf-8")),"utf-8"));
+	}
+	
+	@Test
+	public void testJoin(){
+		List<String> list = Arrays.asList("a","b","c");
+		System.out.println(StringUtils.join(list,","));
 	}
 }

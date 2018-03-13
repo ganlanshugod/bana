@@ -59,7 +59,8 @@ public class SimpleVelocityEngineFactory {
 		ve.setProperty(Velocity.RESOURCE_LOADER, RESOURCE_LOADER);  
 		ve.setProperty("class.resource.loader.class", RESOURCE_LOADER_CLASS); // 设置类路径加载模板  
 		ve.setProperty(Velocity.INPUT_ENCODING, inputEncoding);// 设置输入字符集  
-		ve.setProperty(Velocity.OUTPUT_ENCODING, outputEncoding);// 设置输出字符集  
+//		ve.setProperties(Velocity.ENCODING_DEFAULT);
+//		ve.setProperty(Velocity.OUTPUT_ENCODING, outputEncoding);// 设置输出字符集  
 		try {
 			ve.init();// 初始化模板引擎  
 			return ve;

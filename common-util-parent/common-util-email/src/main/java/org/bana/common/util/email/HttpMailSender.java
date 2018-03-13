@@ -10,15 +10,16 @@ package org.bana.common.util.email;
 
 import java.util.List;
 
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.commons.configuration2.PropertiesConfiguration;
+import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
+import org.apache.commons.configuration2.builder.fluent.Configurations;
+import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.commons.mail.EmailAttachment;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
 import org.bana.common.util.basic.StringUtils;
 import org.bana.common.util.basic.URLUtil;
 import org.bana.common.util.basic.ValidateUtils;
-import org.bana.common.util.email.HttpMailContent.MailType;
 import org.bana.common.util.exception.BanaUtilException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -187,9 +188,11 @@ public class HttpMailSender extends HtmlEmail {
 		if(StringUtils.isNotBlank(this.propertyConfigPath)){
 			//loading配置文件，设置对应的属性
 			try {
-				propertyConfig = new PropertiesConfiguration();
-				propertyConfig.setEncoding(defaultPropertiesFileEncoding);
-				propertyConfig.load(propertyConfigPath);
+				Configurations configs = new Configurations();
+	            // setDefaultEncoding是个静态方法,用于设置指定类型(class)所有对象的编码方式。
+	            // 本例中是PropertiesConfiguration,要在PropertiesConfiguration实例创建之前调用。
+	            FileBasedConfigurationBuilder.setDefaultEncoding(PropertiesConfiguration.class, "UTF-8");
+				propertyConfig = configs.properties(this.getClass().getClassLoader().getResource(propertyConfigPath));
 			} catch (ConfigurationException e) {
 				throw new BanaUtilException("loading config error: " + propertyConfigPath,e);
 			}  

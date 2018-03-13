@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
+import org.bana.common.util.basic.StringUtils;
 import org.bana.common.util.code.dao.Column;
 import org.bana.common.util.code.dao.Table;
 import org.bana.common.util.code.dao.mybatis.MybatisGeneratorConfig;
@@ -261,7 +261,7 @@ public class JpaGeneratorConfig4Mysql extends MybatisGeneratorConfig {
 		for (Object value : this.indexList.values()) { 
 			Map<String, Object> indexItem = (Map<String, Object>) value;
 			List<String> fields = (List<String>) indexItem.get("fields");
-			indexStrList.add("@Index(name=\""+indexItem.get("name")+"\",columnList=\""+StringUtils.join(fields,",")+"\",unique="+indexItem.get("unique")+")");
+			indexStrList.add("@Index(name=\""+indexItem.get("name")+"\",columnList=\""+StringUtils.join(fields.iterator(),",")+"\",unique="+indexItem.get("unique")+")");
 		}
 		this.indexStr = StringUtils.join(indexStrList, ",");
 	}

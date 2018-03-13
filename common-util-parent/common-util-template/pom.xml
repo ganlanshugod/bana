@@ -3,7 +3,7 @@
   <parent>
 		<artifactId>common-util-parent</artifactId>
 		<groupId>org.bana</groupId>
-		<version>1.0.5-SNAPSHOT</version>
+		<version>1.1.0-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>common-util-template</artifactId>
@@ -17,9 +17,13 @@
   		<artifactId>common-util-basic</artifactId>
   	</dependency>
  	<!-- apache 的velocity的模板技术 -->
-	<dependency>
+ 	<dependency>
+	    <groupId>org.apache.velocity</groupId>
+	    <artifactId>velocity-engine-core</artifactId>
+	</dependency>
+	<!-- <dependency>
 		<groupId>velocity</groupId>
 		<artifactId>velocity</artifactId>
-	</dependency>
+	</dependency> -->
   </dependencies>
 </project>

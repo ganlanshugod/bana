@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.bana</groupId>
   <artifactId>common-util-parent</artifactId>
-  <version>1.0.5-SNAPSHOT</version>
+  <version>1.1.0-SNAPSHOT</version>
   <name>common-util</name>
   <packaging>pom</packaging>
   <description>集成所有公共工具方法的实体类</description>
@@ -17,6 +17,12 @@
   	<dependency>
   		<groupId>${project.groupId}</groupId>
   		<artifactId>common-util-basic</artifactId>
+  		<version>${project.version}</version>
+  	</dependency>
+  	
+  	<dependency>
+  		<groupId>${project.groupId}</groupId>
+  		<artifactId>common-util-configuration</artifactId>
   		<version>${project.version}</version>
   	</dependency>
   	
@@ -67,20 +73,31 @@
 	    <version>1.11.2</version>
 	  </dependency>
 	  
+	<!-- 基础工具类 -->
+	<dependency>
+	    <groupId>org.apache.commons</groupId>
+	    <artifactId>commons-lang3</artifactId>
+	    <version>3.7</version>
+	</dependency>
   	
   
 	<!-- apache 读取配置的工具  -->
     <dependency>
-		<groupId>commons-configuration</groupId>
-		<artifactId>commons-configuration</artifactId>
-		<version>1.10</version>
+		<groupId>org.apache.commons</groupId>
+    	<artifactId>commons-configuration2</artifactId>
+    	<version>2.2</version>
 	</dependency>
 	<!-- apache 的集合工具，应为默认引用的版本过低，所以单独引用了一下  -->
     <dependency>
 		<groupId>commons-collections</groupId>
 		<artifactId>commons-collections</artifactId>
-		<version>3.2.1</version>
+		<version>3.2.2</version>
 	</dependency>
+	<!-- <dependency>
+	    <groupId>org.apache.commons</groupId>
+	    <artifactId>commons-collections4</artifactId>
+	    <version>4.1</version>
+	</dependency> -->
 	<!-- 加密使用的base64再此 -->
 	<dependency>
 	  <groupId>commons-codec</groupId>
@@ -99,15 +116,20 @@
 	<dependency>
 	    <groupId>commons-io</groupId>
 	    <artifactId>commons-io</artifactId>
-	    <version>2.4</version>
+	    <version>2.6</version>
 	</dependency>
 	<!-- apache 的文件上传功能 -->
 	<dependency>
 		<groupId>commons-net</groupId>
 		<artifactId>commons-net</artifactId>
-		<version>3.3</version>
+		<version>3.6</version>
 	</dependency>
 	<!-- apache 的velocity的模板技术 -->
+	<dependency>
+	    <groupId>org.apache.velocity</groupId>
+	    <artifactId>velocity-engine-core</artifactId>
+	    <version>2.0</version>
+	</dependency>
 	<dependency>
 		<groupId>velocity</groupId>
 		<artifactId>velocity</artifactId>
@@ -363,6 +385,7 @@
 	
 	<modules>
 	 	<module>common-util-basic</module>
+	 	<module>common-util-configuration</module>
 	 	<module>common-util-template</module>
 	 	<module>common-util-database</module>
 	  	<module>common-util-app</module>

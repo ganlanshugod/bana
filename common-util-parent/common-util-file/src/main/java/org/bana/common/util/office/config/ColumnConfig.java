@@ -14,7 +14,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang.reflect.FieldUtils;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.bana.common.util.basic.DateUtil;
 import org.bana.common.util.basic.StringUtils;
 import org.bana.common.util.exception.BanaUtilException;

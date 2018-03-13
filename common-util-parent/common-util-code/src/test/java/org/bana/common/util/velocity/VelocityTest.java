@@ -33,7 +33,7 @@ public class VelocityTest {
 		ve.setProperty(Velocity.RESOURCE_LOADER, "class");  
 		ve.setProperty("class.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader"); // ������·������ģ��  
 		ve.setProperty(Velocity.INPUT_ENCODING, "utf-8");// ���������ַ�  
-		ve.setProperty(Velocity.OUTPUT_ENCODING, "utf-8");// ��������ַ�  
+//		ve.setProperty(Velocity.OUTPUT_ENCODING, "utf-8");// ��������ַ�  
 		ve.init();// ��ʼ��ģ������  
 		Template t = ve.getTemplate("/email/templateDemo.vm");// ����ģ�壬�����classpath·��  
 		VelocityContext context = new VelocityContext();  

@@ -17,7 +17,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.bana.common.util.exception.BanaUtilException;
 
 /** 
@@ -25,7 +25,7 @@ import org.bana.common.util.exception.BanaUtilException;
  * @Description: 日期类型的工具类 
  *  
  */
-public class DateUtil extends org.apache.commons.lang.StringUtils{
+public class DateUtil extends DateUtils{
 	
 //	private static final Logger LOG = LoggerFactory.getLogger(DateUtil.class);
 	
@@ -98,7 +98,7 @@ public class DateUtil extends org.apache.commons.lang.StringUtils{
     * @return  
     */ 
     public static Date formateToDate(String dateStr){
-    	if(isBlank(dateStr)){
+    	if(StringUtils.isBlank(dateStr)){
     		return null;
     	}
     	for (String format : supportDateFormat) {

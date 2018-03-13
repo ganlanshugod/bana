@@ -18,7 +18,7 @@ import java.net.URL;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.apache.commons.lang.StringUtils;
+import org.bana.common.util.basic.StringUtils;
 
 /**
  * @ClassName: RestClient

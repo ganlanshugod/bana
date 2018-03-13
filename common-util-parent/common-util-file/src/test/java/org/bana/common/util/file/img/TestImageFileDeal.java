@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
 import org.bana.common.util.basic.Cn2Spell;
 import org.junit.Test;
 

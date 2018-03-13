@@ -18,8 +18,8 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
-import org.apache.commons.lang.StringUtils;
 import org.bana.common.util.basic.DateUtil;
+import org.bana.common.util.basic.StringUtils;
 import org.bana.common.util.basic.XmlLoader;
 import org.bana.common.util.etl.config.ColumnMapping.ColumnType;
 import org.bana.common.util.etl.config.MongoGroup.Condition;

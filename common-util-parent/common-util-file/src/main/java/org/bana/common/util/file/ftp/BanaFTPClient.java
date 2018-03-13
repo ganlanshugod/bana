@@ -12,8 +12,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.net.ftp.FTPClient;
+import org.bana.common.util.basic.StringUtils;
 import org.bana.common.util.exception.BanaUtilException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -16,14 +16,12 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.bana.common.util.exception.BanaUtilException;
-
 /** 
  * @ClassName: StringUtils 
  * @Description: 字符串的一些公共处理方法
  *  
  */
-public class StringUtils extends org.apache.commons.lang.StringUtils{
+public class StringUtils extends org.apache.commons.lang3.StringUtils{
 	
 	/** 
 	* @Description: 判断一组字符串是否为空白，有一个为空白则返回true
@@ -37,7 +35,7 @@ public class StringUtils extends org.apache.commons.lang.StringUtils{
 			return true;
 		}
 		for (String string : strs) {
-			if(org.apache.commons.lang.StringUtils.isBlank(string)){
+			if(org.apache.commons.lang3.StringUtils.isBlank(string)){
 				return true;
 			}
 		}
@@ -56,7 +54,7 @@ public class StringUtils extends org.apache.commons.lang.StringUtils{
 			return true;
 		}
 		for (String string : strs) {
-			if(org.apache.commons.lang.StringUtils.isNotBlank(string)){
+			if(org.apache.commons.lang3.StringUtils.isNotBlank(string)){
 				return false;
 			}
 		}
@@ -75,7 +73,7 @@ public class StringUtils extends org.apache.commons.lang.StringUtils{
 			return true;
 		}
 		for (String string : strs) {
-			if(org.apache.commons.lang.StringUtils.isEmpty(string)){
+			if(org.apache.commons.lang3.StringUtils.isEmpty(string)){
 				return true;
 			}
 		}
@@ -148,7 +146,7 @@ public class StringUtils extends org.apache.commons.lang.StringUtils{
 		if(isBlank(str)){
 			return new String[]{};
 		}
-		return org.apache.commons.lang.StringUtils.split(str, split);
+		return org.apache.commons.lang3.StringUtils.split(str, split);
 	}
 	
 	/** 
