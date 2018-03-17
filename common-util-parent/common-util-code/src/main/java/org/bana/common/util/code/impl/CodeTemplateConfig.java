@@ -8,7 +8,7 @@
 */ 
 package org.bana.common.util.code.impl;
 
-import org.apache.commons.lang.StringUtils;
+import org.bana.common.util.basic.StringUtils;
 
 /** 
  * @ClassName: CodeTemplateConfig 

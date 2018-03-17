@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.bana.common.util.basic.StringUtils;
 import org.bana.common.util.code.CodeGenerator;
 import org.bana.common.util.code.dao.config.mysql.JpaGeneratorConfig4Mysql;

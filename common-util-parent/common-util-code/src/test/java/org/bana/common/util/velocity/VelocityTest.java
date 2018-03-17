@@ -29,13 +29,15 @@ public class VelocityTest {
 	
 	@Test
 	public void testCommon() throws Exception{
+		String templatePath = "/email/templateDemo.vm";
+		templatePath = "code/jpa/mysql/defaultEntity.vm";
 		VelocityEngine ve = new VelocityEngine();  
 		ve.setProperty(Velocity.RESOURCE_LOADER, "class");  
 		ve.setProperty("class.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader"); // ������·������ģ��  
 		ve.setProperty(Velocity.INPUT_ENCODING, "utf-8");// ���������ַ�  
 //		ve.setProperty(Velocity.OUTPUT_ENCODING, "utf-8");// ��������ַ�  
 		ve.init();// ��ʼ��ģ������  
-		Template t = ve.getTemplate("/email/templateDemo.vm");// ����ģ�壬�����classpath·��  
+		Template t = ve.getTemplate(templatePath);// ����ģ�壬�����classpath·��  
 		VelocityContext context = new VelocityContext();  
 		  
 		HashMap<String, Object> result = new HashMap<String, Object>();  

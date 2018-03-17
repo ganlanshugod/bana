@@ -216,4 +216,9 @@ public class StringUtilsTest {
 		List<String> list = Arrays.asList("a","b","c");
 		System.out.println(StringUtils.join(list,","));
 	}
+	
+	@Test
+	public void testLocation(){
+		// S=2*arcsin(根号 sin2(a/2)+cos(lat1)*cos(lat2)*sin2(b/2) ) * 6378.137
+	}
 }

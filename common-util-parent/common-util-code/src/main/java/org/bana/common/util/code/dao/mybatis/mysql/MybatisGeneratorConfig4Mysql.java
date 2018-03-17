@@ -14,7 +14,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.bana.common.util.basic.StringUtils;
 import org.bana.common.util.code.dao.Column;
 import org.bana.common.util.code.dao.Table;
 import org.bana.common.util.code.dao.mybatis.MybatisGeneratorConfig;

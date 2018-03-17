@@ -132,7 +132,7 @@ public class ${Function}Entity #if(${this.isHasBaseEntity()})extends ${this.getB
 	 * @date ${date}
 	 * @param obj
 	 * @return 
-	 * @see java.lang.Object#equals(java.lang.Object) 
+	 * @see java.lang.Object#equals
 	 */ 
 	@Override
 	public boolean equals(Object obj) {
