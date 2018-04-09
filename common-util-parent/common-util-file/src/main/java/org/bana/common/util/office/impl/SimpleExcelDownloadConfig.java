@@ -3,11 +3,14 @@ package org.bana.common.util.office.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.bana.common.util.basic.StringUtils;
 import org.bana.common.util.office.config.ColumnConfig;
 import org.bana.common.util.office.config.ExcelDownloadConfig;
 import org.bana.common.util.office.config.ExcelType;
@@ -43,11 +46,6 @@ public class SimpleExcelDownloadConfig extends SimpleExcelConfig implements Exce
 	*/ 
 	private ThreadLocal<Map<String,CellStyle>> styleMapCollection = new ThreadLocal<Map<String,CellStyle>>();
 	
-	
-	/** 
-	* @Fields dicMap : 导出时使用的一个map值，根据如果使用了useMap参数，那么根据dicKey去查找对应的价值对去设置此值
-	*/ 
-	private Map<String,Map<String,Object>> dicMap;
 	
 	@Override
 	public String getBaseFile() {
@@ -176,10 +174,6 @@ public class SimpleExcelDownloadConfig extends SimpleExcelConfig implements Exce
 	public int getCellStyleSize(){
 		Map<String, CellStyle> styleMap = styleMapCollection.get();
 		return styleMap == null ? 0 :styleMap.size();
-	}
-
-	public void setDicMap(Map<String, Map<String, Object>> dicMap) {
-		this.dicMap = dicMap;
 	}
 	
 }

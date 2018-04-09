@@ -51,6 +51,17 @@ public class AnnoGeneratorTest {
 		
 		AnnotationExcelUploadConfig excelConfig = new AnnotationExcelUploadConfig(TestData.class);
 		excelConfig.setMutiTitleMap(getMutiMap());
+		Map<String,Map<String,Object>> dicMap = new HashMap<String, Map<String,Object>>();
+		Map<String,Object> sexMap = new HashMap<String, Object>();
+		sexMap.put("1", "男");
+		sexMap.put("2", "女");
+		sexMap.put("0", "未知");
+		dicMap.put("sex", sexMap);
+		Map<String,Object> idCard = new HashMap<String, Object>();
+		idCard.put("刘文杰","372928198708098500");
+		idCard.put("李加秀","372928198708098000");
+		dicMap.put("idCard", idCard);
+		excelConfig.setDicMap(dicMap);
 		ExcelObject generatorObject = excelGenerator.generatorObject(inputStream,excelConfig.toSimpleExcelUploadConfig());
 		
 		Assert.assertNotNull(generatorObject);
