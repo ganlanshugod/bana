@@ -46,6 +46,7 @@ public class AnnotationExcelUploadConfig extends SimpleExcelUploadConfig{
 		SimpleExcelUploadConfig simpleExcelUploadConfig = new SimpleExcelUploadConfig();
 		simpleExcelUploadConfig.setSheetConfigList(this.getSheetConfigList());
 		simpleExcelUploadConfig.setMutiTitleMap(this.getMutiTitleMap());
+		simpleExcelUploadConfig.setDicMap(this.dicMap);
 		return simpleExcelUploadConfig;
 	}
 

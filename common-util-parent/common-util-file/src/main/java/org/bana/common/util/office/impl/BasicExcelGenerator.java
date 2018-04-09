@@ -566,7 +566,9 @@ public class BasicExcelGenerator implements ExcelGenerator {
 		for (ColumnConfig columnConfig : columnConfigList) {
 			Cell cell = row.getCell(currentColumnNum++);
 			Object value = readCellValue(cell,columnConfig);
-			
+			if(value != null && columnConfig.isUseDic()){//使用了字典
+				value = excelConfig.getDicCodeUseValue(value.toString(),columnConfig);
+			}
 			Integer colspan = columnConfig.getColspan();
 			if(colspan != null && colspan > 1){
 				for (int i = 0; i < colspan - 1; i++) {
@@ -606,7 +608,9 @@ public class BasicExcelGenerator implements ExcelGenerator {
 		for (int i = 0; i < colNameList.size(); i++) {
 			String colName = colNameList.get(i);
 			Cell cell = row.getCell(cellNum++);
-			ColumnConfig columnConfig = rowConfig.getColumnConfigMap().get(colName);
+			ColumnConfig columnConfig3 = rowConfig.getColumnConfigMap().get(colName);
+			ColumnConfig columnConfig2 = columnConfig3;
+			ColumnConfig columnConfig = columnConfig2;
 			//没有找到指定名字的columnConfig的时候，根据map值去获取对应的map对象的值
 			if(columnConfig == null){
 				String configName = excelConfig.getMutiConfigNameUseColName(colName);
@@ -627,6 +631,14 @@ public class BasicExcelGenerator implements ExcelGenerator {
 				}
 			}
 			Object value = readCellValue(cell,columnConfig);
+			if(value != null && columnConfig.isUseDic()){//使用了字典
+				value = excelConfig.getDicCodeUseValue(value.toString(),columnConfig);
+			}else if(value != null && columnConfig.isMuti()){
+				ColumnConfig columnConfigCol = excelConfig.getMutiConfigUseColName(colName);
+				if(columnConfigCol.isUseDic()){
+					value = excelConfig.getDicCodeUseValue(value.toString(),columnConfigCol);
+				}
+			}
 			if(value != null){
 				isEmpty = false;
 			}

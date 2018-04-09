@@ -436,4 +436,16 @@ public class XmlExcelConfig implements ExcelDownloadConfig,ExcelUploadConfig{
 		return "ExcelConfig [configFile=" + configFile + ", name=" + name + ", type=" + type + ", style=" + style + ", sheetConfigList=" + sheetConfigList + "]";
 	}
 
+	@Override
+	public String getDicCodeUseValue(Object string, ColumnConfig columnConfig) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ColumnConfig getMutiConfigUseColName(String colName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

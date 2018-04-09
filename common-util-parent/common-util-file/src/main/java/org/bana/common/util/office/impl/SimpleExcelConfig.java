@@ -19,6 +19,11 @@ public class SimpleExcelConfig implements ExcelConfig,Serializable {
 	private List<SheetConfig> sheetConfigList;
 	
 	/** 
+	* @Fields dicMap : 导出时使用的一个map值，根据如果使用了useMap参数，那么根据dicKey去查找对应的价值对去设置此值
+	*/ 
+	protected Map<String,Map<String,Object>> dicMap;
+	
+	/** 
 	* @Fields mutiTitleMap : 当一列支持多种列时，支持
 	*/ 
 	protected Map<String,List<ColumnConfig>> mutiTitleMap;
@@ -39,5 +44,9 @@ public class SimpleExcelConfig implements ExcelConfig,Serializable {
 
 	public void setSheetConfigList(List<SheetConfig> sheetConfigList) {
 		this.sheetConfigList = sheetConfigList;
+	}
+	
+	public void setDicMap(Map<String, Map<String, Object>> dicMap) {
+		this.dicMap = dicMap;
 	}
 }

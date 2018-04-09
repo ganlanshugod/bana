@@ -32,7 +32,7 @@ public class TestData {
 	private Date date;
 	@ExcelColumn(name="姓名")
 	private String name;
-	@ExcelColumn(name="性别",colspan=2)
+	@ExcelColumn(name="性别",sort=2,colspan=2,useDic=true,dicType="sex")
 	private String sex ;
 	
 	@ExcelColumn(name="额外配置",mutiMap="额外配置")
