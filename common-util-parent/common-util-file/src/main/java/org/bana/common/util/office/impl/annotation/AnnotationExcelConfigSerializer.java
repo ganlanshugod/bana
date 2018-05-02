@@ -117,6 +117,7 @@ public class AnnotationExcelConfigSerializer implements Serializable {
 			columnConfig.setMuti(StringUtils.isNotBlank(column.mutiMap()));
 			columnConfig.setUseDic(column.useDic());
 			columnConfig.setDicType(column.dicType());
+			columnConfig.setShowSelectList(column.showSelectList());
 			columnConfigList.add(columnConfig);
 		}
 		return columnConfigList;

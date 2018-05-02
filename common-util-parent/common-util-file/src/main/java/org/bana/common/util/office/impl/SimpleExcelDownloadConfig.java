@@ -241,4 +241,20 @@ public class SimpleExcelDownloadConfig extends SimpleExcelConfig implements Exce
 		return dicKey;
 	}
 
+	@Override
+	public List<String> getDicValueList(String dicType) {
+		if(this.dicMap == null || this.dicMap.isEmpty()){
+			return null;
+		}
+		Map<String, Object> dic = dicMap.get(dicType);
+		if(dic == null || dic.isEmpty()){
+			return null;
+		}
+		List<String> arrayList = new ArrayList<String>();
+		for (Object obj : dic.values()) {
+			arrayList.add(obj.toString());
+		}
+		return arrayList;
+	}
+
 }

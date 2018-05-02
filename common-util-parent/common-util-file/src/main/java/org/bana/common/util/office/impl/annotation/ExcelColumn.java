@@ -52,6 +52,12 @@ public @interface ExcelColumn {
 	boolean useDic() default false;
 	
 	/**
+	 * 是否显示成下拉列表格式
+	 * @return
+	 */
+	boolean showSelectList() default false;
+	
+	/**
 	 * 数据字典的key值
 	 * @return
 	 */

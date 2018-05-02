@@ -10,6 +10,7 @@ package org.bana.common.util.office.config;
 
 import java.beans.PropertyDescriptor;
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -74,6 +75,11 @@ public class ColumnConfig implements Serializable {
     * @Fields useDic : 导出时的值，是否使用字典项
     */ 
     private boolean useDic;
+    
+    /**
+     * 只有useDic为true时，此字段有效，展示字典对应的可选择区域值
+     */
+    private boolean showSelectList;
     
     /**
      * 导入列是否是动态列
@@ -391,7 +397,12 @@ public class ColumnConfig implements Serializable {
 							columnConfig.setUseDic(true);
 						}
 						try {
-							FieldUtils.writeField(columnConfig, configName, configValue,true);
+							Field declaredField = FieldUtils.getDeclaredField(columnConfig.getClass(), configName,true);
+							if(declaredField.getType().equals(boolean.class) || declaredField.getType().equals(Boolean.class)){
+								FieldUtils.writeField(columnConfig, configName, Boolean.valueOf(configValue),true);
+							}else{
+								FieldUtils.writeField(columnConfig, configName, configValue,true);
+							}
 						} catch (IllegalAccessException e) {
 							throw new BanaUtilException("写入配置属性出错"+configName+"="+configValue,e);
 						}
@@ -407,9 +418,16 @@ public class ColumnConfig implements Serializable {
 	@Override
 	public String toString() {
 		return "ColumnConfig [sort=" + sort + ", name=" + name + ", colspan=" + colspan + ", mappedBy=" + mappedBy
-				+ ", type=" + type + ", style=" + style + ", mutiMap=" + mutiMap + ", useDic=" + useDic + ", isMuti="
-				+ isMuti + ", dicType=" + dicType + "]";
+				+ ", type=" + type + ", style=" + style + ", mutiMap=" + mutiMap + ", useDic=" + useDic
+				+ ", showSelectList=" + showSelectList + ", isMuti=" + isMuti + ", dicType=" + dicType + "]";
 	}
 
+	public boolean isShowSelectList() {
+		return showSelectList;
+	}
 
+	public void setShowSelectList(boolean showSelectList) {
+		this.showSelectList = showSelectList;
+	}
+	
 }

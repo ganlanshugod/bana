@@ -46,5 +46,11 @@ public interface ExcelDownloadConfig extends ExcelConfig{
 	 * @return
 	 */
 	Object getDicValue(Object value, ColumnConfig columnConfig);
-
+	
+	/**
+	 * 获取指定dicType的值集合
+	 * @param dicType
+	 * @return
+	 */
+	List<String> getDicValueList(String dicType);
 }

@@ -39,7 +39,7 @@ public class AnnoGeneratorTest {
 		Map<String,List<ColumnConfig>> mutiMap = new HashMap<String,List<ColumnConfig>>();
 		mutiMap.put("额外配置", 
 				Arrays.asList(
-						ColumnConfig.parseString("身份证(dicType:idCard)"),
+						ColumnConfig.parseString("身份证(dicType:idCard;showSelectList:true)"),
 						ColumnConfig.parseString("联系电话")
 						));
 		return mutiMap;
@@ -87,6 +87,7 @@ public class AnnoGeneratorTest {
 		dicMap.put("sex", sexMap);
 		Map<String,Object> idCard = new HashMap<String, Object>();
 		idCard.put("18263906395:0", "刘文杰");
+		idCard.put("18263906395:1", "李加秀");
 		dicMap.put("idCard", idCard);
 		excelConfig.setMutiTitleMap(getMutiMap());
 		Set<String> dicKey = excelConfig.getDicKey();

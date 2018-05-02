@@ -22,10 +22,13 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.apache.poi.hssf.usermodel.DVConstraint;
+import org.apache.poi.hssf.usermodel.HSSFDataValidation;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.DataValidation;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Row;
@@ -33,6 +36,8 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.CellRangeAddressList;
+import org.apache.poi.xssf.usermodel.XSSFDataValidation;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.bana.common.util.basic.CollectionUtils;
 import org.bana.common.util.basic.StringUtils;
@@ -121,6 +126,9 @@ public class BasicExcelGenerator implements ExcelGenerator {
 		List<RowConfig> rowConfigList = sheetConfig.getRowConfigList();
 		int currentRowNum = 0;
 		int columnSize = 0;
+		int firstDataRowNum = 0;
+		int dataSize = 0;
+		RowConfig firstDataRowConfig = null;
 		if(rowConfigList != null){
 			for (RowConfig rowConfig : rowConfigList) {
 				//获取当前的起始行数
@@ -134,6 +142,8 @@ public class BasicExcelGenerator implements ExcelGenerator {
 					createTitleRow(workbook,sheet,excelConfig,sheetConfig,rowConfig,currentRowNum++);
 				}else{
 					List<? extends Object> data ;
+					firstDataRowNum = currentRowNum;
+					firstDataRowConfig = rowConfig;
 					//根据数据集合，循环创建数据行
 					if(StringUtils.isNotBlank(sheetConfig.getName())){
 						data = excelObject.getData(sheetConfig.getName());
@@ -142,6 +152,7 @@ public class BasicExcelGenerator implements ExcelGenerator {
 					}
 					
 					if(data != null){
+						dataSize = data.size();
 						for (int i = 0; i < data.size(); i++) {
 							Object object = data.get(i);
 							if(Map.class.isInstance(object) || object.getClass().getName().equals(rowConfig.getClassName())){
@@ -165,12 +176,68 @@ public class BasicExcelGenerator implements ExcelGenerator {
 			sheet.autoSizeColumn(i,true); //调整第一列宽度
 		}
 		
+		//设置字典列的内容可以被进行列表选择
+		setExcelDVConstraint(sheet,excelConfig,firstDataRowConfig,firstDataRowNum,dataSize);
+		
 //		float hieght=getExcelCellAutoHeight("指定的数据类型 ", 8f);     
 //		//根据字符串的长度设置高度
 //		sheet.getRow(sheet.getLastRowNum()).setHeightInPoints(height)s(hieght); 
 		
 	}
 	
+	/**
+	 * 设置SheetConfig中的可选择区域
+	 * @param sheet 
+	 * @param excelConfig 
+	 * @param firstDataRowConfig
+	 * @param firstDataRowNum 
+	 * @param dataSize 
+	 */
+	private void setExcelDVConstraint(Sheet sheet, ExcelDownloadConfig excelConfig, RowConfig firstDataRowConfig, int firstDataRowNum, int dataSize) {
+		// TODO Auto-generated method stub
+		List<ColumnConfig> columnConfigList = firstDataRowConfig.getColumnConfigList();
+		Map<String, List<ColumnConfig>> mutiTitleMap = excelConfig.getMutiTitleMap();
+		int columnIndex = 0;
+		for (ColumnConfig columnConfig : columnConfigList) {
+//			
+			if(columnConfig.isUseDic() && columnConfig.isShowSelectList()){
+				setColumnSelectList(sheet, excelConfig, firstDataRowNum, dataSize, columnIndex, columnConfig);  
+			}else if(columnConfig.isMuti()){ // 如果是一个动态列，如何处理
+				String name = columnConfig.getName();
+				List<ColumnConfig> list = mutiTitleMap.get(name);
+				for (ColumnConfig columnConfig2 : list) {
+					if(columnConfig2.isUseDic() && columnConfig2.isShowSelectList()){
+						setColumnSelectList(sheet, excelConfig, firstDataRowNum, dataSize, columnIndex, columnConfig2);
+					}
+				}
+			}
+			
+			Integer colspan = columnConfig.getColspan();
+			if(colspan != null && colspan > 1){
+				columnIndex += colspan;
+			}else{
+				columnIndex ++;
+			}
+		}
+	}
+
+	private void setColumnSelectList(Sheet sheet, ExcelDownloadConfig excelConfig, int firstDataRowNum, int dataSize,
+			int columnIndex, ColumnConfig columnConfig) {
+		List<String> dicValueList = excelConfig.getDicValueList(columnConfig.getDicType());
+		if(dicValueList == null){
+			return;
+		}
+		//只对（0，0）单元格有效  
+		CellRangeAddressList regions = new CellRangeAddressList(firstDataRowNum,firstDataRowNum+dataSize-1,columnIndex,columnIndex);  
+		//生成下拉框内容  
+		DVConstraint constraint = DVConstraint.createExplicitListConstraint(dicValueList.toArray(new String[dicValueList.size()]));  
+		//绑定下拉框和作用区域  
+		DataValidation data_validation = new HSSFDataValidation(regions,constraint); 
+		// TODO 07的文档没有处理
+		//对sheet页生效  
+		sheet.addValidationData(data_validation);
+	}
+
 	public static float getExcelCellAutoHeight(String str, float fontCountInline) {
         float defaultRowHeight = 12.00f;//每一行的高度指定
         float defaultCount = 0.00f;
@@ -275,7 +342,7 @@ public class BasicExcelGenerator implements ExcelGenerator {
     							String mutiMapColumnName = columnConfig.getMutiMap();
     							targetColumnConfig = rowConfig.getColumnConfigMap().get(mutiMapColumnName);
     							if(targetColumnConfig == null){
-    								throw new BanaUtilException("没有找到 “" + configName + "” 对应的mutiMap " + mutiMapColumnName +"　的配置");
+    								throw new BanaUtilException("没有找到 “" + configName + "” 对应的mutiMap " + mutiMapColumnName +"的配置");
     							}
     						}
     						//按照当前的列进行创建单元格
