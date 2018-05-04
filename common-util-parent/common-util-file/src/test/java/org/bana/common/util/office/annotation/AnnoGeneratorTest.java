@@ -154,7 +154,7 @@ public class AnnoGeneratorTest {
 			testData.setDate(new Date());
 			Map<String,Object> mutiMap = new HashMap<String,Object>();
 			mutiMap.put("身份证", "18263906395:"+i);
-			mutiMap.put("联系电话","372928198708098136:"+i);
+			mutiMap.put("联系电话","372928198708098136"+i);
 			testData.setMutiMap(mutiMap);
 			dataList.add(testData);
 		}

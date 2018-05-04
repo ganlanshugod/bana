@@ -37,7 +37,6 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellRangeAddressList;
-import org.apache.poi.xssf.usermodel.XSSFDataValidation;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.bana.common.util.basic.CollectionUtils;
 import org.bana.common.util.basic.StringUtils;
@@ -456,12 +455,13 @@ public class BasicExcelGenerator implements ExcelGenerator {
 				throw new BanaUtilException("初始化workBook出错",e);
 			}
 		}
-		if(ExcelType.XLS.equals(excelConfig.getType())){
+		if(ExcelType.XLSX.equals(excelConfig.getType())){
+			//03以后文档
+			return new XSSFWorkbook();
+		}else{
 			//03文档
 			return new HSSFWorkbook();
 		}
-		//03以后文档
-		return new XSSFWorkbook();
 	}
 	
 	/** 
