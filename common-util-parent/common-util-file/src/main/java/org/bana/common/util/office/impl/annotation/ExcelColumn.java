@@ -55,7 +55,7 @@ public @interface ExcelColumn {
 	 * 是否显示成下拉列表格式
 	 * @return
 	 */
-	boolean showSelectList() default false;
+	boolean showSelectList() default true;
 	
 	/**
 	 * 数据字典的key值

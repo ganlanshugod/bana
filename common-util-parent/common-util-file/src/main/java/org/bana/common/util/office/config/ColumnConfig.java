@@ -395,6 +395,7 @@ public class ColumnConfig implements Serializable {
 						String configValue = config.substring(index+1);
 						if("dicType".equals(configName)){
 							columnConfig.setUseDic(true);
+							columnConfig.setShowSelectList(true);
 						}
 						try {
 							Field declaredField = FieldUtils.getDeclaredField(columnConfig.getClass(), configName,true);
