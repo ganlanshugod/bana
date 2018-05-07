@@ -39,8 +39,8 @@ public class AnnoGeneratorTest {
 		Map<String,List<ColumnConfig>> mutiMap = new HashMap<String,List<ColumnConfig>>();
 		mutiMap.put("额外配置", 
 				Arrays.asList(
-						ColumnConfig.parseString("身份证(dicType:idCard;showSelectList:true)"),
-						ColumnConfig.parseString("联系电话")
+						ColumnConfig.parseString("联系电话"),
+						ColumnConfig.parseString("身份证(dicType:idCard)")
 						));
 		return mutiMap;
 	}

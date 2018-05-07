@@ -201,6 +201,12 @@ public class BasicExcelGenerator implements ExcelGenerator {
 //			
 			if(columnConfig.isUseDic() && columnConfig.isShowSelectList()){
 				setColumnSelectList(sheet, excelConfig, firstDataRowNum, dataSize, columnIndex, columnConfig);  
+				Integer colspan = columnConfig.getColspan();
+				if(colspan != null && colspan > 1){
+					columnIndex += colspan;
+				}else{
+					columnIndex ++;
+				}
 			}else if(columnConfig.isMuti()){ // 如果是一个动态列，如何处理
 				String name = columnConfig.getName();
 				List<ColumnConfig> list = mutiTitleMap.get(name);
@@ -208,14 +214,20 @@ public class BasicExcelGenerator implements ExcelGenerator {
 					if(columnConfig2.isUseDic() && columnConfig2.isShowSelectList()){
 						setColumnSelectList(sheet, excelConfig, firstDataRowNum, dataSize, columnIndex, columnConfig2);
 					}
+					Integer colspan = columnConfig.getColspan();
+					if(colspan != null && colspan > 1){
+						columnIndex += colspan;
+					}else{
+						columnIndex ++;
+					}
 				}
-			}
-			
-			Integer colspan = columnConfig.getColspan();
-			if(colspan != null && colspan > 1){
-				columnIndex += colspan;
 			}else{
-				columnIndex ++;
+				Integer colspan = columnConfig.getColspan();
+				if(colspan != null && colspan > 1){
+					columnIndex += colspan;
+				}else{
+					columnIndex ++;
+				}
 			}
 		}
 	}
