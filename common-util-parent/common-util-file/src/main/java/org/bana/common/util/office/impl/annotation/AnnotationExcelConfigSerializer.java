@@ -2,6 +2,7 @@ package org.bana.common.util.office.impl.annotation;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -107,12 +108,15 @@ public class AnnotationExcelConfigSerializer implements Serializable {
 			columnConfig.setName(column.name());
 			columnConfig.setMappedBy(field.getName());
 			String style = column.style();
-			if(field.getType().equals(int.class) || field.getType().equals(Integer.class)
-					||field.getType().equals(long.class)|| field.getType().equals(Long.class)){
+			Class<?> type = field.getType();
+			if(type.equals(int.class) || type.equals(Integer.class)
+					||type.equals(long.class)|| type.equals(Long.class)){
 				style = "dataFormat:#;"+style;
+			}else if(type.equals(String.class)){
+				style = "dataFormat:@;"+style;
 			}
 			columnConfig.setStyle(StyleSerializer.parseStyleStr(style));
-			columnConfig.setType(field.getType().getSimpleName());
+			columnConfig.setType(type.getSimpleName());
 			columnConfig.setMutiMap(column.mutiMap());
 			columnConfig.setMuti(StringUtils.isNotBlank(column.mutiMap()));
 			columnConfig.setUseDic(column.useDic());
@@ -121,6 +125,10 @@ public class AnnotationExcelConfigSerializer implements Serializable {
 			columnConfigList.add(columnConfig);
 		}
 		return columnConfigList;
+	}
+	
+	public static void main(String[] args) {
+		System.out.println(Date.class.getSimpleName());
 	}
 	
 }
