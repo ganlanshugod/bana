@@ -33,6 +33,11 @@ public class MD5UtilTest {
 	}
 	
 	@Test
+	public void testLength(){
+		System.out.println("a526b3b96a016b8771db2c28a6f5fb97".length());
+	}
+	
+	@Test
 	public void testGetMD52(){
 		String mac1 = "00:e0:4c:a7:32:f9";
 		String mac2 = "02:08:a8:94:ce:e5";
