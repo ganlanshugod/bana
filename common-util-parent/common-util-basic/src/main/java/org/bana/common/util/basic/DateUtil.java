@@ -281,6 +281,10 @@ public class DateUtil extends DateUtils{
 			formatStr = "yyyy-MM-dd";
 		}
 		boolean convertSuccess = true;
+		// 02-29特殊处理，modified by zhang zhichao
+		if("MM-dd".equals(formatStr) && "02-29".equals(str)) {
+			return convertSuccess;
+		}
 		// 根据参数指定要格式化的日期格式
 		SimpleDateFormat format = new SimpleDateFormat(formatStr);
 		try {
