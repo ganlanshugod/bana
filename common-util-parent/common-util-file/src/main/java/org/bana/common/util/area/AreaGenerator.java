@@ -3,7 +3,6 @@ package org.bana.common.util.area;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
@@ -35,12 +34,12 @@ public class AreaGenerator {
 	
 	
 	public static void generatorSqlFromJsonFile(String rootId,String sqlFilePath,String jsonFilePath) throws IOException{
-		JSONArray jsonArray = JSONArray.parseArray(FileUtils.readFileToString(new File(jsonFilePath)));
+		JSONArray jsonArray = JSONArray.parseArray(FileUtils.readFileToString(new File(jsonFilePath),"UTF-8"));
 		File sqlFile = new File(sqlFilePath);
 		if(!sqlFile.getParentFile().exists()){
 			sqlFile.getParentFile().mkdirs();
 		}
-		FileUtils.write(sqlFile, "");
+		FileUtils.write(sqlFile, "","UTF-8");
 		generatorFileFromJsonArray(rootId, jsonArray, sqlFile);
 	}
 
@@ -52,7 +51,7 @@ public class AreaGenerator {
 			JSONObject jsonObject = (JSONObject)object;
 			String code = compute(jsonObject.getString("code"));
 			String name = jsonObject.getString("name");
-			FileUtils.write(sqlFile, sql + code +",'"+name+"','"+rootId+"');\n",true);
+			FileUtils.write(sqlFile, sql + code +",'"+name+"','"+rootId+"');\n","UTF-8",true);
 			JSONArray subArr = jsonObject.getJSONArray("subArea");
 			if(subArr != null && subArr.size() > 0){
 				generatorFileFromJsonArray(code, subArr, sqlFile);
@@ -84,7 +83,7 @@ public class AreaGenerator {
 			file.getParentFile().mkdirs();
 		}
 		try {
-			FileUtils.write(file, jsonFromUrl.toJSONString());
+			FileUtils.write(file, jsonFromUrl.toJSONString(),"UTF-8");
 			LOG.info("保存文件成功===" + file.getAbsolutePath());
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -120,9 +119,8 @@ public class AreaGenerator {
 		System.out.println(count);
 		Elements select = document.select(selectStr);
 //			System.out.println("选中的元素数" + select.size());
-		Iterator<Element> iterator = select.iterator();
-		while(iterator.hasNext()){
-			Element tr = iterator.next();
+		
+		select.parallelStream().forEach(tr -> {
 			Elements tds = tr.select("td");
 			Element td = tds.first();
 			String code = td.text();
@@ -143,7 +141,11 @@ public class AreaGenerator {
 				}
 			}
 			areaArr.add(new JSONObject(mapResult));
-		}
+		});
+//		Iterator<Element> iterator = select.iterator();
+//		while(iterator.hasNext()){
+//			Element tr = iterator.next();
+//		}
 		return areaArr;
 	}
 
