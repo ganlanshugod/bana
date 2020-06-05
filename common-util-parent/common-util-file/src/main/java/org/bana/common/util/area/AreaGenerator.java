@@ -2,7 +2,9 @@ package org.bana.common.util.area;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
@@ -40,23 +42,33 @@ public class AreaGenerator {
 			sqlFile.getParentFile().mkdirs();
 		}
 		FileUtils.write(sqlFile, "","UTF-8");
-		generatorFileFromJsonArray(rootId, jsonArray, sqlFile);
+		List<String> sqlStrList = generatorSqlFromJsonArray(rootId, jsonArray);
+		for (String sqlStr : sqlStrList) {
+			FileUtils.write(sqlFile, sqlStr,"UTF-8",true);
+		}
+	}
+	
+	
+	public static List<String> generatorSqlFromJson(String rootId,JSONArray jsonArray) {
+		return generatorSqlFromJsonArray(rootId, jsonArray);
 	}
 
-	private static void generatorFileFromJsonArray(String rootId, JSONArray jsonArray, File sqlFile)
-			throws IOException {
+	private static List<String> generatorSqlFromJsonArray(String rootId, JSONArray jsonArray) {
 		rootId = compute(rootId);
+		List<String> sqlList = new ArrayList<>();
 		String sql = "INSERT INTO t_bi_area (id ,name ,parent_id) VALUES(";
 		for (Object object : jsonArray) {
 			JSONObject jsonObject = (JSONObject)object;
 			String code = compute(jsonObject.getString("code"));
 			String name = jsonObject.getString("name");
-			FileUtils.write(sqlFile, sql + code +",'"+name+"','"+rootId+"');\n","UTF-8",true);
+			String sqlStr = sql + code +",'"+name+"','"+rootId+"');\n";
+			sqlList.add(sqlStr);
 			JSONArray subArr = jsonObject.getJSONArray("subArea");
 			if(subArr != null && subArr.size() > 0){
-				generatorFileFromJsonArray(code, subArr, sqlFile);
+				sqlList.addAll(generatorSqlFromJsonArray(code, subArr));
 			}
 		}
+		return sqlList;
 	}
 	
 	private static String compute(String code) {
@@ -91,7 +103,7 @@ public class AreaGenerator {
 		}
 	}
 	
-	private static JSONArray getJsonFromUrl(String url,boolean includeSub){
+	public static JSONArray getJsonFromUrl(String url,boolean includeSub){
 		JSONArray areaArr = new JSONArray();
 		if(StringUtils.isBlank(url)){
 			return null;
