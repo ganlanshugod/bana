@@ -9,7 +9,7 @@
   
   <properties>
   	<cxf.version>3.2.2</cxf.version>
-  	<httpclient.version>4.5.3</httpclient.version>
+  	<httpclient.version>4.5.12</httpclient.version>
   </properties>
   
   <dependencyManagement>
@@ -392,6 +392,7 @@
 	  	<module>common-util-email</module>
 	  	<module>common-util-file</module>
 	  	<module>common-util-code</module>
+	  	<module>common-util-http</module>
 	  	<module>common-util</module>
 	</modules>
 	
