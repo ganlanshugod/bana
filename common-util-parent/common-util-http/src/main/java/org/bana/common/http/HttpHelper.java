@@ -1,9 +1,15 @@
 package org.bana.common.http;
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.http.HttpEntity;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -13,6 +19,7 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.BasicHttpContext;
 import org.bana.common.http.log.HttpLogDomain;
 import org.bana.common.http.log.HttpLogger;
@@ -40,21 +47,62 @@ public class HttpHelper {
 		return LOG;
 	}
 	
+	public JSONObject httpParamPost(String url,Map<String,String> data) {
+		HttpLogDomain domain = getLOG().getHttpLogDomain();
+		// 构建请求
+		HttpPost httpPost = new HttpPost(url);
+		
+		// 处理参数信心为json格式
+		String params = null;
+		if(data != null) {
+			params = JSON.toJSONString(data);
+			List<NameValuePair> list = new ArrayList<NameValuePair>();
+			for (Map.Entry<String, String> param : data.entrySet()) {
+				BasicNameValuePair basicNameValuePair = new BasicNameValuePair(param.getKey(), param.getValue());
+				list.add(basicNameValuePair);
+			}
+			UrlEncodedFormEntity formEntity;
+			try {
+				formEntity = new UrlEncodedFormEntity(list, "UTF-8");
+				// 第一步：通过setEntity 将我们的entity对象传递过去
+				httpPost.setEntity(formEntity);
+				httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
+			} catch (UnsupportedEncodingException e) {
+				getLOG().logException(e);
+				throw new BanaHttpException("500",e.getMessage(),e);
+			}
+		}
+		getLOG().logBegin(url, params, HTTP_POST);
+		
+		return doHttp(domain, httpPost);
+	}
+	
 	public JSONObject httpPost(String url, Object data) {
 		HttpLogDomain domain = getLOG().getHttpLogDomain();
-		// 记录开始信息内容
-		String params = JSON.toJSONString(data);
-		StringEntity requestEntity = new StringEntity(params, "utf-8");
-		getLOG().logBegin(url, params, HTTP_POST);
+		// 构建请求
 		HttpPost httpPost = new HttpPost(url);
+		
+		// 处理参数信心为json格式
+		String params = null;
+		if(data != null) { // 使用json请求方式
+			params = JSON.toJSONString(data);
+			StringEntity requestEntity = new StringEntity(params, "utf-8");
+			httpPost.setEntity(requestEntity);
+			httpPost.addHeader("Content-Type", "application/json");
+		}
+		// 记录开始信息内容
+		getLOG().logBegin(url, params, HTTP_POST);
+		
+		return doHttp(domain, httpPost);
+	}
+
+	private JSONObject doHttp(HttpLogDomain domain, HttpPost httpPost) {
 		CloseableHttpClient httpClient = HttpClients.createDefault();
 		RequestConfig requestConfig = RequestConfig.custom()
 				.setSocketTimeout(4000).setConnectTimeout(4000).build();
 		httpPost.setConfig(requestConfig);
-		httpPost.addHeader("Content-Type", "application/json");
 		CloseableHttpResponse response = null;
 		try {
-			httpPost.setEntity(requestEntity);
 			response = httpClient.execute(httpPost,new BasicHttpContext());
 			StringResponseHandler handler = new StringResponseHandler();
 			String result = handler.handleResponse(response);
