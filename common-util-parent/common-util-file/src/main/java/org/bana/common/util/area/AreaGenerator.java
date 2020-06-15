@@ -3,6 +3,7 @@ package org.bana.common.util.area;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -125,6 +126,7 @@ public class AreaGenerator {
 	
 	public static JSONArray getJsonFromUrl(String url,boolean includeSub){
 		JSONArray areaArr = new JSONArray();
+		List<Object> synchronizedList = Collections.synchronizedList(areaArr);
 		if(StringUtils.isBlank(url)){
 			return null;
 		}
@@ -172,7 +174,7 @@ public class AreaGenerator {
 					mapResult.put("subArea", subArea);
 				}
 			}
-			areaArr.add(new JSONObject(mapResult));
+			synchronizedList.add(new JSONObject(mapResult));
 		});
 //		Iterator<Element> iterator = select.iterator();
 //		while(iterator.hasNext()){
