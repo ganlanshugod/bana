@@ -31,7 +31,7 @@ public class AreaGenerator {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(AreaGenerator.class);
 
-	private static String baseUrl = "http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2016/";
+	private static String baseUrl = "http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/";
 	
 	
 	public static void generatorSqlFromJsonFile(String rootId,String sqlFilePath,String jsonFilePath) throws IOException{
@@ -50,13 +50,11 @@ public class AreaGenerator {
 	public static List<Map<String,String>> generatorMapFromJsonArray(String rootId, JSONArray jsonArray){
 		List<Map<String,String>> result = new ArrayList<>();
 		rootId = compute(rootId);
-		String sql = "INSERT INTO t_bi_area (id ,name ,parent_id) VALUES(";
 		for (Object object : jsonArray) {
 			Map<String,String> map = new HashMap<>();
 			JSONObject jsonObject = (JSONObject)object;
 			String code = compute(jsonObject.getString("code"));
 			String name = jsonObject.getString("name");
-			String sqlStr = sql + code +",'"+name+"','"+rootId+"')\n";
 			map.put("code", code);
 			map.put("name", name);
 			map.put("parentId", rootId);
@@ -121,12 +119,48 @@ public class AreaGenerator {
 		}
 	}
 	
+	public static class AreaUrlConfig {
+		int level;
+		String parentCode;
+		
+		public static AreaUrlConfig parse(String url) {
+			if(url.indexOf(baseUrl) == -1) {
+				throw new BanaUtilException("不合法的爬取链接地址，不能正确解析：" + url);
+			}
+			String[] split = url.split(baseUrl);
+			String infoUrl = split[split.length-1];
+			String[] split2 = infoUrl.split("/");
+			AreaUrlConfig config = new AreaUrlConfig();
+			config.level = split2.length;
+			if(config.level == 1) {
+				config.parentCode = "0";
+			}else {
+				config.parentCode = split2[split2.length-1].split("\\.")[0];
+			}
+			return config;
+		}
+	}
+	public static void main(String[] args) {
+//		String url = "http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2019/13/05/03/130503002.html";
+		String url = "http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2019/13.html";
+		AreaUrlConfig parse = AreaUrlConfig.parse(url);
+		System.out.println(parse.level);
+		System.out.println(parse.parentCode);
+	}
+	
 	public static JSONArray getJsonFromUrl(String url,boolean includeSub){
-		JSONArray areaArr = new JSONArray();
-		List<Object> synchronizedList = Collections.synchronizedList(areaArr);
+		return getJsonFromUrl(url, includeSub,6);
+	}
+	
+	public static JSONArray getJsonFromUrl(String url,boolean includeSub,int depLevel){
 		if(StringUtils.isBlank(url)){
 			return null;
 		}
+		AreaUrlConfig parse = AreaUrlConfig.parse(url);
+		
+		JSONArray areaArr = new JSONArray();
+		List<Object> synchronizedList = Collections.synchronizedList(areaArr);
+		
 		String selectStr = getSelect(url);
 		if(StringUtils.isBlank(selectStr)){
 			return null;
@@ -134,15 +168,24 @@ public class AreaGenerator {
 		Document document = null;
 		int index = 0;
 		while(true){
+			index ++;
 			try {
 				document = Jsoup.connect(url).timeout(5000).get();
-				if(index > 0) {
-					LOG.error("success " + index + " 次成功"+url);
+				Elements select = document.select(selectStr);
+				if(select.isEmpty()) {
+					LOG.error("第 " + (index) + " 次读取 url：【"+ url + "】 读取成功，但是无法获取到数据");
+					if(index > 3) {
+						LOG.warn(document.toString());
+						throw new BanaUtilException("url：【"+ url + "】 读取失败，不能正常读取,请五分钟后再试");
+					}
+					continue;
+				}
+				if(index > 1) {
+					LOG.error("success ,第 " + index + " 次成功"+url);
 				}
 				break;
 			} catch (IOException e) {
-				index ++;
-				LOG.error("第 " + index + " 次读取链接"+url+"，失败", e.getMessage());
+				LOG.error("第 " + (index) + " 次读取链接"+url+"，失败", e.getMessage());
 				if(index > 3){
 					throw new BanaUtilException("读取链接"+url+"，失败", e);
 				}
@@ -150,7 +193,12 @@ public class AreaGenerator {
 		}
 		
 		Elements select = document.select(selectStr);
-//			System.out.println("选中的元素数" + select.size());
+//		System.out.println("url"+ url + "结果为" + document.toString());
+		if(select.isEmpty()) {
+			LOG.warn("url：【"+ url + "】 读取成功，但是无法获取到数据");
+			System.out.println(document.toString());
+			throw new BanaUtilException("url：【"+ url + "】 读取成功，但是无法获取到数据");
+		}
 		
 		select.parallelStream().forEach(tr -> {
 			Elements tds = tr.select("td");
@@ -166,7 +214,7 @@ public class AreaGenerator {
 			mapResult.put("code", code);
 			mapResult.put("name", name);
 			mapResult.put("subUrl", subUrl);
-			if(includeSub){
+			if(includeSub && depLevel > parse.level){
 				JSONArray subArea = getJsonFromUrl(subUrl,true);
 				if(subArea != null && subArea.size() > 0){
 					mapResult.put("subArea", subArea);
