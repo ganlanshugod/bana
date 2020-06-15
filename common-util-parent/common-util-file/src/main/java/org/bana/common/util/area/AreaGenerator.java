@@ -136,6 +136,8 @@ public class AreaGenerator {
 		while(true){
 			index ++;
 			try {
+//				http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2019/44/4420.html
+//				http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2019/44/4420.html
 				document = Jsoup.connect(url).timeout(5000).get();
 				Elements select = document.select(selectStr);
 				if(select.isEmpty()) {
@@ -211,6 +213,12 @@ public class AreaGenerator {
 	private static String getSelect(String url) {
 		String parentId = url.substring(url.lastIndexOf("/")+1,url.lastIndexOf("."));
 //		parentId = StringUtils.rightPad(parentId, 6, '0');
+		if(StringUtils.equalsAny(parentId, "4419","4420","4604")){
+			return "table.towntable tr.towntr";
+		}
+		if(StringUtils.equalsAny(parentId, "4603")){
+			return "table.countytable tr.countytr";
+		}
 		int parentLength = parentId.length();
 		if(parentId.length() == 2){
 			return "table.citytable tr.citytr";
