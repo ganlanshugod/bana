@@ -136,8 +136,6 @@ public class AreaGenerator {
 		while(true){
 			index ++;
 			try {
-//				http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2019/44/4420.html
-//				http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2019/44/4420.html
 				document = Jsoup.connect(url).timeout(5000).get();
 				Elements select = document.select(selectStr);
 				if(select.isEmpty()) {
