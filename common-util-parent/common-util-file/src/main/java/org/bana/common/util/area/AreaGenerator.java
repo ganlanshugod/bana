@@ -48,7 +48,27 @@ public class AreaGenerator {
 		}
 	}
 	
-	
+	public static List<Map<String,String>> generatorMapFromJsonArray(String rootId, JSONArray jsonArray){
+		List<Map<String,String>> result = new ArrayList<>();
+		rootId = compute(rootId);
+		String sql = "INSERT INTO t_bi_area (id ,name ,parent_id) VALUES(";
+		for (Object object : jsonArray) {
+			Map<String,String> map = new HashMap<>();
+			JSONObject jsonObject = (JSONObject)object;
+			String code = compute(jsonObject.getString("code"));
+			String name = jsonObject.getString("name");
+			String sqlStr = sql + code +",'"+name+"','"+rootId+"')\n";
+			map.put("code", code);
+			map.put("name", name);
+			map.put("parentId", rootId);
+			result.add(map);
+			JSONArray subArr = jsonObject.getJSONArray("subArea");
+			if(subArr != null && subArr.size() > 0){
+				result.addAll(generatorMapFromJsonArray(code, subArr));
+			}
+		}
+		return result;
+	}
 	public static List<String> generatorSqlFromJson(String rootId,JSONArray jsonArray) {
 		return generatorSqlFromJsonArray(rootId, jsonArray);
 	}
@@ -61,7 +81,7 @@ public class AreaGenerator {
 			JSONObject jsonObject = (JSONObject)object;
 			String code = compute(jsonObject.getString("code"));
 			String name = jsonObject.getString("name");
-			String sqlStr = sql + code +",'"+name+"','"+rootId+"');\n";
+			String sqlStr = sql + code +",'"+name+"','"+rootId+"')\n";
 			sqlList.add(sqlStr);
 			JSONArray subArr = jsonObject.getJSONArray("subArea");
 			if(subArr != null && subArr.size() > 0){
