@@ -181,6 +181,7 @@ public class AreaGenerator {
 			Map<String,Object> mapResult = new HashMap<String,Object>();
 			mapResult.put("code", code);
 			mapResult.put("name", name);
+			
 			mapResult.put("subUrl", subUrl);
 			if(includeSub && depLevel > parse.getLevel()){
 				JSONArray subArea = getJsonFromUrl(subUrl,true,depLevel);
