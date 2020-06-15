@@ -118,7 +118,7 @@ public class AreaGenerator {
 	
 	
 	public static JSONArray getJsonFromUrl(String url,boolean includeSub){
-		return getJsonFromUrl(url, includeSub,6);
+		return getJsonFromUrl(url, includeSub,5);
 	}
 	
 	public static JSONArray getJsonFromUrl(String url,boolean includeSub,int depLevel){
