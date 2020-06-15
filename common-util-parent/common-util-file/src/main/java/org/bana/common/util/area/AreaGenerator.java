@@ -33,8 +33,6 @@ public class AreaGenerator {
 
 	private static String baseUrl = "http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2016/";
 	
-	private static int count = 0;
-	
 	
 	public static void generatorSqlFromJsonFile(String rootId,String sqlFilePath,String jsonFilePath) throws IOException{
 		JSONArray jsonArray = JSONArray.parseArray(FileUtils.readFileToString(new File(jsonFilePath),"UTF-8"));
@@ -109,7 +107,6 @@ public class AreaGenerator {
 		String parentId = parentUrl.substring(parentUrl.lastIndexOf("/")+1,parentUrl.lastIndexOf("."));
 		parentId = StringUtils.rightPad(parentId, 6, '0');
 		LOG.info("加载的根编码是" + parentId);
-		count = 0;
 		JSONArray jsonFromUrl = getJsonFromUrl(parentUrl,true);
 		File file = new File(filePath);
 		if(!file.getParentFile().exists()){
@@ -139,18 +136,19 @@ public class AreaGenerator {
 		while(true){
 			try {
 				document = Jsoup.connect(url).timeout(5000).get();
-				count++;
+				if(index > 0) {
+					LOG.error("success " + index + " 次成功"+url);
+				}
 				break;
 			} catch (IOException e) {
 				index ++;
-				LOG.error("读取链接"+url+"，失败" + index +"次", e.getMessage());
+				LOG.error("第 " + index + " 次读取链接"+url+"，失败", e.getMessage());
 				if(index > 3){
 					throw new BanaUtilException("读取链接"+url+"，失败", e);
 				}
 			}
 		}
 		
-		System.out.println(count);
 		Elements select = document.select(selectStr);
 //			System.out.println("选中的元素数" + select.size());
 		
