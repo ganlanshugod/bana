@@ -76,8 +76,7 @@ public class HttpHelper {
 		
 		return doHttp(domain, httpPost);
 	}
-	
-	public JSONObject httpPost(String url, Object data) {
+	public JSONObject httpPost(String url, Object data, Map<String,String> headerData) {
 		HttpLogDomain domain = getLOG().getHttpLogDomain();
 		// 构建请求
 		HttpPost httpPost = new HttpPost(url);
@@ -89,11 +88,19 @@ public class HttpHelper {
 			StringEntity requestEntity = new StringEntity(params, "utf-8");
 			httpPost.setEntity(requestEntity);
 			httpPost.addHeader("Content-Type", "application/json");
+			if(headerData != null) {
+				for (Map.Entry<String, String> oneHead : headerData.entrySet()) {
+					httpPost.addHeader(oneHead.getKey(), oneHead.getValue());
+				}
+			}
 		}
 		// 记录开始信息内容
 		getLOG().logBegin(url, params, HTTP_POST);
 		
 		return doHttp(domain, httpPost);
+	}
+	public JSONObject httpPost(String url, Object data) {
+		return httpPost(url, data, null);
 	}
 
 	private JSONObject doHttp(HttpLogDomain domain, HttpPost httpPost) {
