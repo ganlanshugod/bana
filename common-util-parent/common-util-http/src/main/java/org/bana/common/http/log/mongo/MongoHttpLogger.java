@@ -23,7 +23,7 @@ public class MongoHttpLogger extends HttpLogger{
 	
 	private MongoTemplate mongoTemplate;
 	
-	private String collectionName = "t_wechat_api_log";
+	private String collectionName = "t_http_api_log";
 	
 	private static final Logger LOG = LoggerFactory.getLogger(MongoHttpLogger.class);
 	/**
