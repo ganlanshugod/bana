@@ -40,6 +40,27 @@ public class HttpHelper {
 	
 	private static HttpLogger LOG;
 	
+	private HttpConfig config;
+	
+	/** 
+	* <p>Description: </p> 
+	* @author liuwenjie   
+	* @date Jul 22, 2020 10:16:58 AM  
+	*/ 
+	public HttpHelper() {
+		config = new HttpConfig();
+	}
+
+	/** 
+	* <p>Description: </p> 
+	* @author liuwenjie   
+	* @date Jul 22, 2020 10:16:49 AM 
+	* @param config 
+	*/ 
+	public HttpHelper(HttpConfig config) {
+		this.config = config;
+	}
+
 	public static HttpLogger getLOG() {
 		if(LOG == null) {
 			LOG = HttpLoggerFactory.getHttpLogger();
@@ -106,7 +127,7 @@ public class HttpHelper {
 	private JSONObject doHttp(HttpLogDomain domain, HttpPost httpPost) {
 		CloseableHttpClient httpClient = HttpClients.createDefault();
 		RequestConfig requestConfig = RequestConfig.custom()
-				.setSocketTimeout(4000).setConnectTimeout(4000).build();
+				.setSocketTimeout(config.getSocketTimeout()).setConnectTimeout(config.getTimeout()).build();
 		httpPost.setConfig(requestConfig);
 		CloseableHttpResponse response = null;
 		try {
@@ -143,7 +164,7 @@ public class HttpHelper {
 		CloseableHttpResponse response = null;
 		CloseableHttpClient httpClient = HttpClients.createDefault();
 		RequestConfig requestConfig = RequestConfig.custom()
-				.setSocketTimeout(4000).setConnectTimeout(4000).build();
+				.setSocketTimeout(config.getSocketTimeout()).setConnectTimeout(config.getTimeout()).build();
 		httpGet.setConfig(requestConfig);
 		try {
 			response = httpClient.execute(httpGet, new BasicHttpContext());
@@ -176,7 +197,8 @@ public class HttpHelper {
 		CloseableHttpResponse response = null;
 		CloseableHttpClient httpClient = HttpClients.createDefault();
 		RequestConfig requestConfig = RequestConfig.custom()
-				.setSocketTimeout(4000).setConnectTimeout(4000).build();
+				.setSocketTimeout(config.getSocketTimeout())
+				.setConnectTimeout(config.getTimeout()).build();
 		httpPost.setConfig(requestConfig);
 
 		HttpEntity requestEntity = MultipartEntityBuilder
@@ -210,4 +232,13 @@ public class HttpHelper {
 			getLOG().saveLog();
 		}
 	}
+
+	public HttpConfig getConfig() {
+		return config;
+	}
+
+	public void setConfig(HttpConfig config) {
+		this.config = config;
+	}
+	
 }
