@@ -114,7 +114,7 @@ public class HttpHelper {
 			StringResponseHandler handler = new StringResponseHandler();
 			String result = handler.handleResponse(response);
 			//LOG 内容
-			domain.setWechatResult(result);
+			domain.setResult(result);
 			return JSON.parseObject(result);
 		} catch (IOException e) {
 			getLOG().logException(e);
@@ -149,7 +149,7 @@ public class HttpHelper {
 			response = httpClient.execute(httpGet, new BasicHttpContext());
 			StringResponseHandler handler = new StringResponseHandler();
 			String result = handler.handleResponse(response);
-			getLOG().getHttpLogDomain().setWechatResult(result);
+			getLOG().getHttpLogDomain().setResult(result);
 			return JSON.parseObject(result);
 		} catch (IOException e) {
 			getLOG().logException(e);
@@ -192,7 +192,7 @@ public class HttpHelper {
 			response = httpClient.execute(httpPost, new BasicHttpContext());
 			StringResponseHandler handler = new StringResponseHandler();
 			String result = handler.handleResponse(response);
-			getLOG().getHttpLogDomain().setWechatResult(result);
+			getLOG().getHttpLogDomain().setResult(result);
 			return JSON.parseObject(result);
 		} catch (IOException e) {
 			getLOG().logException(e);

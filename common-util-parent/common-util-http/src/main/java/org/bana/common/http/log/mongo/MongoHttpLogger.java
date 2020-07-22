@@ -37,7 +37,7 @@ public class MongoHttpLogger extends HttpLogger{
 	protected void doSaveHttpLog(HttpLogDomain logDomain) {
 //		super.doSaveHttpLog(logDomain);
 //		Map<String, Object> convertBean = BeanToMapUtil.convertBean(param);
-		LOG.info("===微信使用Mongo保存访问记录===" + logDomain.getWechatUrl());
+		LOG.info("===微信使用Mongo保存访问记录===" + logDomain.getUrl());
 		mongoTemplate.save(logDomain, collectionName);
 	}
 	public MongoTemplate getMongoTemplate() {

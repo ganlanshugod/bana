@@ -21,7 +21,7 @@ public class HttpLogDomain implements Serializable{
 	*/ 
 	private static final long serialVersionUID = 8913553794367177420L;
 	
-	private String wechatUrl;
+	private String url;
 	/** 
 	* @Fields paramData : 调用的参数转为json
 	*/
@@ -57,7 +57,7 @@ public class HttpLogDomain implements Serializable{
 	/** 
 	* @Fields wechatResult : 客户端信息
 	*/
-	private String wechatResult;
+	private String result;
 	/** 
 	* @Fields executeMethod : 访问类型,post还是get方法等
 	*/
@@ -73,19 +73,18 @@ public class HttpLogDomain implements Serializable{
 	*/ 
 	private String exceptionMessage;
 	
-	/**
-	 * @Description: 属性 wechatUrl 的get方法 
-	 * @return wechatUrl
-	 */
-	public String getWechatUrl() {
-		return wechatUrl;
+	
+	public String getUrl() {
+		return url;
 	}
-	/**
-	 * @Description: 属性 wechatUrl 的set方法 
-	 * @param wechatUrl 
-	 */
-	public void setWechatUrl(String wechatUrl) {
-		this.wechatUrl = wechatUrl;
+	public void setUrl(String url) {
+		this.url = url;
+	}
+	public String getResult() {
+		return result;
+	}
+	public void setResult(String result) {
+		this.result = result;
 	}
 	/**
 	 * @Description: 属性 paramData 的get方法 
@@ -200,20 +199,6 @@ public class HttpLogDomain implements Serializable{
 		this.httpMessage = httpMessage;
 	}
 	/**
-	 * @Description: 属性 wechatResult 的get方法 
-	 * @return wechatResult
-	 */
-	public String getWechatResult() {
-		return wechatResult;
-	}
-	/**
-	 * @Description: 属性 wechatResult 的set方法 
-	 * @param wechatResult 
-	 */
-	public void setWechatResult(String wechatResult) {
-		this.wechatResult = wechatResult;
-	}
-	/**
 	 * @Description: 属性 executeMethod 的get方法 
 	 * @return executeMethod
 	 */
@@ -255,18 +240,13 @@ public class HttpLogDomain implements Serializable{
 	public void setExceptionMessage(String exceptionMessage) {
 		this.exceptionMessage = exceptionMessage;
 	}
-	/**
-	* <p>Description: </p> 
-	* @author Liu Wenjie   
-	* @date 2015-5-27 下午4:52:28 
-	* @return 
-	* @see java.lang.Object#toString() 
-	*/ 
 	@Override
 	public String toString() {
-		return "HttpLogDomain [wechatUrl=" + wechatUrl + ", paramData=" + paramData + ", startTime=" + startTime + ", endTime=" + endTime + ", startMillisecond="
-				+ startMillisecond + ", endMillisecond=" + endMillisecond + ", duration=" + duration + ", statusCode=" + statusCode + ", httpMessage=" + httpMessage
-				+ ", wechatResult=" + wechatResult + ", executeMethod=" + executeMethod + ", exceptionClass=" + exceptionClass + ", exceptionMessage=" + exceptionMessage + "]";
+		return "HttpLogDomain [url=" + url + ", paramData=" + paramData + ", startTime=" + startTime + ", endTime="
+				+ endTime + ", startMillisecond=" + startMillisecond + ", endMillisecond=" + endMillisecond
+				+ ", duration=" + duration + ", statusCode=" + statusCode + ", httpMessage=" + httpMessage + ", result="
+				+ result + ", executeMethod=" + executeMethod + ", exceptionClass=" + exceptionClass
+				+ ", exceptionMessage=" + exceptionMessage + "]";
 	}
 	
 	
