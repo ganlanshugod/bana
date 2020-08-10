@@ -1,6 +1,5 @@
 package org.bana.common.util.basic;
 
-import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -28,28 +27,45 @@ public class ClonePojoUtil {
 		String value() default "yyyy-MM-dd";
 	}
 	
-    /** 
-    * @Description: 将前一个类中的对象，按照名字相同，类型相同进行复制
-    * @author Liu Wenjie   
-    * @date 2013-11-13 下午3:19:30 
-    * @param from
-    * @param toClass
-    * @return  
-    */ 
-    public static <T>T copyClassFromTo(Object from,Class<T> toClass){
-        if(from == null || toClass == null){
+	/** 
+	    * @Description: 将前一个类中的对象，按照名字相同，类型相同进行复制
+	    * @author Liu Wenjie   
+	    * @date 2013-11-13 下午3:19:30 
+	    * @param from
+	    * @param toClass
+	    * @return  
+	    */ 
+	public static <T>T copyClassFromTo(Object from,Class<T> toClass){
+		if(from == null || toClass == null){
             LOG.warn("参数对象有null，转化失败... ...");
             return null;
         }
-        Field[] eFields = toClass.getDeclaredFields();
-        
-        T entity = null;
+		T entity = null;
 		try {
 			entity = toClass.newInstance();
 		} catch (Exception e) {
 			LOG.error("实体转换时实例化被转化的对象失败",e);
 			throw new RuntimeException("实体转换时实例化被转化的对象失败",e);
 		}
+		return copyClassFromTo(from, entity);
+	}
+	
+    /**
+    * @Description: 增加一个可以赋值给指定对象的clone方法
+    * @author liuwenjie   
+    * @date Aug 10, 2020 5:27:09 PM 
+    * @param from
+    * @param entity
+    * @return
+     */
+    public static <T>T copyClassFromTo(Object from,T entity){
+    	if(entity == null) {
+    		return null;
+    	}
+    	Class<? extends Object> toClass = entity.getClass();
+        
+        Field[] eFields = toClass.getDeclaredFields();
+       
         LOG.debug("要转化成的目标类定义中有 " + eFields.length + " 个属性");
         if (arrayIsEmpty(eFields)) {
             LOG.error("转化失败... ...");
