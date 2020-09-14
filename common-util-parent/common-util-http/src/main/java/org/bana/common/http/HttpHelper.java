@@ -5,6 +5,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
@@ -95,36 +96,38 @@ public class HttpHelper {
 		}
 		getLOG().logBegin(url, params, HTTP_POST);
 		
-		return doHttp(domain, httpPost);
+		return doHttp(domain, httpPost, null);
 	}
 	public JSONObject httpPost(String url, Object data, Map<String,String> headerData) {
-		HttpLogDomain domain = getLOG().getHttpLogDomain();
-		// 构建请求
-		HttpPost httpPost = new HttpPost(url);
+//		HttpLogDomain domain = getLOG().getHttpLogDomain();
+//		// 构建请求
+//		HttpPost httpPost = new HttpPost(url);
+//		
+//		// 处理参数信心为json格式
+//		String params = null;
+//		if(data != null) { // 使用json请求方式
+//			params = JSON.toJSONString(data);
+//			StringEntity requestEntity = new StringEntity(params, "utf-8");
+//			httpPost.setEntity(requestEntity);
+//			httpPost.addHeader("Content-Type", "application/json");
+//			if(headerData != null) {
+//				for (Map.Entry<String, String> oneHead : headerData.entrySet()) {
+//					httpPost.addHeader(oneHead.getKey(), oneHead.getValue());
+//				}
+//			}
+//		}
+//		// 记录开始信息内容
+//		getLOG().logBegin(url, params, HTTP_POST);
+//		
+//		return doHttp(domain, httpPost);
 		
-		// 处理参数信心为json格式
-		String params = null;
-		if(data != null) { // 使用json请求方式
-			params = JSON.toJSONString(data);
-			StringEntity requestEntity = new StringEntity(params, "utf-8");
-			httpPost.setEntity(requestEntity);
-			httpPost.addHeader("Content-Type", "application/json");
-			if(headerData != null) {
-				for (Map.Entry<String, String> oneHead : headerData.entrySet()) {
-					httpPost.addHeader(oneHead.getKey(), oneHead.getValue());
-				}
-			}
-		}
-		// 记录开始信息内容
-		getLOG().logBegin(url, params, HTTP_POST);
-		
-		return doHttp(domain, httpPost);
+		return httpPost(url, data, headerData, null);
 	}
 	public JSONObject httpPost(String url, Object data) {
 		return httpPost(url, data, null);
 	}
-
-	private JSONObject doHttp(HttpLogDomain domain, HttpPost httpPost) {
+	
+	private JSONObject doHttp(HttpLogDomain domain, HttpPost httpPost, Function<Object, String> extendHandlerFunc) {
 		CloseableHttpClient httpClient = HttpClients.createDefault();
 		RequestConfig requestConfig = RequestConfig.custom()
 				.setSocketTimeout(config.getSocketTimeout()).setConnectTimeout(config.getTimeout()).build();
@@ -147,6 +150,12 @@ public class HttpHelper {
 					domain.setStatusCode(String.valueOf(response.getStatusLine().getStatusCode()));
 					response.close();
 	//				domain.setHttpMessage(String.valueOf(response.getStatusLine()));
+				}
+				if(extendHandlerFunc!=null) {
+					String paramExtendStr = extendHandlerFunc.apply(domain.getParamData());
+					String resultExtendStr = extendHandlerFunc.apply(domain.getResult());
+					domain.setParamExtend(paramExtendStr);
+					domain.setResultExtend(resultExtendStr);
 				}
 				httpClient.close();
 			} catch (IOException e) {
@@ -231,6 +240,40 @@ public class HttpHelper {
 			}
 			getLOG().saveLog();
 		}
+	}
+	
+	/** 
+	* @Description: 增加处理函数
+	* @author zhangzhichao   
+	* @date Sep 11, 2020 2:09:57 PM 
+	* @param url
+	* @param data
+	* @param headerData
+	* @param extendHandlerFunc
+	* @return  
+	*/ 
+	public JSONObject httpPost(String url, Object data, Map<String,String> headerData, Function<Object, String> extendHandlerFunc) {
+		HttpLogDomain domain = getLOG().getHttpLogDomain();
+		// 构建请求
+		HttpPost httpPost = new HttpPost(url);
+		
+		// 处理参数信心为json格式
+		String params = null;
+		if(data != null) { // 使用json请求方式
+			params = JSON.toJSONString(data);
+			StringEntity requestEntity = new StringEntity(params, "utf-8");
+			httpPost.setEntity(requestEntity);
+			httpPost.addHeader("Content-Type", "application/json");
+			if(headerData != null) {
+				for (Map.Entry<String, String> oneHead : headerData.entrySet()) {
+					httpPost.addHeader(oneHead.getKey(), oneHead.getValue());
+				}
+			}
+		}
+		// 记录开始信息内容
+		getLOG().logBegin(url, params, HTTP_POST);
+		
+		return doHttp(domain, httpPost, extendHandlerFunc);
 	}
 
 	public HttpConfig getConfig() {

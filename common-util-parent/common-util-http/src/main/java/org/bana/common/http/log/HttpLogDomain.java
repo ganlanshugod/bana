@@ -73,6 +73,15 @@ public class HttpLogDomain implements Serializable{
 	*/ 
 	private String exceptionMessage;
 	
+	/** 
+	* @Fields paramExtend : 参数扩展信息 
+	*/ 
+	private String paramExtend;
+	/** 
+	* @Fields resultExtend : 返回结果扩展信息 
+	*/ 
+	private String resultExtend;
+	
 	
 	public String getUrl() {
 		return url;
@@ -240,13 +249,26 @@ public class HttpLogDomain implements Serializable{
 	public void setExceptionMessage(String exceptionMessage) {
 		this.exceptionMessage = exceptionMessage;
 	}
+	public String getParamExtend() {
+		return paramExtend;
+	}
+	public void setParamExtend(String paramExtend) {
+		this.paramExtend = paramExtend;
+	}
+	public String getResultExtend() {
+		return resultExtend;
+	}
+	public void setResultExtend(String resultExtend) {
+		this.resultExtend = resultExtend;
+	}
 	@Override
 	public String toString() {
 		return "HttpLogDomain [url=" + url + ", paramData=" + paramData + ", startTime=" + startTime + ", endTime="
 				+ endTime + ", startMillisecond=" + startMillisecond + ", endMillisecond=" + endMillisecond
 				+ ", duration=" + duration + ", statusCode=" + statusCode + ", httpMessage=" + httpMessage + ", result="
 				+ result + ", executeMethod=" + executeMethod + ", exceptionClass=" + exceptionClass
-				+ ", exceptionMessage=" + exceptionMessage + "]";
+				+ ", exceptionMessage=" + exceptionMessage + ", paramExtend=" + paramExtend + ", resultExtend="
+				+ resultExtend + "]";
 	}
 	
 	
