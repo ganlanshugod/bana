@@ -8,8 +8,12 @@
 */
 package org.bana.common.util.async;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+
+import org.junit.Test;
 
 /**
  * @ClassName: TestAsync
@@ -18,7 +22,8 @@ import java.util.concurrent.ExecutionException;
  */
 public class TestAsync {
 
-	public static void main(String[] args) throws InterruptedException, ExecutionException {
+	@Test
+	public void testAsync() throws InterruptedException, ExecutionException {
 		final long begin = System.currentTimeMillis();
 		Async async = new Async(() -> {
 			System.out.println("begin1:" + (System.currentTimeMillis() - begin));
@@ -37,5 +42,30 @@ public class TestAsync {
 		List<Object> await = async.await();
 		System.out.println("main3:" + (System.currentTimeMillis() - begin));
 		System.out.println(await);
+	}
+	
+	@Test
+	public void testListSteam() {
+		List<Integer> list = new ArrayList<>();
+		for (int i = 0; i < 100000 ; i++) {
+			list.add(i);
+		}
+		long begin = System.currentTimeMillis();
+		list.stream().forEach(i->{
+			System.out.print(i+" ");
+		});
+		System.out.println();
+		System.out.println("steam 执行了："+ (System.currentTimeMillis() - begin));
+		begin = System.currentTimeMillis();
+		List<Integer> list2 = new ArrayList<>();
+		List<Integer> synchronizedList = Collections.synchronizedList(list2);
+		list.parallelStream().forEach(i->{
+			System.out.print(i+" ");
+			synchronizedList.add(i);
+		});
+		System.out.println();
+		System.out.println(list2.size());
+		
+		System.out.println("parallelStream 执行了："+ (System.currentTimeMillis() - begin));
 	}
 }

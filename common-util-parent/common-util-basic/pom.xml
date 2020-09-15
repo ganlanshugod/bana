@@ -22,6 +22,11 @@
 		<groupId>commons-collections</groupId>
 		<artifactId>commons-collections</artifactId>
 	</dependency>
+	<!-- 异步支持 -->
+	<dependency>
+		<groupId>org.bana</groupId>
+		<artifactId>common-util-async</artifactId>
+	</dependency>
   	<!-- 汉字转拼音 -->
 	<dependency>
 	    <groupId>com.belerweb</groupId>
