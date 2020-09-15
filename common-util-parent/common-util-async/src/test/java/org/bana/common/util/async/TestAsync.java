@@ -23,7 +23,7 @@ import org.junit.Test;
 public class TestAsync {
 
 	@Test
-	public void testAsync() throws InterruptedException, ExecutionException {
+	public void testAsync() {
 		long begin = System.currentTimeMillis();
 		Async async = new Async(() -> {
 			System.out.println("begin1:" + (System.currentTimeMillis() - begin));
@@ -33,6 +33,9 @@ public class TestAsync {
 		}).add(() -> {
 			System.out.println("begin2:" + (System.currentTimeMillis() - begin));
 			Thread.sleep(1000);
+			if(1==1) {
+				throw new RuntimeException("123");
+			}
 			System.out.println("end2:" + (System.currentTimeMillis() - begin));
 			return "s";
 		}).add(()->{

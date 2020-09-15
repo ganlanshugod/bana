@@ -35,15 +35,15 @@ public class Async implements Serializable {
 
 	// 声明一个可以无限扩充的线程池，用于并发执行
 	private static ExecutorService exec = Executors.newCachedThreadPool();
-	
-	private CompletionService<Object> completionService ;
+
+	private CompletionService<Object> completionService;
 //	private int count = 0;
-	
 
 	/**
 	 * <p>
 	 * Description:
 	 * </p>
+	 * 
 	 * @author liuwenjie
 	 * @date Sep 11, 2020 6:38:12 PM
 	 */
@@ -58,24 +58,34 @@ public class Async implements Serializable {
 //		count++;
 		return this;
 	}
-	
-	public List<Object> await() throws InterruptedException, ExecutionException {
+
+	public List<Object> await() {
 		List<Object> result = new ArrayList<>();
 		// 按照加入顺序返回执行结果
-		for (Future<Object> future : asyncFnList) {
-			result.add(future.get());
+		try {
+			for (Future<Object> future : asyncFnList) {
+				result.add(future.get());
+			}
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			throw new AsyncInterruptException("异步执行出现InterruptedException==", e);
+		} catch (ExecutionException e) {
+			if(e.getCause() instanceof RuntimeException) {
+				throw (RuntimeException)e.getCause();
+			}else {
+				throw new AsyncExcuteException("异步执行出现非runtimeException", e.getCause());
+			}
 		}
 		return result;
 	}
 
 	@FunctionalInterface
 	public static interface AsyncFunction<T> extends Callable<T> {
-		
+
 	}
 
 	public static void shutDown() {
 		exec.shutdown();
 	}
-	
 
 }
