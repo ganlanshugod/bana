@@ -73,7 +73,7 @@ public class Async implements Serializable {
 			if(e.getCause() instanceof RuntimeException) {
 				throw (RuntimeException)e.getCause();
 			}else {
-				throw new AsyncExcuteException("异步执行出现非runtimeException", e.getCause());
+				throw new AsyncExcuteNotRuntimeException("异步执行出现非runtimeException", e.getCause());
 			}
 		}
 		return result;

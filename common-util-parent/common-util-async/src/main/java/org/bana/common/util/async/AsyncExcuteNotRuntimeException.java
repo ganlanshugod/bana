@@ -13,7 +13,7 @@ package org.bana.common.util.async;
 * @Description: 异步执行的异常返回结果类
 * @author liuwenjie   
 */
-public class AsyncExcuteException extends RuntimeException{
+public class AsyncExcuteNotRuntimeException extends RuntimeException{
 
 	/** 
 	* @Fields serialVersionUID : 
@@ -25,7 +25,7 @@ public class AsyncExcuteException extends RuntimeException{
 	* @author liuwenjie   
 	* @date Sep 15, 2020 2:56:09 PM  
 	*/
-	public AsyncExcuteException(String message, Throwable cause) {
+	public AsyncExcuteNotRuntimeException(String message, Throwable cause) {
 		super(message, cause);
 	}
 	
