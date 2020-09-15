@@ -24,7 +24,7 @@ public class TestAsync {
 
 	@Test
 	public void testAsync() throws InterruptedException, ExecutionException {
-		final long begin = System.currentTimeMillis();
+		long begin = System.currentTimeMillis();
 		Async async = new Async(() -> {
 			System.out.println("begin1:" + (System.currentTimeMillis() - begin));
 			Thread.sleep(2000);

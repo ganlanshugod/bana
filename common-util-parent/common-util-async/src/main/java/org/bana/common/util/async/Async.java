@@ -73,7 +73,7 @@ public class Async implements Serializable {
 		
 	}
 
-	public void shutDown() {
+	public static void shutDown() {
 		exec.shutdown();
 	}
 	
