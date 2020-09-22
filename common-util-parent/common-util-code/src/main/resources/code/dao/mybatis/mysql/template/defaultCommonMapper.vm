@@ -25,7 +25,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<!-- 查询的所有列 -->
 	<sql id="all_Column_List">
 #foreach (${column} in ${this.getTable().getColumnList()})
-	_THIS.${column.getColumnName().toUpperCase()}	#if ($velocityCount < ${this.getTable().getColumnList().size()}),
+	_THIS.${column.getColumnName().toUpperCase()}	#if ($foreach.count < ${this.getTable().getColumnList().size()}),
 #else
 	
 #end
@@ -71,7 +71,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		from #if(${this.getTable().isTableSchamaUseInSql()})${this.getTable().getTableSchama()}.#end${this.getTable().getTableName()} _THIS
 		where 
 #foreach(${column} in ${this.getTable().findPriColumnList()})
-		#if($velocityCount > 1)and #end${column.getColumnName()} = ${jinghao}{${column.getJavaName()}}
+		#if($foreach.count > 1)and #end${column.getColumnName()} = ${jinghao}{${column.getJavaName()}}
 #end
 	</select>
 	
@@ -120,7 +120,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		</set>
 		where 
 #foreach (${column} in ${this.getTable().findPriColumnList()})
-		#if($velocityCount > 1)and #end${column.getColumnName()} = #{#if(${this.getTable().hasPkDomain()})id.#end${column.getJavaName()}}
+		#if($foreach.count > 1)and #end${column.getColumnName()} = #{#if(${this.getTable().hasPkDomain()})id.#end${column.getJavaName()}}
 #end
 	</update>
 	
@@ -140,7 +140,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		</set>
 		where 
 #foreach (${column} in ${this.getTable().findPriColumnList()})
-		#if($velocityCount > 1)and #end${column.getColumnName()} = #{#if(${this.getTable().hasPkDomain()})id.#end${column.getJavaName()}}
+		#if($foreach.count > 1)and #end${column.getColumnName()} = #{#if(${this.getTable().hasPkDomain()})id.#end${column.getJavaName()}}
 #end
 	</update>	
 	
@@ -149,7 +149,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		delete from #if(${this.getTable().isTableSchamaUseInSql()})${this.getTable().getTableSchama()}.#end${this.getTable().getTableName()} 
 		where  
 #foreach (${column} in ${this.getTable().findPriColumnList()})
-		#if($velocityCount > 1)and #end${column.getColumnName()} = ${jinghao}{${column.getJavaName()}}
+		#if($foreach.count > 1)and #end${column.getColumnName()} = ${jinghao}{${column.getJavaName()}}
 #end
 	</delete>
 	

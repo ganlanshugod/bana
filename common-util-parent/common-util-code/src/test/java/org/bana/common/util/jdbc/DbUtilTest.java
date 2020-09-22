@@ -38,13 +38,14 @@ public class DbUtilTest {
 		connection.getAutoCommit();
 		DbUtil.closeConnection();
 	}
+	private final static String WORKSPACE = "/Users/liuwenjie/workspace/workspace_wdt/eclipse_workspace2/";
 	
 	//项目路径 需要修改为本地绝对路径
-    private String baseProjectPath = "D:/c_work/ruantong/oasis-system/oasis-system-core"; 
+    private String baseProjectPath = WORKSPACE + "wdt-app/wdt-app-service";
     //所在包 根据实际情况修改
-    private String basePackage = "cn/jbinfo/oasis/system/core";
+    private String basePackage = "com/elink/wdt/app/wechat";
     //生成代码中注释的用户名 改为提交人姓名
-    private String userName = "Huang Nana"; 
+    private String userName = "Liu Wenjie"; 
     boolean generatorEntity;
     boolean generatorRepository;
     boolean generatorMapper;
@@ -58,40 +59,49 @@ public class DbUtilTest {
     @Test
     @Ignore
     public void generatorCode(){
-        Map<String,Object> config = new HashMap<String,Object>();
+    	Map<String,Object> config = new HashMap<String,Object>();
         //是否生成entity
         generatorEntity = true;
         //是否生成repository
         generatorRepository = true;
         //是否生成dao和mapper
-        generatorMapper = true;    
+        generatorMapper = true;  
+        generatorCommonMapper = true;
+        //是否覆盖文件 true为覆盖，谨慎使用
         //是否生成service
-        generatorService = true;
+        generatorService = false;
         //是否生成controller
-        generatorController = true;
+        generatorController = false;
         //是否生成全字段的业务实体
         generatorModel = true;
         //是否生成commonmapper,仅做参考返回resultMap使用
-        generatorCommonMapper = false;
-        //是否覆盖文件 true为覆盖，谨慎使用
         isCover = true;
         //entity是否需要设置catalog
         withCatalog = false;
+
         //数据结构配置
-        config.put("database", "oasis_sys");//数据库名称
-        config.put("table", "t_bi_role");//表名
-        config.put("module", "role3");//模块名称
+        config.put("database", "saas_main");//数据库名称
+        config.put("table", "t_wechat_component_app_config");//表名
+        config.put("module", "component");//模块名称
+        config.put("function", "wechatComponentAppConfig"); //功能级别的名称，没有则不需要设置
+        config.put("functionPackage", false);//是否将function属性生成一层目录,模式是true
+
 //        config.put("function", "function1"); //功能级别的名称，没有则不需要设置
 //        config.put("functionPackage", false);//是否将function属性生成一层目录,模式是true
 
         //entity继承的父类，根据实际情况设置；没有需要继承的则不使用这个参数
-//        config.put("baseEntity", AbstractEntity.class.getName());
+//        config.put("baseEntity", AbstractAuditingEntity.class.getName()); 
         //repository继承的父类，根据实际情况设置；没有需要继承的则不使用这个参数
-//        config.put("baseRepository", OasisRepository.class.getName());
+//        config.put("baseRepository", BanaRepository.class.getName());
+        
+      //entity继承的父类，根据实际情况设置；没有需要继承的则不使用这个参数
+//        config.put("baseEntity", "org.bana.springboot.jpa.entity.AbstractAuditingEntity");
+        //repository继承的父类，根据实际情况设置；没有需要继承的则不使用这个参数
+//        config.put("baseRepository", "org.bana.springboot.jpa.repository.BanaRepository");
 
 
         //执行
-                generatorEntity(config);
+        generatorEntity(config);
     }
 
         //以下代码通常情况不需要修改

@@ -48,7 +48,7 @@ public class ${Function}PKEntity implements Serializable{
 	 * @param ${column.getJavaName()} : ${column.getColumnComment()}
 	#end
 */ 
-	public ${Function}PKEntity(#foreach (${column} in ${this.getTable().findPriColumnList()})${column.getJavaType()} ${column.getJavaName()}#if ($velocityCount < ${this.getTable().findPriColumnList().size()}),#end #end) {
+	public ${Function}PKEntity(#foreach (${column} in ${this.getTable().findPriColumnList()})${column.getJavaType()} ${column.getJavaName()} #if ($foreach.count < ${this.getTable().findPriColumnList().size()}),#end #end) {
 		super();
 		#foreach (${column} in ${this.getTable().findPriColumnList()})
 		this.${column.getJavaName()} = ${column.getJavaName()};

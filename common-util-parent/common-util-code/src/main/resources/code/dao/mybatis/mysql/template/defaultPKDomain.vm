@@ -42,7 +42,7 @@ public class ${Function}DomainPK implements Serializable{
 	* @param ${column.getJavaName()} : ${column.getColumnComment()}
 #end
 	*/ 
-	public WxSubmerchantDomainPK(#foreach (${column} in ${this.getTable().findPriColumnList()})${column.getJavaType()} ${column.getJavaName()}#if ($velocityCount < ${this.getTable().findPriColumnList().size()}),#end #end) {
+	public WxSubmerchantDomainPK(#foreach (${column} in ${this.getTable().findPriColumnList()})${column.getJavaType()} ${column.getJavaName()}#if ($foreach.count < ${this.getTable().findPriColumnList().size()}),#end #end) {
 		super();
 #foreach (${column} in ${this.getTable().findPriColumnList()})
 		this.${column.getJavaName()} = ${column.getJavaName()};

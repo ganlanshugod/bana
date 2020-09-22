@@ -17,6 +17,7 @@ import java.util.List;
 import org.bana.common.util.basic.StringUtils;
 import org.bana.common.util.code.dao.Column;
 import org.bana.common.util.code.dao.Table;
+import org.bana.common.util.code.dao.jpa.JPAColumn;
 import org.bana.common.util.code.dao.mybatis.MybatisGeneratorConfig;
 import org.bana.common.util.code.impl.CodeTemplateConfig;
 import org.bana.common.util.code.impl.CodeTemplateConfig.GeneratorFileType;
@@ -184,7 +185,7 @@ public class MybatisGeneratorConfig4Mysql extends MybatisGeneratorConfig {
 	*/ 
 	private Column initTableColumns(ResultSet rs) {
 		try {
-			Column column = new Column();
+			JPAColumn column = new JPAColumn();
 			column.setColumnKey(rs.getString("COLUMN_KEY"));
 			column.setColumnName(rs.getString("COLUMN_NAME"));
 			column.setColumnType(rs.getString("COLUMN_TYPE"));

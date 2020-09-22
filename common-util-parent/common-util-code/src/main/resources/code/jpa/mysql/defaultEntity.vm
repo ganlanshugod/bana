@@ -12,8 +12,7 @@ import ${this.getBaseEntityName()};
 #else
 import java.io.Serializable;
 #end
-import javax.persistence.Column;
-import javax.persistence.Entity;
+import javax.persistence.*;
 #if(${this.getTable().hasPkDomain()})
 import javax.persistence.EmbeddedId;
 #else
@@ -64,6 +63,9 @@ public class ${Function}Entity #if(${this.isHasBaseEntity()})extends ${this.getB
 #if("auto_increment" == ${column.getExtra()})
 	@GeneratedValue
 #end
+#end
+#if(${column.hasCoverType()})
+	@Convert(converter = ${column.getCoverType().getCoverClass()}.class)
 #end
 	@Column(name="${column.getColumnName()}" #if(!${column.isNullAble()}),nullable=${column.isNullAble()}#end #if(${column.getColumnLength()} > 0),length=${column.getColumnLength()}#end)
 	private ${column.getJavaType()} ${column.getJavaName()};
