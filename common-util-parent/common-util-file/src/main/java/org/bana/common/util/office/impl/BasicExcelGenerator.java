@@ -37,6 +37,10 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellRangeAddressList;
+import org.apache.poi.xssf.usermodel.XSSFDataValidation;
+import org.apache.poi.xssf.usermodel.XSSFDataValidationConstraint;
+import org.apache.poi.xssf.usermodel.XSSFDataValidationHelper;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.bana.common.util.basic.CollectionUtils;
 import org.bana.common.util.basic.StringUtils;
@@ -238,13 +242,26 @@ public class BasicExcelGenerator implements ExcelGenerator {
 		if(dicValueList == null){
 			return;
 		}
-		//只对（0，0）单元格有效  
-		CellRangeAddressList regions = new CellRangeAddressList(firstDataRowNum,firstDataRowNum+dataSize-1,columnIndex,columnIndex);  
-		//生成下拉框内容  
-		DVConstraint constraint = DVConstraint.createExplicitListConstraint(dicValueList.toArray(new String[dicValueList.size()]));  
+		  
 		//绑定下拉框和作用区域  
-		DataValidation data_validation = new HSSFDataValidation(regions,constraint); 
-		// TODO 07的文档没有处理
+		DataValidation data_validation = null;
+		if(sheet instanceof XSSFSheet) {
+			// TODO 07的文档没有处理
+			XSSFDataValidationHelper dvHelper = new XSSFDataValidationHelper((XSSFSheet)sheet);
+			XSSFDataValidationConstraint dvConstraint = (XSSFDataValidationConstraint) dvHelper
+					.createExplicitListConstraint(dicValueList.toArray(new String[dicValueList.size()]));
+			CellRangeAddressList addressList = new CellRangeAddressList(firstDataRowNum, firstDataRowNum+dataSize-1, columnIndex, columnIndex);
+			data_validation = (XSSFDataValidation) dvHelper.createValidation(dvConstraint, addressList);
+		}else {
+			//只对（0，0）单元格有效  
+			CellRangeAddressList regions = new CellRangeAddressList(firstDataRowNum,firstDataRowNum+dataSize-1,columnIndex,columnIndex);
+			//生成下拉框内容  
+			DVConstraint constraint = DVConstraint.createExplicitListConstraint(dicValueList.toArray(new String[dicValueList.size()]));  
+			data_validation = new HSSFDataValidation(regions,constraint); 
+
+		}
+//		data_validation.setSuppressDropDownArrow(true);
+//		data_validation.setShowErrorBox(true);
 		//对sheet页生效  
 		sheet.addValidationData(data_validation);
 	}
