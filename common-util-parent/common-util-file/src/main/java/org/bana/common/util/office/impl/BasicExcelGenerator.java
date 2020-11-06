@@ -179,6 +179,10 @@ public class BasicExcelGenerator implements ExcelGenerator {
 				
 			}
 		}
+		// 解决autoSizeColumn 报错的问题
+		if(sheet instanceof SXSSFSheet) {
+			((SXSSFSheet)sheet).trackAllColumnsForAutoSizing();
+		}
 		//设置列宽自适应
 		for (int i = 0; i < columnSize; i++) {
 			sheet.autoSizeColumn(i,true); //调整第一列宽度
