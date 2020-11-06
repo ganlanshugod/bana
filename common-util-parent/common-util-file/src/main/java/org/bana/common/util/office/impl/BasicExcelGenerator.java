@@ -29,6 +29,8 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.DataValidation;
+import org.apache.poi.ss.usermodel.DataValidationConstraint;
+import org.apache.poi.ss.usermodel.DataValidationHelper;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Row;
@@ -37,11 +39,12 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellRangeAddressList;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFDataValidation;
 import org.apache.poi.xssf.usermodel.XSSFDataValidationConstraint;
 import org.apache.poi.xssf.usermodel.XSSFDataValidationHelper;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.bana.common.util.basic.CollectionUtils;
 import org.bana.common.util.basic.StringUtils;
 import org.bana.common.util.exception.BanaUtilException;
@@ -69,6 +72,8 @@ public class BasicExcelGenerator implements ExcelGenerator {
 	private static final Logger LOG = LoggerFactory.getLogger(BasicExcelGenerator.class);
 	
 	private int allowEmptyRow = 10;
+	
+	private static final int ROW_ACCESS_WINDOW_SIZE = 500;
 
 	/**
 	 * <p>Description: </p> 
@@ -252,6 +257,11 @@ public class BasicExcelGenerator implements ExcelGenerator {
 					.createExplicitListConstraint(dicValueList.toArray(new String[dicValueList.size()]));
 			CellRangeAddressList addressList = new CellRangeAddressList(firstDataRowNum, firstDataRowNum+dataSize-1, columnIndex, columnIndex);
 			data_validation = (XSSFDataValidation) dvHelper.createValidation(dvConstraint, addressList);
+		} else if(sheet instanceof SXSSFSheet){ // 这个貌似是通用的构造方法
+			DataValidationHelper helper = sheet.getDataValidationHelper();
+			DataValidationConstraint createExplicitListConstraint = helper.createExplicitListConstraint(dicValueList.toArray(new String[dicValueList.size()]));
+			CellRangeAddressList addressList = new CellRangeAddressList(firstDataRowNum, firstDataRowNum+dataSize-1, columnIndex, columnIndex);
+			data_validation = helper.createValidation(createExplicitListConstraint, addressList);
 		}else {
 			//只对（0，0）单元格有效  
 			CellRangeAddressList regions = new CellRangeAddressList(firstDataRowNum,firstDataRowNum+dataSize-1,columnIndex,columnIndex);
@@ -485,8 +495,10 @@ public class BasicExcelGenerator implements ExcelGenerator {
 			}
 		}
 		if(ExcelType.XLSX.equals(excelConfig.getType())){
-			//03以后文档
-			return new XSSFWorkbook();
+			//03以后文档,
+//			return new XSSFWorkbook();
+			// 不使用xssfworkbook,为了规避内存问题
+			return new SXSSFWorkbook(ROW_ACCESS_WINDOW_SIZE);
 		}else{
 			//03文档
 			return new HSSFWorkbook();
