@@ -51,6 +51,15 @@ public class Async implements Serializable {
 		completionService = new ExecutorCompletionService<Object>(exec);
 		add(callable);
 	}
+	
+	/** 
+	* <p>Description: 增加无参的构造方法</p> 
+	* @author zhangzhichao   
+	* @date Dec 23, 2020 4:12:03 PM  
+	*/ 
+	public Async() {
+		completionService = new ExecutorCompletionService<Object>(exec);
+	}
 
 	public Async add(AsyncFunction<Object> callable) {
 		Future<Object> submit = completionService.submit(callable);
