@@ -51,12 +51,15 @@ public class Async implements Serializable {
 		completionService = new ExecutorCompletionService<Object>(exec);
 		add(callable);
 	}
-	
-	/** 
-	* <p>Description: 增加无参的构造方法</p> 
-	* @author zhangzhichao   
-	* @date Dec 23, 2020 4:12:03 PM  
-	*/ 
+
+	/**
+	 * <p>
+	 * Description: 增加无参的构造方法
+	 * </p>
+	 * 
+	 * @author zhangzhichao
+	 * @date Dec 23, 2020 4:12:03 PM
+	 */
 	public Async() {
 		completionService = new ExecutorCompletionService<Object>(exec);
 	}
@@ -71,18 +74,46 @@ public class Async implements Serializable {
 	public List<Object> await() {
 		List<Object> result = new ArrayList<>();
 		// 按照加入顺序返回执行结果
-		try {
-			for (Future<Object> future : asyncFnList) {
+		for (Future<Object> future : asyncFnList) {
+			try {
 				result.add(future.get());
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+//				throw new AsyncInterruptException("异步执行出现InterruptedException==", e);
+				result.add(null);
+			} catch (ExecutionException e) {
+				e.printStackTrace();
+//				if (e.getCause() instanceof RuntimeException) {
+//					throw (RuntimeException) e.getCause();
+//				} else {
+//					throw new AsyncExcuteNotRuntimeException("异步执行出现非runtimeException", e.getCause());
+//				}
+				result.add(null);
 			}
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-			throw new AsyncInterruptException("异步执行出现InterruptedException==", e);
-		} catch (ExecutionException e) {
-			if(e.getCause() instanceof RuntimeException) {
-				throw (RuntimeException)e.getCause();
-			}else {
-				throw new AsyncExcuteNotRuntimeException("异步执行出现非runtimeException", e.getCause());
+		}
+
+		return result;
+	}
+
+	public List<Object> awaitWithThrowable() {
+		List<Object> result = new ArrayList<>();
+		// 按照加入顺序返回执行结果
+		for (Future<Object> future : asyncFnList) {
+			try {
+				result.add(future.get());
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				result.add(e);
+//			throw new AsyncInterruptException("异步执行出现InterruptedException==", e);
+			} catch (ExecutionException e) {
+				e.printStackTrace();
+				if (e.getCause() instanceof RuntimeException) {
+					result.add(e);
+//				throw (RuntimeException) e.getCause();
+				} else {
+					result.add(e);
+					throw new AsyncExcuteNotRuntimeException("异步执行出现非runtimeException", e.getCause());
+				}
 			}
 		}
 		return result;
