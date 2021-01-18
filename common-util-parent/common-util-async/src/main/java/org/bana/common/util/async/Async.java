@@ -16,8 +16,10 @@ import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @ClassName: Async
@@ -33,11 +35,16 @@ public class Async implements Serializable {
 
 	private List<Future<Object>> asyncFnList = new ArrayList<>();
 
+	private static int minPoolSize = 100;
+	private static int maxPoolSize = 1000;
+	private static long keepAliveSeconds = 2000;
+	private static int queueCapacity = 100000;
 	// 声明一个可以无限扩充的线程池，用于并发执行
-	private static ExecutorService exec = Executors.newCachedThreadPool();
+	private static ExecutorService exec = new ThreadPoolExecutor(minPoolSize, maxPoolSize,
+			keepAliveSeconds, TimeUnit.MILLISECONDS,
+            new LinkedBlockingQueue<Runnable>(queueCapacity));
 
 	private CompletionService<Object> completionService;
-//	private int count = 0;
 
 	/**
 	 * <p>
@@ -127,5 +134,46 @@ public class Async implements Serializable {
 	public static void shutDown() {
 		exec.shutdown();
 	}
+
+	public static ExecutorService getExec() {
+		return exec;
+	}
+
+	public static int getMinPoolSize() {
+		return minPoolSize;
+	}
+
+	public static void setMinPoolSize(int minPoolSize) {
+		Async.minPoolSize = minPoolSize;
+	}
+
+	public static int getMaxPoolSize() {
+		return maxPoolSize;
+	}
+
+	public static void setMaxPoolSize(int maxPoolSize) {
+		Async.maxPoolSize = maxPoolSize;
+	}
+
+	public static long getKeepAliveSeconds() {
+		return keepAliveSeconds;
+	}
+
+	public static void setKeepAliveSeconds(long keepAliveSeconds) {
+		Async.keepAliveSeconds = keepAliveSeconds;
+	}
+
+	public static void setExec(ExecutorService exec) {
+		Async.exec = exec;
+	}
+
+	public static int getQueueCapacity() {
+		return queueCapacity;
+	}
+
+	public static void setQueueCapacity(int queueCapacity) {
+		Async.queueCapacity = queueCapacity;
+	}
+	
 
 }

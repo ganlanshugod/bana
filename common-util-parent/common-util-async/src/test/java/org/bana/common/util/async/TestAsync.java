@@ -10,8 +10,8 @@ package org.bana.common.util.async;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import org.junit.Test;
 
@@ -21,6 +21,20 @@ import org.junit.Test;
  * @author liuwenjie
  */
 public class TestAsync {
+	
+	@Test
+	public void nullCast() {
+		
+		Date date = (Date)testResult();
+		if(date instanceof Date) {
+			System.out.println(123);
+		}
+		System.out.println((Date)null);
+	}
+	
+	private Object testResult() {
+		return null;
+	}
 
 	@Test
 	public void testAsync() {
