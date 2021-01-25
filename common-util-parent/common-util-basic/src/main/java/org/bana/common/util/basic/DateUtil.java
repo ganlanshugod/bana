@@ -33,6 +33,8 @@ public class DateUtil extends DateUtils{
 	* @Fields supportDateFormat : 目前支持的日期格式问题
 	*/ 
 	private static String[] supportDateFormat = new String[]{
+		"yyyy-MM-dd'T'HH:mm:ss.SSSXXX","yyyy-MM-dd'T'HH:mm:ss.SSSZ",
+		"yyyy-MM-dd'T'HH:mm:ssXXX","yyyy-MM-dd'T'HH:mm:ssZ",
 		"yyyy-MM-dd HH:mm:ss","yyyy-MM-dd HH:mm","yyyy-MM-dd","yyyy-MM",
 		"yyyy年MM月dd日  HH时mm分ss秒","yyyy年MM月dd日  HH时mm分","yyyy年MM月dd日","yyyy年MM月",
 		"MM/dd/yyyy"
