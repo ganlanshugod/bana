@@ -17,6 +17,7 @@ import java.util.Set;
 import org.bana.common.util.office.ExcelGenerator;
 import org.bana.common.util.office.ExcelObject;
 import org.bana.common.util.office.config.ColumnConfig;
+import org.bana.common.util.office.config.ExcelType;
 import org.bana.common.util.office.impl.BasicExcelGenerator;
 import org.bana.common.util.office.impl.annotation.AnnotationExcelDownloadConfig;
 import org.bana.common.util.office.impl.annotation.AnnotationExcelUploadConfig;
@@ -76,6 +77,7 @@ public class AnnoGeneratorTest {
 	public void testSimpleDownload() throws IOException {
 		// 第四种： D:\git\daotie\daotie
 		AnnotationExcelDownloadConfig excelConfig = new AnnotationExcelDownloadConfig(TestDownData.class);
+//		excelConfig.setType(ExcelType.XLSX);
 //        System.out.println(System.getProperty("user.dir"));
 		excelConfig.setBaseFile("/office/学生成绩单模版-科目横版-v1.1.xls");
 		

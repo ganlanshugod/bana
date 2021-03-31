@@ -8,7 +8,12 @@
 */ 
 package org.bana.common.util.basic;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import org.bana.common.util.basic.DateUtil;
 import org.junit.Test;
@@ -43,5 +48,22 @@ public class DateUtilTest {
 	@Test
 	public void testString5(){
 		System.out.println(DateUtil.formateToDate("2016年08月05日 11时35分", "yyyy年MM月dd日 HH时mm分"));
+	}
+	
+	@Test
+	public void testmain() throws ParseException {
+		Date date = new Date();
+		System.out.println(date);
+		SimpleDateFormat simpleDateFormat2 = new SimpleDateFormat("yyyy-mm-dd", Locale.CHINA);
+		Date parse2 = simpleDateFormat2.parse("2021-03-31");
+		System.out.println(parse2);
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd", Locale.ENGLISH);
+		Date parse = simpleDateFormat.parse("2021-03-31");
+		System.out.println(parse);
+		Calendar instance = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+		instance.setTime(new Date());
+		System.out.println(instance.getTime());
+		System.out.println(Locale.getDefault());
+		System.out.println(TimeZone.getDefault());
 	}
 }

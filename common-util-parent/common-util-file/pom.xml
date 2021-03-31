@@ -65,6 +65,13 @@
 		<artifactId>commons-dbcp</artifactId>
 		<scope>test</scope>
 	</dependency>
+	
+	<dependency>
+	    <groupId>com.microsoft.sqlserver</groupId>
+	    <artifactId>mssql-jdbc</artifactId>
+	    <version>9.2.1.jre8</version>
+	    <scope>test</scope>
+	</dependency>
   	
   	<dependency>
   		<groupId>${project.groupId}</groupId>
