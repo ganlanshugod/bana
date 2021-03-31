@@ -406,12 +406,12 @@
 	  	 <repository>    
 	        <id>releases</id>    
 	        <name>Nexus Release Repository</name>    
-	        <url>http://maven.banajava.com/repository/maven-releases/</url>    
+	        <url>http://nexus.sh.ceboshi.cn/repository/maven-releases/</url>    
 	     </repository>    
 	     <snapshotRepository>    
 	        <id>snapshots</id>    
 	       <name>Nexus Snapshot Repository</name>    
-	       <url>http://maven.banajava.com/repository/maven-snapshots/</url>    
+	       <url>http://nexus.sh.ceboshi.cn/repository/maven-snapshots/</url>    
 	    </snapshotRepository> 
 	  </distributionManagement>
 </project>
