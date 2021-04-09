@@ -259,16 +259,17 @@ public class HttpHelper {
 		
 		// 处理参数信心为json格式
 		String params = null;
+		
+		if(headerData != null) {
+			for (Map.Entry<String, String> oneHead : headerData.entrySet()) {
+				httpPost.addHeader(oneHead.getKey(), oneHead.getValue());
+			}
+		}
 		if(data != null) { // 使用json请求方式
 			params = JSON.toJSONString(data);
 			StringEntity requestEntity = new StringEntity(params, "utf-8");
 			httpPost.setEntity(requestEntity);
 			httpPost.addHeader("Content-Type", "application/json");
-			if(headerData != null) {
-				for (Map.Entry<String, String> oneHead : headerData.entrySet()) {
-					httpPost.addHeader(oneHead.getKey(), oneHead.getValue());
-				}
-			}
 		}
 		// 记录开始信息内容
 		getLOG().logBegin(url, params, HTTP_POST);
