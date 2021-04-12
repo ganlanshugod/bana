@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
@@ -98,7 +99,7 @@ public class HttpHelper {
 		
 		return doHttp(domain, httpPost, null);
 	}
-	public JSONObject httpPost(String url, Object data, Map<String,String> headerData) {
+	public JSONObject httpPost(String url, Object data, Map<String,String> headerData,boolean returnHeader) {
 //		HttpLogDomain domain = getLOG().getHttpLogDomain();
 //		// 构建请求
 //		HttpPost httpPost = new HttpPost(url);
@@ -121,13 +122,20 @@ public class HttpHelper {
 //		
 //		return doHttp(domain, httpPost);
 		
-		return httpPost(url, data, headerData, null);
+		return httpPost(url, data, headerData, null,returnHeader);
 	}
 	public JSONObject httpPost(String url, Object data) {
-		return httpPost(url, data, null);
+		return httpPost(url, data, false);
+	}
+	public JSONObject httpPost(String url, Object data,boolean returnHeader) {
+		return httpPost(url, data, null,returnHeader);
 	}
 	
 	private JSONObject doHttp(HttpLogDomain domain, HttpPost httpPost, Function<Object, String> extendHandlerFunc) {
+		return doHttp(domain, httpPost, extendHandlerFunc,false);
+	}
+	
+	private JSONObject doHttp(HttpLogDomain domain, HttpPost httpPost, Function<Object, String> extendHandlerFunc, boolean includeHeader) {
 		CloseableHttpClient httpClient = HttpClients.createDefault();
 		RequestConfig requestConfig = RequestConfig.custom()
 				.setSocketTimeout(config.getSocketTimeout()).setConnectTimeout(config.getTimeout()).build();
@@ -137,9 +145,14 @@ public class HttpHelper {
 			response = httpClient.execute(httpPost,new BasicHttpContext());
 			StringResponseHandler handler = new StringResponseHandler();
 			String result = handler.handleResponse(response);
+			JSONObject parseObject = JSON.parseObject(result);
 			//LOG 内容
+			if(includeHeader) {
+				Header[] allHeaders = response.getAllHeaders();
+				parseObject.put("$_headers", allHeaders);
+			}
 			domain.setResult(result);
-			return JSON.parseObject(result);
+			return parseObject;
 		} catch (IOException e) {
 			getLOG().logException(e);
 			throw new BanaHttpException("500",e.getMessage(),e);
@@ -165,8 +178,11 @@ public class HttpHelper {
 		}
 	}
 	
-	
 	public JSONObject httpGet(String url) {
+		return httpGet(url,false);
+	}
+	
+	public JSONObject httpGet(String url, boolean includeHeaders) {
 		// 记录开始信息内容
 		getLOG().logBegin(url, null, HTTP_POST);
 		HttpGet httpGet = new HttpGet(url);
@@ -180,7 +196,14 @@ public class HttpHelper {
 			StringResponseHandler handler = new StringResponseHandler();
 			String result = handler.handleResponse(response);
 			getLOG().getHttpLogDomain().setResult(result);
-			return JSON.parseObject(result);
+			JSONObject parseObject = JSON.parseObject(result);
+			if(includeHeaders) {
+				Header[] allHeaders = response.getAllHeaders();
+				// 设置返回值的headers
+				parseObject.put("$_headers", allHeaders);
+			}
+			
+			return parseObject;
 		} catch (IOException e) {
 			getLOG().logException(e);
 			throw new BanaHttpException("500",e.getMessage(),e);
@@ -252,7 +275,7 @@ public class HttpHelper {
 	* @param extendHandlerFunc
 	* @return  
 	*/ 
-	public JSONObject httpPost(String url, Object data, Map<String,String> headerData, Function<Object, String> extendHandlerFunc) {
+	public JSONObject httpPost(String url, Object data, Map<String,String> headerData, Function<Object, String> extendHandlerFunc,boolean returnHeader) {
 		HttpLogDomain domain = getLOG().getHttpLogDomain();
 		// 构建请求
 		HttpPost httpPost = new HttpPost(url);
@@ -274,7 +297,7 @@ public class HttpHelper {
 		// 记录开始信息内容
 		getLOG().logBegin(url, params, HTTP_POST);
 		
-		return doHttp(domain, httpPost, extendHandlerFunc);
+		return doHttp(domain, httpPost, extendHandlerFunc,returnHeader);
 	}
 
 	public HttpConfig getConfig() {
