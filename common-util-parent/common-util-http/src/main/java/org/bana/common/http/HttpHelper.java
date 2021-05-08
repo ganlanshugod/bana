@@ -13,8 +13,11 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
@@ -39,6 +42,8 @@ public class HttpHelper {
 
 	public static final String HTTP_GET = "get";
 	public static final String HTTP_POST = "post";
+	public static final String HTTP_PUT = "put";
+	public static final String HTTP_DELETE = "delete";
 	
 	private static HttpLogger LOG;
 	
@@ -100,28 +105,6 @@ public class HttpHelper {
 		return doHttp(domain, httpPost, null);
 	}
 	public JSONObject httpPost(String url, Object data, Map<String,String> headerData,boolean returnHeader) {
-//		HttpLogDomain domain = getLOG().getHttpLogDomain();
-//		// 构建请求
-//		HttpPost httpPost = new HttpPost(url);
-//		
-//		// 处理参数信心为json格式
-//		String params = null;
-//		if(data != null) { // 使用json请求方式
-//			params = JSON.toJSONString(data);
-//			StringEntity requestEntity = new StringEntity(params, "utf-8");
-//			httpPost.setEntity(requestEntity);
-//			httpPost.addHeader("Content-Type", "application/json");
-//			if(headerData != null) {
-//				for (Map.Entry<String, String> oneHead : headerData.entrySet()) {
-//					httpPost.addHeader(oneHead.getKey(), oneHead.getValue());
-//				}
-//			}
-//		}
-//		// 记录开始信息内容
-//		getLOG().logBegin(url, params, HTTP_POST);
-//		
-//		return doHttp(domain, httpPost);
-		
 		return httpPost(url, data, headerData, null,returnHeader);
 	}
 	public JSONObject httpPost(String url, Object data) {
@@ -135,7 +118,7 @@ public class HttpHelper {
 		return doHttp(domain, httpPost, extendHandlerFunc,false);
 	}
 	
-	private JSONObject doHttp(HttpLogDomain domain, HttpPost httpPost, Function<Object, String> extendHandlerFunc, boolean includeHeader) {
+	private JSONObject doHttp(HttpLogDomain domain, HttpRequestBase httpPost, Function<Object, String> extendHandlerFunc, boolean includeHeader) {
 		CloseableHttpClient httpClient = HttpClients.createDefault();
 		RequestConfig requestConfig = RequestConfig.custom()
 				.setSocketTimeout(config.getSocketTimeout()).setConnectTimeout(config.getTimeout()).build();
@@ -178,21 +161,68 @@ public class HttpHelper {
 		}
 	}
 	
+	// http Get 对应的方法
+	
 	public JSONObject httpGet(String url) {
 		return httpGet(url,false);
 	}
 	
+	public JSONObject httpGet(String url, Map<String,String> headerData) {
+		return httpGet(url,headerData,false);
+	}
+	
 	public JSONObject httpGet(String url, boolean includeHeaders) {
 		// 记录开始信息内容
-		getLOG().logBegin(url, null, HTTP_POST);
-		HttpGet httpGet = new HttpGet(url);
+		return httpNoBody(url, HTTP_GET, null, includeHeaders);
+	}
+	
+	public JSONObject httpGet(String url, Map<String,String> headerData,boolean includeHeaders) {
+		// 记录开始信息内容
+		return httpNoBody(url, HTTP_GET, headerData, includeHeaders);
+	}
+	
+	// httpDelete 对应的方法
+	
+	public JSONObject httpDelete(String url) {
+		return httpDelete(url,false);
+	}
+	
+	public JSONObject httpDelete(String url,Map<String,String> headerData) {
+		return httpDelete(url,headerData,false);
+	}
+	
+	public JSONObject httpDelete(String url, boolean includeHeaders) {
+		// 记录开始信息内容
+		return httpNoBody(url, HTTP_DELETE, null, includeHeaders);
+	}
+	
+	public JSONObject httpDelete(String url, Map<String,String> headerData, boolean includeHeaders) {
+		// 记录开始信息内容
+		return httpNoBody(url, HTTP_DELETE, headerData, includeHeaders);
+	}
+	
+	private JSONObject httpNoBody(String url, String httpMethod, Map<String,String> headerData, boolean includeHeaders) {
+		// 记录开始信息内容
+		getLOG().logBegin(url, null, httpMethod);
+		HttpRequestBase httpBase = null;
+		if(HTTP_DELETE.equals(httpMethod)){
+			httpBase = new HttpDelete(url);
+		}else {
+			httpBase = new HttpGet(url);
+		}
+		if(headerData != null) {
+			for (Map.Entry<String, String> oneHead : headerData.entrySet()) {
+				httpBase.addHeader(oneHead.getKey(), oneHead.getValue());
+			}
+		}
+//				HttpDelete httpDelete = new HttpDelete(url);
 		CloseableHttpResponse response = null;
 		CloseableHttpClient httpClient = HttpClients.createDefault();
 		RequestConfig requestConfig = RequestConfig.custom()
 				.setSocketTimeout(config.getSocketTimeout()).setConnectTimeout(config.getTimeout()).build();
-		httpGet.setConfig(requestConfig);
+		httpBase.setConfig(requestConfig);
 		try {
-			response = httpClient.execute(httpGet, new BasicHttpContext());
+			response = httpClient.execute(httpBase, new BasicHttpContext());
 			StringResponseHandler handler = new StringResponseHandler();
 			String result = handler.handleResponse(response);
 			getLOG().getHttpLogDomain().setResult(result);
@@ -299,6 +329,43 @@ public class HttpHelper {
 		
 		return doHttp(domain, httpPost, extendHandlerFunc,returnHeader);
 	}
+	
+	
+	public JSONObject httpPut(String url, Object data, Map<String,String> headerData,boolean returnHeader) {
+		return httpPut(url, data, headerData, null,returnHeader);
+	}
+	public JSONObject httpPut(String url, Object data) {
+		return httpPut(url, data, false);
+	}
+	public JSONObject httpPut(String url, Object data,boolean returnHeader) {
+		return httpPut(url, data, null,returnHeader);
+	}
+	
+	public JSONObject httpPut(String url, Object data, Map<String,String> headerData, Function<Object, String> extendHandlerFunc,boolean returnHeader) {
+		HttpLogDomain domain = getLOG().getHttpLogDomain();
+		// 构建请求
+		HttpPut httpPut = new HttpPut(url);
+		
+		// 处理参数信心为json格式
+		String params = null;
+		
+		if(headerData != null) {
+			for (Map.Entry<String, String> oneHead : headerData.entrySet()) {
+				httpPut.addHeader(oneHead.getKey(), oneHead.getValue());
+			}
+		}
+		if(data != null) { // 使用json请求方式
+			params = JSON.toJSONString(data);
+			StringEntity requestEntity = new StringEntity(params, "utf-8");
+			httpPut.setEntity(requestEntity);
+			httpPut.addHeader("Content-Type", "application/json");
+		}
+		// 记录开始信息内容
+		getLOG().logBegin(url, params, HTTP_PUT);
+		
+		return doHttp(domain, httpPut, extendHandlerFunc,returnHeader);
+	}
+	
 
 	public HttpConfig getConfig() {
 		return config;

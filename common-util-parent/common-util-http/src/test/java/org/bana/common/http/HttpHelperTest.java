@@ -27,5 +27,11 @@ public class HttpHelperTest {
 		JSONObject httpGet = httpHelper.httpPost("http://keyance-api.sh.ceboshi.cn/",null,true);
 		System.out.println(httpGet);
 	}
+	
+	@Test
+	public void testDelete() {
+		JSONObject httpGet = httpHelper.httpDelete("http://keyance-api.sh.ceboshi.cn/",true);
+		System.out.println(httpGet);
+	}
 
 }
