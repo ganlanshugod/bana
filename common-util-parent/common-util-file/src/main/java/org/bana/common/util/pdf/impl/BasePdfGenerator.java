@@ -235,6 +235,7 @@ public class BasePdfGenerator implements PdfGenerator{
 		table.setLockedWidth(true);
 		table.setHorizontalAlignment(Element.ALIGN_CENTER);
 		table.getDefaultCell().setBorder(1);
+		table.getDefaultCell().setVerticalAlignment(Element.ALIGN_MIDDLE);
 		return table;
 	}
 	

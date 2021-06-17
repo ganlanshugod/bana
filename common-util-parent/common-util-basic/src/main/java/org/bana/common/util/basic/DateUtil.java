@@ -215,6 +215,10 @@ public class DateUtil extends DateUtils{
 		Calendar c = Calendar.getInstance();
 		c.setTime(date);
 		c.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
+		c.set(Calendar.HOUR_OF_DAY,c.getActualMinimum(Calendar.HOUR_OF_DAY));
+		c.set(Calendar.MINUTE,c.getActualMinimum(Calendar.MINUTE));
+		c.set(Calendar.SECOND,c.getActualMinimum(Calendar.SECOND));
+		c.set(Calendar.MILLISECOND, c.getActualMinimum(Calendar.MILLISECOND));
 		return c.getTime();
 	}
 	
@@ -241,6 +245,10 @@ public class DateUtil extends DateUtils{
 		Calendar c = Calendar.getInstance();
 		c.setTime(date);
 		c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
+		c.set(Calendar.HOUR_OF_DAY,c.getActualMaximum(Calendar.HOUR_OF_DAY));
+		c.set(Calendar.MINUTE,c.getActualMaximum(Calendar.MINUTE));
+		c.set(Calendar.SECOND,c.getActualMaximum(Calendar.SECOND));
+		c.set(Calendar.MILLISECOND, c.getActualMaximum(Calendar.MILLISECOND));
 		return c.getTime();
 	}
 	

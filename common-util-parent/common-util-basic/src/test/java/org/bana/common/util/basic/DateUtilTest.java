@@ -51,6 +51,12 @@ public class DateUtilTest {
 	}
 	
 	@Test
+	public void testMothDate() {
+		System.out.println(DateUtil.getFirstDateOfMonth(new Date()));
+		System.out.println(DateUtil.getLastDateOfMonth(new Date()));
+	}
+	
+	@Test
 	public void testmain() throws ParseException {
 		Date date = new Date();
 		System.out.println(date);
