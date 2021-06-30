@@ -6,3 +6,4 @@ logs
 /office/
 .DS_Store
 common-util-parent/common-util-file/office/doc/test01.docx
+common-util-parent/common-util-file/office/pdf/pdf2png.png
