@@ -25,7 +25,10 @@ public class Watermark extends PdfPageEventHelper {
     private String waterCont;//水印内容
     
     public Watermark() {
-    	try {
+    	init();
+    }
+    public void init(){
+        try {
 			BaseFont bfChinese = BaseFont.createFont("STSong-Light", "UniGB-UCS2-H", BaseFont.NOT_EMBEDDED);
 			this.font = new Font(bfChinese, 30, Font.BOLD,new GrayColor(0.95f));
 		} catch (DocumentException e) {
@@ -37,6 +40,7 @@ public class Watermark extends PdfPageEventHelper {
 		}
     }
     public Watermark(String waterCont) {
+        init();
         this.waterCont = waterCont;
     }
 
