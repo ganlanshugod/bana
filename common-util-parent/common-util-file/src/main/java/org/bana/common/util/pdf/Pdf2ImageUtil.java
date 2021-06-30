@@ -40,7 +40,7 @@ public class Pdf2ImageUtil {
         List<BufferedImage> bufferedImageList = new ArrayList<>();
 
         for (int page = 0;page<document.getNumberOfPages();page++){
-            BufferedImage img = pdfRenderer.renderImageWithDPI(page, 300, ImageType.RGB);
+            BufferedImage img = pdfRenderer.renderImageWithDPI(page, 105, ImageType.RGB);
             bufferedImageList.add(img);
         }
         document.close();
