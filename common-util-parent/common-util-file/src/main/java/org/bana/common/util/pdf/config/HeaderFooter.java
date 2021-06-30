@@ -22,8 +22,8 @@ import com.itextpdf.text.pdf.PdfWriter;
 
 public class HeaderFooter extends PdfPageEventHelper {
     // 总页数
-    PdfTemplate totalPage;
-    Font hfFont;
+    protected PdfTemplate totalPage;
+    protected Font hfFont;
     {
         try {
             hfFont = new Font(BaseFont.createFont("STSong-Light", "UniGB-UCS2-H", BaseFont.NOT_EMBEDDED), 8, Font.NORMAL);
