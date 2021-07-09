@@ -135,6 +135,7 @@ public class HttpHelper {
 				parseObject.put("$_headers", allHeaders);
 			}
 			domain.setResult(result);
+			getLOG().getHttpLogDomain().setResult(result);
 			return parseObject;
 		} catch (IOException e) {
 			getLOG().logException(e);
