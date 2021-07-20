@@ -1,5 +1,5 @@
 /**
-* @Company 青鸟软通   
+* @Company weipu   
 * @Title: BanaUtilException.java 
 * @Package org.bana.common.util.exception 
 * @author Liu Wenjie   

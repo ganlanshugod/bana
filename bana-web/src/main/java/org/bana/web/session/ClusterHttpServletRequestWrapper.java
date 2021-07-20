@@ -1,5 +1,5 @@
 /**
- * @Company 青鸟软通   
+ * @Company weipu   
  * @Title: ClusterHttpServletRequestWrapper.java 
  * @Package com.jbinfo.i3618.session.service.impl 
  * @author Yang Shuangshuang   

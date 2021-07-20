@@ -1,5 +1,5 @@
 /**
-* @Company 青鸟软通   
+* @Company weipu   
 * @Title: BeanTOMapUtil.java 
 * @Package com.haier.common.util 
 * @author Liu Wenjie   

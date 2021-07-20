@@ -1,5 +1,5 @@
 /**
-* @Company 青鸟软通   
+* @Company weipu   
 * @Title: HttpMailContent.java 
 * @Package org.bana.common.util.email 
 * @author Liu Wenjie   

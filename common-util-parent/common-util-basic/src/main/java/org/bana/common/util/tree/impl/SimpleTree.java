@@ -1,5 +1,5 @@
 /**
-* @Company 青鸟软通   
+* @Company weipu   
 * @Title: SimpleTree.java 
 * @Package org.bana.common.util.tree.impl 
 * @author Liu Wenjie   

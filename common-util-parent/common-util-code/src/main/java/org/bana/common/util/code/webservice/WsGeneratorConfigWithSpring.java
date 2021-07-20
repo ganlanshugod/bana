@@ -1,5 +1,5 @@
 /**
-* @Company 青鸟软通   
+* @Company weipu   
 * @Title: WsGeneratorConfigWithSpring.java 
 * @Package org.bana.common.util.code.webservice 
 * @author Liu Wenjie   

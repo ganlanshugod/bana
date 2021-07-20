@@ -1,5 +1,5 @@
 /**
-* @Company 青鸟软通   
+* @Company weipu   
 * @Title: BasicExcelGenerator.java 
 * @Package org.bana.common.util.poi.impl 
 * @author Liu Wenjie   

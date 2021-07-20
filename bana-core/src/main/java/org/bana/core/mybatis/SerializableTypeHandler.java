@@ -1,5 +1,5 @@
 /**
-* @Company 青鸟软通   
+* @Company weipu   
 * @Title: test.java 
 * @Package com.jbinfo.i3618.util 
 * @author Guo Yuchao   

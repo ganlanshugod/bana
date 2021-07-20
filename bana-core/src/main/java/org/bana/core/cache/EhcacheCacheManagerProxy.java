@@ -1,5 +1,5 @@
 /**
- * @Company 青鸟软通   
+ * @Company weipu   
  * @Title: EhcacheCacheManagerProxy.java 
  * @Package com.jbinfo.i3618.cache 
  * @author Yang Shuangshuang   

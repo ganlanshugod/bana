@@ -1,5 +1,5 @@
 /**
-* @Company 青鸟软通   
+* @Company weipu   
 * @Title: WSCodeGenerator.java 
 * @Package org.bana.common.util.code.webservice.cxf 
 * @author Liu Wenjie   

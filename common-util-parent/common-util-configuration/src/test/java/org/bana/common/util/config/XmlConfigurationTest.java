@@ -1,6 +1,6 @@
 package org.bana.common.util.config;
 /**
- * @Company 青鸟软通   
+ * @Company weipu   
  * @Title: XmlConfigurationTest.java 
  * @Package org.apache.commons.configuration 
  * @author liuwenjie   

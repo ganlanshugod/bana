@@ -1,5 +1,5 @@
 /**
- * @Company 青鸟软通   
+ * @Company weipu   
  * @Title: BarCodeTest.java 
  * @Package org.bana.common.util.file.barcode 
  * @author Liu Wenjie   

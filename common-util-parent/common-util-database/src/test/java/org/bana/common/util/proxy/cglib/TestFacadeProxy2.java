@@ -1,5 +1,5 @@
 /**
- * @Company 青鸟软通   
+ * @Company weipu   
  * @Title: TestFacadeProxy2.java 
  * @Package org.bana.common.util.proxy.cglib 
  * @author Liu Wenjie   

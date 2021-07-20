@@ -1,5 +1,5 @@
 /**
-* @Company 青鸟软通   
+* @Company weipu   
 * @Title: RestClientTest.java 
 * @Package org.bana.common.util.ws 
 * @author Liu Wenjie   

@@ -1,5 +1,5 @@
 /**
-* @Company 青鸟软通   
+* @Company weipu   
 * @Title: BanaDubboRestMonitor.java 
 * @Package org.bana.common.util.monitor.impl 
 * @author Liu Wenjie   

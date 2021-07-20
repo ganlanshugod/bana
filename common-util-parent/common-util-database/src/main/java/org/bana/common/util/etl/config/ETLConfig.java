@@ -1,5 +1,5 @@
 /**
-* @Company 青鸟软通   
+* @Company weipu   
 * @Title: ETLConfig.java 
 * @Package org.bana.common.util.etl 
 * @author Liu Wenjie   

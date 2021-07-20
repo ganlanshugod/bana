@@ -1,5 +1,5 @@
 /**
-* @Company 青鸟软通   
+* @Company weipu   
 * @Title: ExcelConfigTest.java 
 * @Package org.bana.common.util.office.impl 
 * @author Liu Wenjie   

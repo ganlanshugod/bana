@@ -1,5 +1,5 @@
 /**
-* @Company 青鸟软通   
+* @Company weipu   
 * @Title: JpaGeneratorConfig4Mysql.java 
 * @Package org.bana.common.util.code.jpa.mysql
 * @author Huang Nana 

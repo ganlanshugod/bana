@@ -1,5 +1,5 @@
 /**
-* @Company 青鸟软通   
+* @Company weipu   
 * @Title: SortCond.java 
 * @Package org.bana.system.common.dao 
 * @author liuwenjie   

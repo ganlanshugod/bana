@@ -1,5 +1,5 @@
 /**
-* @Company 青鸟软通   
+* @Company weipu   
 * @Title: SimpleTransformTest.java 
 * @Package org.bana.common.util.etl 
 * @author Liu Wenjie   

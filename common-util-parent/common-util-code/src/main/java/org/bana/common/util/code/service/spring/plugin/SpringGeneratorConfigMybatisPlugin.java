@@ -1,5 +1,5 @@
 /**
-* @Company 青鸟软通   
+* @Company weipu   
 * @Title: SpringGeneratorConfigUseMybatisPlugin.java 
 * @Package org.bana.common.util.code.service.spring.plugin 
 * @author Liu Wenjie   

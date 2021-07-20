@@ -1,5 +1,5 @@
 /**
- * @Company 青鸟软通   
+ * @Company weipu   
  * @Title: RestClient.java 
  * @Package org.bana.common.util.ws 
  * @author Liu Wenjie   

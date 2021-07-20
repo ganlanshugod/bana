@@ -1,5 +1,5 @@
 /**
-* @Company 青鸟软通   
+* @Company weipu   
 * @Title: TestExecute.java 
 * @Package org.bana.common.util.proxy.cglib 
 * @author Liu Wenjie   

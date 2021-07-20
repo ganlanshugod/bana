@@ -1,5 +1,5 @@
 /**
-* @Company 青鸟软通   
+* @Company weipu   
 * @Title: CallWSDLTest.java 
 * @Package org.bana.common.util.wsdl 
 * @author Liu Wenjie   

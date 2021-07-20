@@ -1,5 +1,5 @@
 /**
-* @Company 青鸟软通   
+* @Company weipu   
 * @Title: HttpLogger.java 
 * @Package org.bana.wechat.qy.common.log 
 * @author Liu Wenjie   

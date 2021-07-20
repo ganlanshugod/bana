@@ -1,5 +1,5 @@
 /**
-* @Company 青鸟软通   
+* @Company weipu   
 * @Title: StudentScoreDto4Query.java 
 * @Package com.jbinfo.i3618.message.dto 
 * @author Liu Wenjie   

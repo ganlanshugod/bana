@@ -1,5 +1,5 @@
 /**
-* @Company 青鸟软通   
+* @Company weipu   
 * @Title: SessionMongoDBEncoder.java 
 * @Package org.bana.web.session.service.impl 
 * @author liuwenjie   

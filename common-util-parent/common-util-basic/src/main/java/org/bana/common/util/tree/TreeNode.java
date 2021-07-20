@@ -1,5 +1,5 @@
 /**
-* @Company 青鸟软通   
+* @Company weipu   
 * @Title: TreeNode.java 
 * @Package org.bana.common.util.tree 
 * @author Liu Wenjie   

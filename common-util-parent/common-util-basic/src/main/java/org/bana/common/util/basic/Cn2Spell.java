@@ -1,5 +1,5 @@
 /**
- * @Company 青鸟软通   
+ * @Company weipu   
  * @Title: Cn2Spell.java 
  * @Package com.jbinfo.i3618.web.util 
  * @author Han Tongyang   

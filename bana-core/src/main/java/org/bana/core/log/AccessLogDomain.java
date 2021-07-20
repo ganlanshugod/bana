@@ -1,5 +1,5 @@
 /**
-* @Company 青鸟软通   
+* @Company weipu   
 * @Title: AccessLogDomain.java 
 * @Package org.bana.web.log 
 * @author Liu Wenjie   

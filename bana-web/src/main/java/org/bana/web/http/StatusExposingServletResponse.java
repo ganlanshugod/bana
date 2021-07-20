@@ -1,5 +1,5 @@
 /**
-* @Company 青鸟软通   
+* @Company weipu   
 * @Title: StatusExposingServletResponse2.java 
 * @Package org.bana.web.http 
 * @author Liu Wenjie   

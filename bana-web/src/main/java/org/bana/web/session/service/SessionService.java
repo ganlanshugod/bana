@@ -1,5 +1,5 @@
 /**
- * @Company 青鸟软通   
+ * @Company weipu   
  * @Title: SessionService.java 
  * @Package com.jbinfo.i3618.system.session.service 
  * @author Yang Shuangshuang   

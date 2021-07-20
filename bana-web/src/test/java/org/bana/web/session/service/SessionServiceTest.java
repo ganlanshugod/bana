@@ -1,5 +1,5 @@
 /**
-* @Company 青鸟软通   
+* @Company weipu   
 * @Title: SessionServiceTest.java 
 * @Package org.bana.web.session.service 
 * @author Liu Wenjie   

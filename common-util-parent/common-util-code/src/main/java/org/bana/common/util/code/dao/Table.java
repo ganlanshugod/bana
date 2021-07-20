@@ -1,5 +1,5 @@
 /**
-* @Company 青鸟软通   
+* @Company weipu   
 * @Title: Table.java 
 * @Package org.bana.common.util.code.dao 
 * @author Liu Wenjie   

@@ -1,5 +1,5 @@
 /**
-* @Company 青鸟软通   
+* @Company weipu   
 * @Title: ThrowableUtil.java 
 * @Package org.bana.common.util.exception 
 * @author Liu Wenjie   

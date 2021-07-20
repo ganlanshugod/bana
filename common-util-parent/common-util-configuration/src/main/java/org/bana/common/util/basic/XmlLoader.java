@@ -1,5 +1,5 @@
 /**
- * @Company 青鸟软通   
+ * @Company weipu   
  * @Title: XmlLoader.java 
  * @Package com.jbinfo.common.util 
  * @author Liu Wenjie   

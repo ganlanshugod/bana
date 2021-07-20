@@ -1,5 +1,5 @@
 /**
-* @Company 青鸟软通   
+* @Company weipu   
 * @Title: BanaMonitorLog.java 
 * @Package com.haier.isales.monitor.service.impl 
 * @author Liu Wenjie   

@@ -1,5 +1,5 @@
 /**
-* @Company 青鸟软通   
+* @Company weipu   
 * @Title: AccessLogFilter.java 
 * @Package org.bana.web.filter 
 * @author Liu Wenjie   

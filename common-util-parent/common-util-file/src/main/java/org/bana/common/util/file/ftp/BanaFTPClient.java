@@ -1,5 +1,5 @@
 /**
- * @Company 青鸟软通   
+ * @Company weipu   
  * @Title: BanaFTPClient.java 
  * @Package org.bana.common.util.file.ftp 
  * @author Liu Wenjie   

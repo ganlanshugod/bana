@@ -1,5 +1,5 @@
 /**
-* @Company 青鸟软通   
+* @Company weipu   
 * @Title: MongoGroup.java 
 * @Package org.bana.common.util.etl.config 
 * @author Liu Wenjie   

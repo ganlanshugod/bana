@@ -1,5 +1,5 @@
 /**
-* @Company 青鸟软通   
+* @Company weipu   
 * @Title: SimpleCodeGenerator.java 
 * @Package org.bana.common.util.code.impl 
 * @author Liu Wenjie   

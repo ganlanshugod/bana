@@ -1,5 +1,5 @@
 /**
- * @Company 青鸟软通   
+ * @Company weipu   
  * @Title: ValidataXMLTest.java 
  * @Package org.bana.common.util.xml 
  * @author Liu Wenjie   

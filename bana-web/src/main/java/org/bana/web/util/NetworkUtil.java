@@ -1,5 +1,5 @@
 /**
-* @Company 青鸟软通   
+* @Company weipu   
 * @Title: NetworkUtil.java 
 * @Package com.jbinfo.i3618.web.util 
 * @author Liu Wenjie   

@@ -1,5 +1,5 @@
 /**
-* @Company 青鸟软通   
+* @Company weipu   
 * @Title: SessionServiceMongoImpl.java 
 * @Package org.bana.web.session.service.impl 
 * @author Liu Wenjie   

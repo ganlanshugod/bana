@@ -1,5 +1,5 @@
 /**
- * @Company 青鸟软通   
+ * @Company weipu   
  * @Title: MD5Util.java 
  * @Package com.haier.hrnet.util 
  * @author Liu Wenjie   

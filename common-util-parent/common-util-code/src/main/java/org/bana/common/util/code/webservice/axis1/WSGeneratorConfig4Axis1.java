@@ -1,5 +1,5 @@
 /**
-* @Company 青鸟软通   
+* @Company weipu   
 * @Title: WSGeneratorConfig4Axis1.java 
 * @Package org.bana.common.util.code.webservice.axis1 
 * @author Liu Wenjie   

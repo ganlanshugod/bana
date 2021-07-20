@@ -1,5 +1,5 @@
 /**
-* @Company 青鸟软通   
+* @Company weipu   
 * @Title: SystemConfigurationTest.java 
 * @Package org.apache.commons.configuration 
 * @author liuwenjie   
