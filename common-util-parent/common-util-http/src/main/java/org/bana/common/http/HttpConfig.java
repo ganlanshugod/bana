@@ -1,5 +1,5 @@
 /**
-* @Company 全域旅游
+* @Company weipu
 * @Title: HttpConfig.java 
 * @Package org.bana.common.http 
 * @author liuwenjie   

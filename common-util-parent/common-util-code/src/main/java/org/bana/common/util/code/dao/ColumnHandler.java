@@ -1,5 +1,5 @@
 /**
-* @Company 全域旅游
+* @Company weipu
 * @Title: ColumnHandler.java 
 * @Package org.bana.common.util.code.dao 
 * @author liuwenjie   

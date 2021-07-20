@@ -1,5 +1,5 @@
 /**
-* @Company 全域旅游
+* @Company weipu
 * @Title: AreaUrlConfig.java 
 * @Package org.bana.common.util.area 
 * @author liuwenjie   

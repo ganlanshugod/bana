@@ -1,5 +1,5 @@
 /**
-* @Company 全域旅游
+* @Company weipu
 * @Title: TestLog4j.java 
 * @Package org.bana.common.util.basic 
 * @author liuwenjie   

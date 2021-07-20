@@ -90,7 +90,7 @@ public class HttpLogger {
 	protected void doSaveHttpLog(HttpLogDomain logDomain){
 		LOG.warn("===http访问的日志没有保存，只是控制台打印=== " + logDomain);
 		LOG.warn("url 地址为 " + logDomain.getUrl());
-		LOG.warn("参数为===" + JSON.toJSONString(logDomain.getParamData()));
+		LOG.warn("参数为===" + logDomain.getParamData());
 		LOG.warn("HTTP Status code 为 ===" + logDomain.getStatusCode());
 		LOG.warn("返回结果为==" + logDomain.getResult());
 	}

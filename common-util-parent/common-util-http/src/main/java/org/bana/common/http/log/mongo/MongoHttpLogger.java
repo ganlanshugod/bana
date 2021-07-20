@@ -1,5 +1,5 @@
 /**
-* @Company 全域旅游
+* @Company weipu
 * @Title: MongoHttpLogger.java 
 * @Package org.bana.wechat.common.log.mongo 
 * @author liuwenjie   

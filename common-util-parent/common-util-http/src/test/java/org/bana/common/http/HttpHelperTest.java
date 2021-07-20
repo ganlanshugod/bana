@@ -1,5 +1,5 @@
 /**
-* @Company 全域旅游
+* @Company weipu
 * @Title: HttpHelperTest.java 
 * @Package org.bana.common.http 
 * @author liuwenjie   
