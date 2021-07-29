@@ -11,6 +11,8 @@ package org.bana.common.http.log;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
 import org.bana.common.http.util.ThreadPoolUtil;
@@ -93,6 +95,15 @@ public class HttpLogger {
 		LOG.warn("参数为===" + logDomain.getParamData());
 		LOG.warn("HTTP Status code 为 ===" + logDomain.getStatusCode());
 		LOG.warn("返回结果为==" + logDomain.getResult());
+		Map<String, String> responseHeader = logDomain.getResponseHeader();
+		if(responseHeader != null) {
+			LOG.warn("返回结果中的header参数为==" + responseHeader);
+			Set<Entry<String, String>> entrySet = responseHeader.entrySet();
+			for (Entry<String, String> entry : entrySet) {
+				LOG.warn(entry.getKey() + "==" + entry.getValue());
+			}
+		}
+		
 	}
 	/** 
 	* @Description: 记录开始信息

@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -144,7 +145,7 @@ public class HttpHelper {
 			getLOG().logEnd();
 			try {
 				if(response != null){
-					domain.setStatusCode(String.valueOf(response.getStatusLine().getStatusCode()));
+					logEnd(getLOG().getHttpLogDomain(),response);
 					response.close();
 	//				domain.setHttpMessage(String.valueOf(response.getStatusLine()));
 				}
@@ -241,7 +242,7 @@ public class HttpHelper {
 		} finally {
 			getLOG().logEnd();
 			if (response != null) {
-				getLOG().getHttpLogDomain().setStatusCode(String.valueOf(response.getStatusLine().getStatusCode()));
+				logEnd(getLOG().getHttpLogDomain(),response);
 				try {
 					response.close();
 				} catch (IOException e) {
@@ -250,6 +251,18 @@ public class HttpHelper {
 			}
 			getLOG().saveLog();
 		}
+	}
+	
+	private void logEnd(HttpLogDomain logDomain,CloseableHttpResponse response) {
+		logDomain.setStatusCode(String.valueOf(response.getStatusLine().getStatusCode()));
+		Header[] allHeaders = response.getAllHeaders();
+		Map<String,String> headerMap = new HashMap<>();
+		if(allHeaders != null) {
+			for (Header header : allHeaders) {
+				headerMap.put(header.getName(), header.getValue());
+			}
+		}
+		
 	}
 	
 	
@@ -285,7 +298,7 @@ public class HttpHelper {
 		} finally {
 			getLOG().logEnd();
 			if (response != null) {
-				getLOG().getHttpLogDomain().setStatusCode(String.valueOf(response.getStatusLine().getStatusCode()));
+				logEnd(getLOG().getHttpLogDomain(),response);
 				try {
 					response.close();
 				} catch (IOException e) {

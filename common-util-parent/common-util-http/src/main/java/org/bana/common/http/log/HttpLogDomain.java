@@ -9,6 +9,7 @@
 package org.bana.common.http.log;
 
 import java.io.Serializable;
+import java.util.Map;
 
 /** 
 * @ClassName: Snippet 
@@ -81,6 +82,8 @@ public class HttpLogDomain implements Serializable{
 	* @Fields resultExtend : 返回结果扩展信息 
 	*/ 
 	private String resultExtend;
+	
+	private Map<String,String> responseHeader;
 	
 	
 	public String getUrl() {
@@ -261,6 +264,13 @@ public class HttpLogDomain implements Serializable{
 	public void setResultExtend(String resultExtend) {
 		this.resultExtend = resultExtend;
 	}
+	
+	public Map<String, String> getResponseHeader() {
+		return responseHeader;
+	}
+	public void setResponseHeader(Map<String, String> responseHeader) {
+		this.responseHeader = responseHeader;
+	}
 	@Override
 	public String toString() {
 		return "HttpLogDomain [url=" + url + ", paramData=" + paramData + ", startTime=" + startTime + ", endTime="
@@ -268,7 +278,7 @@ public class HttpLogDomain implements Serializable{
 				+ ", duration=" + duration + ", statusCode=" + statusCode + ", httpMessage=" + httpMessage + ", result="
 				+ result + ", executeMethod=" + executeMethod + ", exceptionClass=" + exceptionClass
 				+ ", exceptionMessage=" + exceptionMessage + ", paramExtend=" + paramExtend + ", resultExtend="
-				+ resultExtend + "]";
+				+ resultExtend + ", responseHeader=" + responseHeader + "]";
 	}
 	
 	

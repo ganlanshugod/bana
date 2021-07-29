@@ -29,6 +29,14 @@ public class HttpHelperTest {
 	}
 	
 	@Test
+	public void testHttp2() {
+		JSONObject httpGet = httpHelper.httpPost("http://hjerp.shkf.weiputech.com/ceboshitech/p/merchant/api/customTableColors?cacheTimeStamp=1627525312918",null,true);
+		System.out.println(httpGet);
+	}
+	
+	
+	
+	@Test
 	public void testDelete() {
 		JSONObject httpGet = httpHelper.httpDelete("http://keyance-api.sh.ceboshi.cn/",true);
 		System.out.println(httpGet);
