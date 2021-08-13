@@ -96,8 +96,8 @@ public class HttpLogger {
 		LOG.warn("HTTP Status code 为 ===" + logDomain.getStatusCode());
 		LOG.warn("返回结果为==" + logDomain.getResult());
 		Map<String, String> responseHeader = logDomain.getResponseHeader();
+		LOG.warn("返回结果中的header参数为==" + responseHeader);
 		if(responseHeader != null) {
-			LOG.warn("返回结果中的header参数为==" + responseHeader);
 			Set<Entry<String, String>> entrySet = responseHeader.entrySet();
 			for (Entry<String, String> entry : entrySet) {
 				LOG.warn(entry.getKey() + "==" + entry.getValue());

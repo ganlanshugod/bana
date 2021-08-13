@@ -33,6 +33,7 @@ import org.bana.common.http.log.HttpLoggerFactory;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 
 /**
  * @ClassName: HttpHelper
@@ -84,7 +85,7 @@ public class HttpHelper {
 		// 处理参数信心为json格式
 		String params = null;
 		if(data != null) {
-			params = JSON.toJSONString(data);
+			params = JSON.toJSONString(data,SerializerFeature.WriteMapNullValue);
 			List<NameValuePair> list = new ArrayList<NameValuePair>();
 			for (Map.Entry<String, String> param : data.entrySet()) {
 				BasicNameValuePair basicNameValuePair = new BasicNameValuePair(param.getKey(), param.getValue());
@@ -262,7 +263,7 @@ public class HttpHelper {
 				headerMap.put(header.getName(), header.getValue());
 			}
 		}
-		
+		logDomain.setResponseHeader(headerMap);
 	}
 	
 	
@@ -333,7 +334,7 @@ public class HttpHelper {
 			}
 		}
 		if(data != null) { // 使用json请求方式
-			params = JSON.toJSONString(data);
+			params = JSON.toJSONString(data,SerializerFeature.WriteMapNullValue);
 			StringEntity requestEntity = new StringEntity(params, "utf-8");
 			httpPost.setEntity(requestEntity);
 			httpPost.addHeader("Content-Type", "application/json");
@@ -369,7 +370,7 @@ public class HttpHelper {
 			}
 		}
 		if(data != null) { // 使用json请求方式
-			params = JSON.toJSONString(data);
+			params = JSON.toJSONString(data,SerializerFeature.WriteMapNullValue);
 			StringEntity requestEntity = new StringEntity(params, "utf-8");
 			httpPut.setEntity(requestEntity);
 			httpPut.addHeader("Content-Type", "application/json");
