@@ -77,7 +77,7 @@ public class BeanToMapUtil {
      */ 
     public static Map<String,Object> convertBean(Object bean) { 
         try {
-			Class<? extends Object> type = bean.getClass(); 
+			Class<? extends Object> type = bean.getClass();
 			Map<String,Object> returnMap = new HashMap<String,Object>(); 
 			BeanInfo beanInfo = Introspector.getBeanInfo(type,Object.class); 
 
