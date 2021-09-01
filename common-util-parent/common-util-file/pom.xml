@@ -70,12 +70,12 @@
 	    <version>1.0.6</version>
 	</dependency> -->
 	
-	<dependency>
+	<!-- <dependency>
 	    <groupId>fr.opensagres.xdocreport</groupId>
-	    <!-- <artifactId>fr.opensagres.poi.xwpf.converter.pdf</artifactId> -->
+	    <artifactId>fr.opensagres.poi.xwpf.converter.pdf</artifactId>
 	    <artifactId>fr.opensagres.poi.xwpf.converter.pdf-gae</artifactId>
 	    <version>2.0.1</version>
-	</dependency>
+	</dependency> -->
 	
 	<!-- 引入fastJson，替换掉原来的json-lib的jar包 -->
 	<dependency>
