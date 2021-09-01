@@ -12,11 +12,14 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.bana.common.util.basic.BeanToMapUtil;
@@ -424,10 +427,19 @@ public class VmTemplateParser implements TemplateParser {
 			LOG.warn("BOOLEAN类型的单元格，不支持解析 {} ,{},{}",cell.getBooleanCellValue() , row.getRowNum(),cell.getColumnIndex());
 			break;
 		case STRING:
-			String stringCellValue = cell.getStringCellValue();
+			RichTextString richStringCellValue = cell.getRichStringCellValue();
+			String stringCellValue = richStringCellValue.toString();
 			String parserString = parserString(stringCellValue, data);
 			if(!parserString.equals(stringCellValue)) {
-				cell.setCellValue(parserString);
+				if(richStringCellValue instanceof XSSFRichTextString) {
+//					XSSFRichTextString xxsString = (XSSFRichTextString)richStringCellValue;
+					XSSFRichTextString newString = new XSSFRichTextString(parserString);
+					cell.setCellValue(newString);
+				}else if(richStringCellValue instanceof HSSFRichTextString) {
+//					HSSFRichTextString hssfString = (HSSFRichTextString)richStringCellValue;
+					HSSFRichTextString newValue = new HSSFRichTextString(parserString);
+					cell.setCellValue(newValue);
+				}
 			}
 			break;
 		case NUMERIC:
