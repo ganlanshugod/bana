@@ -63,45 +63,48 @@ public class ClusterSessionFilter implements Filter {
 		}
 		String contextPath = filterConfig.getServletContext().getContextPath();
 		String path = null;
-		if(contextPath.startsWith("/")){
+		if (contextPath.startsWith("/")) {
 			path = contextPath.substring(1);
-		}else{
+		} else {
 			path = DEFAULT_SESSION_KEY;
 		}
-		//从context中获取sessionKey和domain的变量参数
-		this.sessionKey = StringUtils.defaultIfEmpty((String)this.servletContext.getAttribute("sessionKey"), path+"_sessionId");
-		this.cookieDomain = StringUtils.defaultIfEmpty((String)this.servletContext.getAttribute("cookieDomain"), "");
-		this.cookiePath = StringUtils.defaultIfEmpty((String)this.servletContext.getAttribute("cookiePath"), "/");
-		//使用sessionFilter配置中的参数赋值
-		if(!StringUtils.isBlank(initMap.get("sessionKey"))){
+		// 从context中获取sessionKey和domain的变量参数
+		this.sessionKey = StringUtils.defaultIfEmpty((String) this.servletContext.getAttribute("sessionKey"),
+				path + "_sessionId");
+		this.cookieDomain = StringUtils.defaultIfEmpty((String) this.servletContext.getAttribute("cookieDomain"), "");
+		this.cookiePath = StringUtils.defaultIfEmpty((String) this.servletContext.getAttribute("cookiePath"), "/");
+		// 使用sessionFilter配置中的参数赋值
+		if (!StringUtils.isBlank(initMap.get("sessionKey"))) {
 			this.sessionKey = initMap.get("sessionKey");
 		}
-		if(!StringUtils.isBlank(initMap.get("cookieDomain"))){
+		if (!StringUtils.isBlank(initMap.get("cookieDomain"))) {
 			this.cookieDomain = initMap.get("cookieDomain");
 		}
-		if(!StringUtils.isBlank(initMap.get("cookiePath"))){
+		if (!StringUtils.isBlank(initMap.get("cookiePath"))) {
 			this.cookiePath = initMap.get("cookiePath");
 		}
-		if(!StringUtils.isBlank(initMap.get("checkIp"))){
+		if (!StringUtils.isBlank(initMap.get("checkIp"))) {
 			this.checkIp = initMap.get("checkIp").equals("true");
 		}
-		
-		ApplicationContext applicationContext = WebApplicationContextUtils.getWebApplicationContext(filterConfig.getServletContext());
+
+		ApplicationContext applicationContext = WebApplicationContextUtils
+				.getWebApplicationContext(filterConfig.getServletContext());
 		String sessionServiceId = StringUtils.defaultIfEmpty(initMap.get("sessionServiceId"), "sessionService");
 		this.sessionService = applicationContext.getBean(sessionServiceId, SessionService.class);
 		String ignorUrlPattern = StringUtils.defaultIfEmpty(initMap.get("requestUriIgnorePattern"), "");
 		this.requestUriIgnorePattern = Pattern.compile(ignorUrlPattern, Pattern.CASE_INSENSITIVE);
-		LOG.info("SessionFilter初始完成" + initMap);
-		LOG.info("SessionFilter初始完成,关键属性值为 sessionKey=" + sessionKey + ",cookieDomain=" + cookieDomain + ",cookiePath=" + cookiePath);
+		LOG.debug("SessionFilter初始完成" + initMap);
+		LOG.debug("SessionFilter初始完成,关键属性值为 sessionKey=" + sessionKey + ",cookieDomain=" + cookieDomain + ",cookiePath="
+				+ cookiePath);
 	}
 
 	@Override
 	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain)
 			throws IOException, ServletException {
-		LOG.info("SessionFilter.. 执行开始===========");
+		LOG.debug("SessionFilter.. 执行开始===========");
 		HttpServletRequest request = (HttpServletRequest) servletRequest;
 		HttpServletResponse response = (HttpServletResponse) servletResponse;
-		//提出特殊连接的过滤
+		// 提出特殊连接的过滤
 		String requestUrl = request.getRequestURI();
 		if (this.requestUriIgnorePattern.matcher(requestUrl).matches()) {
 			chain.doFilter(servletRequest, servletResponse);
@@ -123,43 +126,46 @@ public class ClusterSessionFilter implements Filter {
 		int ipHash = ip.hashCode();
 		String sessionId = generateSessionString(ipHash);
 		if (StringUtils.isBlank(sid)) {
-			resetSessionIdValueInCookie(request,response, sessionId);
+			resetSessionIdValueInCookie(request, response, sessionId);
 			sid = sessionId;
-		}else{//判断是否伪造session
-			if(checkIp){
+		} else {// 判断是否伪造session
+			if (checkIp) {
 				String[] sessionIdArr = sid.split("!");
-				if(sessionIdArr != null && sessionIdArr.length == 2){
-					if(!StringUtils.equals(String.valueOf(ipHash), sessionIdArr[1])){
-						resetSessionIdValueInCookie(request,response, sessionId);
+				if (sessionIdArr != null && sessionIdArr.length == 2) {
+					if (!StringUtils.equals(String.valueOf(ipHash), sessionIdArr[1])) {
+						resetSessionIdValueInCookie(request, response, sessionId);
 						sid = sessionId;
 					}
 				}
 			}
 		}
-		ClusterHttpServletRequestWrapper clusterHttpServletRequest = new ClusterHttpServletRequestWrapper(servletContext,request, sid, this.sessionService);
+		ClusterHttpServletRequestWrapper clusterHttpServletRequest = new ClusterHttpServletRequestWrapper(
+				servletContext, request, sid, this.sessionService);
 		chain.doFilter(clusterHttpServletRequest, servletResponse);
-		//更新session的活动时间
-		ClusterHttpSessionWrapper clusterHttpSessionWrapper = (ClusterHttpSessionWrapper) clusterHttpServletRequest.getSession();
-		if(clusterHttpSessionWrapper != null){
+		// 更新session的活动时间
+		ClusterHttpSessionWrapper clusterHttpSessionWrapper = (ClusterHttpSessionWrapper) clusterHttpServletRequest
+				.getSession();
+		if (clusterHttpSessionWrapper != null) {
 			clusterHttpSessionWrapper.saveSession();
 		}
-		LOG.info("SessionFilter.. 执行结束===========");
+		LOG.debug("SessionFilter.. 执行结束===========");
 	}
 
-	private void resetSessionIdValueInCookie(HttpServletRequest request, HttpServletResponse response, String sessionId) {
+	private void resetSessionIdValueInCookie(HttpServletRequest request, HttpServletResponse response,
+			String sessionId) {
 		Cookie cookie = new Cookie(sessionKey, sessionId);
 		cookie.setMaxAge(-1);
 		if (StringUtils.isNotBlank(this.cookieDomain)) {
-			if(this.cookieDomain.equalsIgnoreCase(CONTANTS_FIRST_DOMAIN)){
+			if (this.cookieDomain.equalsIgnoreCase(CONTANTS_FIRST_DOMAIN)) {
 				String domainName = request.getServerName();
-				//TODO 还要有一个判断是否是当前IP的功能，待完善
-				if(domainName.indexOf(".") == -1){
+				// TODO 还要有一个判断是否是当前IP的功能，待完善
+				if (domainName.indexOf(".") == -1) {
 					cookie.setDomain(domainName);
-				}else{//一班没有“."的都是localhost
+				} else {// 一班没有“."的都是localhost
 					String localDomain = domainName.substring(domainName.indexOf("."));
 					cookie.setDomain(localDomain);
 				}
-			}else{
+			} else {
 				cookie.setDomain(this.cookieDomain);
 			}
 		}
@@ -169,12 +175,14 @@ public class ClusterSessionFilter implements Filter {
 
 	/**
 	 * 生成sessionID，格式xxxx!zzzz
+	 * 
 	 * @param ipHash
 	 * @return
 	 */
-	private String generateSessionString(int ipHash){
+	private String generateSessionString(int ipHash) {
 		return new StringBuilder(UUID.randomUUID().toString()).append("!").append(ipHash).toString();
 	}
+
 	@Override
 	public void destroy() {
 	}

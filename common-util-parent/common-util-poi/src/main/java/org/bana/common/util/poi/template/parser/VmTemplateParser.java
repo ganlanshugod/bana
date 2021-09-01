@@ -44,7 +44,7 @@ public class VmTemplateParser implements TemplateParser {
 		int lastRowNum = sheet.getLastRowNum();
 		System.out.println(firstRowNum +" ~ " + lastRowNum);
 		for (int rowIndex = firstRowNum; rowIndex < lastRowNum; rowIndex++) {
-			LOG.info("解析 第{}行",rowIndex);
+			LOG.debug("解析 第{}行",rowIndex);
 			Row row = sheet.getRow(rowIndex);
 			short lastCellNum = row.getLastCellNum();
 			short firstCellNum = row.getFirstCellNum();
@@ -85,7 +85,7 @@ public class VmTemplateParser implements TemplateParser {
 		for(short i = (short)(startForEachIndex+1); i< lastCellNum; i++) {
 			Cell cell2 = sourceRow.getCell(i);
 			CellType cellType = cell2.getCellType();
-			LOG.info("循环列 {} ,第{}位 ",cellType,i);
+			LOG.debug("循环列 {} ,第{}位 ",cellType,i);
 			if(CellType.STRING.equals(cell2.getCellType())) {
 				String cellValue = cell2.getStringCellValue();
 				// 验证有几个end符号
@@ -109,21 +109,21 @@ public class VmTemplateParser implements TemplateParser {
 				}
 			}
 		}
-		LOG.info("endForEachIndex: {}" , endForEachIndex);
-		LOG.info("循环模板数据为:{}",vm.toString());
+		LOG.debug("endForEachIndex: {}" , endForEachIndex);
+		LOG.debug("循环模板数据为:{}",vm.toString());
 		
 		if(fnNum != 0) {
 			throw new BanaPoiException("模板不正确，foreach行必须有对等的#end");
 		}
 		String parserString = parserString(vm.toString(),excelData);
-		LOG.info("解析结果为；\n{}" , parserString);
+		LOG.debug("解析结果为；\n{}" , parserString);
 		parserString = parserString.replaceAll("\n", "").replaceAll("\t", "");
 		String[] split = parserString.split(colSplit);
 		List<RowData> rowList = new ArrayList<>();
 		
 		// 解析表格数据
 		parseRow(startForEachIndex,split,rowList,0);
-		LOG.info("解析数据一共{}行, 数据为{}",rowList.size(),rowList);
+		LOG.debug("解析数据一共{}行, 数据为{}",rowList.size(),rowList);
 		// 输出表格数据
 		writeForEachRows(sheet, sourceRow, startRow, rowList);
 		ForEachResult result = new ForEachResult();

@@ -16,9 +16,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import org.bana.common.util.basic.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @ClassName: RestClient
@@ -26,7 +27,7 @@ import org.bana.common.util.basic.StringUtils;
  * 
  */
 public class RestClient {
-	private static final Logger LOG = Logger.getLogger(RestClient.class.getName());
+	private static final Logger LOG = LoggerFactory.getLogger(RestClient.class.getName());
 
 	/**
 	 * @Description: 获取一个http访问的链接
@@ -37,7 +38,7 @@ public class RestClient {
 	 * @throws IOException
 	 */
 	public static HttpURLConnection get(String url) throws IOException {
-		LOG.info("Getting from url '" + url + "'");
+		LOG.debug("Getting from url '" + url + "'");
 
 		URL connectionUrl = new URL(url);
 		return (HttpURLConnection) connectionUrl.openConnection();
@@ -53,16 +54,16 @@ public class RestClient {
 	 * @throws IOException
 	 */
 	public static HttpURLConnection post(String url, Map<String, Object> params) throws IOException {
-		LOG.info("Posting to url '" + url + "' w/ params '" + params.toString() + "'");
-		
+		LOG.debug("Posting to url '" + url + "' w/ params '" + params.toString() + "'");
+
 		URL connectionUrl = new URL(url);
 		byte[] postDataBytes = convertParamMapToBytes(params);
 		HttpURLConnection conn = (HttpURLConnection) connectionUrl.openConnection();
 		conn.setRequestMethod("POST");
 		conn.setUseCaches(false);
-//		 conn.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
-//		conn.setRequestProperty("Content-Length",String.valueOf(postDataBytes.length));
-//		conn.setDoOutput(true);
+		// conn.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
+		// conn.setRequestProperty("Content-Length",String.valueOf(postDataBytes.length));
+		// conn.setDoOutput(true);
 		OutputStream out = conn.getOutputStream();
 		out.write(postDataBytes);
 		out.flush();
@@ -106,39 +107,40 @@ public class RestClient {
 	 * @throws IOException
 	 */
 	public static String getConnectionResponse(HttpURLConnection conn) throws IOException {
-		//LOG.info("状态"+conn.getResponseCode() + ",信息" + conn.getResponseMessage());
-//		conn.getOutputStream().close();
+		// LOG.debug("状态"+conn.getResponseCode() + ",信息" + conn.getResponseMessage());
+		// conn.getOutputStream().close();
 		StringBuilder responseBuilder = new StringBuilder();
 		BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
-//		BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+		// BufferedReader in = new BufferedReader(new
+		// InputStreamReader(conn.getInputStream()));
 		String input;
 		while ((input = in.readLine()) != null) {
 			responseBuilder.append(input).append("\r\n");
 		}
 		in.close();
-//		conn.disconnect();
+		// conn.disconnect();
 		String response = responseBuilder.toString();
 		return response;
 	}
 
-	/** 
-	* @Description: 指定请求数据内容的post请求
-	* @author Liu Wenjie   
-	* @date 2015-5-9 下午9:03:29 
-	* @param url
-	* @param postData
-	* @return  
-	*/ 
-	public static HttpURLConnection post(String url, String postData) throws IOException{
-		LOG.info("Posting to url '" + url + "' w/ params '" + postData + "'");
+	/**
+	 * @Description: 指定请求数据内容的post请求
+	 * @author Liu Wenjie
+	 * @date 2015-5-9 下午9:03:29
+	 * @param url
+	 * @param postData
+	 * @return
+	 */
+	public static HttpURLConnection post(String url, String postData) throws IOException {
+		LOG.debug("Posting to url '" + url + "' w/ params '" + postData + "'");
 
 		URL connectionUrl = new URL(url);
 		byte[] postDataBytes = postData.getBytes();
 		HttpURLConnection conn = (HttpURLConnection) connectionUrl.openConnection();
 		conn.setRequestMethod("POST");
 		conn.setUseCaches(false);
-//		 conn.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
-//		 conn.setRequestProperty("Content-Length",String.valueOf(postDataBytes.length));
+		// conn.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
+		// conn.setRequestProperty("Content-Length",String.valueOf(postDataBytes.length));
 		conn.setDoOutput(true);
 		conn.getOutputStream().write(postDataBytes);
 		conn.getOutputStream().flush();
