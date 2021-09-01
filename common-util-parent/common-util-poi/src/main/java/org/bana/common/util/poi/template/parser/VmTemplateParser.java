@@ -2,15 +2,21 @@ package org.bana.common.util.poi.template.parser;
 
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.bana.common.util.basic.BeanToMapUtil;
@@ -116,12 +122,47 @@ public class VmTemplateParser implements TemplateParser {
 		parseRow(startForEachIndex,split,rowList,0);
 		LOG.info("解析数据一共{}行, 数据为{}",rowList.size(),rowList);
 		// 输出表格数据
-//		writeForEachTableData(rowList);
+		writeForEachRows(sheet, sourceRow, startRow, rowList);
+		ForEachResult result = new ForEachResult();
+		result.colIndex = endForEachIndex;
+		result.rowNum = rowList.size();
+		return result;
+		
+	}
+
+	private void writeForEachRows(Sheet sheet, Row sourceRow, int startRow, List<RowData> rowList) {
 		if(!rowList.isEmpty()) {
 			int rows = rowList.size();
+			// 可能需要合并单元格的列
+			Set<Short> lastSet = new HashSet<>();
+			// 确定要合并的单元格列
+			List<CellRangeAddress> rangeList = new ArrayList<>();
+			// 准备要合并的单元格列
+			List<CellRangeAddress> readyList = new ArrayList<>();
+			// 横向要合并的单元格列
+			List<CellRangeAddress> exsitList = new ArrayList<>();
+			
+			// 1.0 获取已经存在的横向合并单元格需求
+			int sheetMergeCount = sheet.getNumMergedRegions(); 
+			Set<Integer> removeMerge = new HashSet<>();
+			for (int mi = 0; mi < sheetMergeCount; mi++) {
+				CellRangeAddress cellRangeAddress = sheet.getMergedRegion(mi);
+				if(cellRangeAddress.getFirstRow() == startRow && cellRangeAddress.getLastRow() == startRow) {
+					// 需要复制合并单元格，横向的单元格合并
+					for (int i = 0; i < rows; i++) {
+						CellRangeAddress region1 = new CellRangeAddress(startRow+i, startRow+i, cellRangeAddress.getFirstColumn(), cellRangeAddress.getLastColumn());
+						exsitList.add(region1);
+						addMergeRegionSafe(rangeList, region1);
+					}
+					removeMerge.add(mi);
+				}
+			}
+			sheet.removeMergedRegions(removeMerge);
+			
 			int addRows = 0;
 			// 添加指定的行数
 			sheet.shiftRows(startRow+1, sheet.getLastRowNum(), rows-1, true, false);
+			List<CellRangeAddress> newRangeList = new ArrayList<>();
 			for (int i=0; i < rowList.size() ; i++) {
 				int currentRow = startRow + addRows;
 				Row targetRow;
@@ -131,21 +172,87 @@ public class VmTemplateParser implements TemplateParser {
 				}else {
 					targetRow = sheet.getRow(currentRow);
 				}
+				
+				Set<Short> curretIndxSet = new HashSet<>();
 				// 当前行数据
 				RowData rowItem = rowList.get(i);
 				for (ColData cellItem : rowItem.columnList) {
 					// 每列的数据
 					Cell cell1 = targetRow.getCell(cellItem.colIndex);
 					cell1.setCellValue(cellItem.value);
+					curretIndxSet.add(cellItem.colIndex);
 				}
+				// 上一行存在， 当前行不存在 && 可能的合并区域不存在， 这类添加到可能区域中，添加时，参考是否已经存在横向合并，如果存在，则增加跨行区间
+				// 上一行存在， 当前行不存在 但是可能的合并区域存在， 这类改变合并区域到当前行
+				List<CellRangeAddress> newReadyList = new ArrayList<>();
+				lastSet.stream().filter(col1 -> !curretIndxSet.contains(col1)).forEach(colIndx ->{
+					// 存在
+					boolean hasReady = false;
+					for (CellRangeAddress ready : readyList) {
+						if(ready.containsColumn(colIndx)){
+							hasReady = true;
+							ready.setLastRow(currentRow);
+						}
+					}
+					// 没有ready的情况下，需要添加到ready中
+					if(!hasReady) {
+						Optional<CellRangeAddress> findFirst = exsitList.stream().filter(item->item.containsColumn(colIndx)).findFirst();
+						CellRangeAddress ready = new CellRangeAddress(currentRow-1,currentRow,colIndx,colIndx);
+						if(findFirst.isPresent()) {
+							CellRangeAddress exist = findFirst.get();
+							ready.setFirstColumn(exist.getFirstColumn());
+							ready.setLastColumn(exist.getLastColumn());
+						}
+						newReadyList.add(ready);
+					}
+				});
+				// 上一行不存在，但是当前行存在， 则查看可能合并区是否存在（应该存在),把可能的合并行添加的确定合并区域中
+				for (Short col : curretIndxSet) {
+					if(!lastSet.contains(col)) {
+						Optional<CellRangeAddress> findFirst = readyList.stream().filter(ready->ready.containsColumn(col)).findFirst();
+						if(findFirst.isPresent()) {
+							CellRangeAddress cellRangeAddress = findFirst.get();
+							// 说明上一行是他的终结行
+							cellRangeAddress.setLastRow(currentRow-1);
+							newRangeList.add(cellRangeAddress);
+						}
+					}
+				}
+				readyList.removeAll(newRangeList);
+				readyList.addAll(newReadyList);
+
+				lastSet = curretIndxSet;
 				addRows++;
 			}
+			// 最后把所有ready的填写到range里面
+			for (CellRangeAddress item : readyList) {
+				item.setLastRow(startRow + addRows -1);
+			}
+			newRangeList.addAll(readyList);
+			// 执行合并单元格操作
+			addMergeRegionSafe(rangeList, newRangeList);
+			// 复制合并单元格
+			if(CollectionUtils.isNotEmpty(rangeList)) {
+				rangeList.forEach(item -> {
+					sheet.addMergedRegion(item);
+				});
+			}
 		}
-		ForEachResult result = new ForEachResult();
-		result.colIndex = endForEachIndex;
-		result.rowNum = rowList.size();
-		return result;
-		
+	}
+	
+	private void addMergeRegionSafe(List<CellRangeAddress> rangeList,List<CellRangeAddress> newRangeList) {
+		for (CellRangeAddress cellRangeAddress : newRangeList) {
+			addMergeRegionSafe(rangeList, cellRangeAddress);
+		}
+	}
+	private void addMergeRegionSafe(List<CellRangeAddress> rangeList,CellRangeAddress range) {
+		List<CellRangeAddress> collect = rangeList.stream().filter(item -> 
+			item.intersects(range)
+		).collect(Collectors.toList());
+		if(!collect.isEmpty()) {
+			rangeList.removeAll(collect);
+		}
+		rangeList.add(range);
 	}
 	
 	private void copyRowsStyle(Row sourceRow,Row targetRow) {
@@ -235,6 +342,23 @@ public class VmTemplateParser implements TemplateParser {
 		System.out.println(getNum(str,keyFn));
 		System.out.println(getNum(str2,keyFn));
 		print(1);
+		
+		CellRangeAddress address = new CellRangeAddress(1,2,3,4);
+		CellRangeAddress address2 = new CellRangeAddress(3,4,5,6);
+		CellRangeAddress address3 = new CellRangeAddress(3,4,5,6);
+		List<CellRangeAddress> list = new ArrayList<>();
+		list.add(address);
+		list.add(address2);
+		list.add(address3);
+		List<CellRangeAddress> list2 = new ArrayList<>();
+		list2.add(address);
+		list2.add(address2);
+		System.out.println(list.size());
+		System.out.println(list2.size());
+		list.removeAll(list2);
+		System.out.println(list.size());
+		System.out.println(list2.size());
+		
 	}
 	
 	private static void print(int size){
