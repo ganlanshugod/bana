@@ -7,24 +7,23 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bana.common.util.poi.template.TemplatePOIExcelGenerator;
 import org.bana.common.util.poi.template.param.SimpleTemplateExcelObject;
 import org.junit.Before;
 import org.junit.Test;
 
-public class POIExcelGeneratorTest {
+public class CustomPOIExcelGeneratorTest {
 	
 	private POIExcelGenerator excelGenerator;
 	
 	@Before
 	public void init() {
-		excelGenerator = new TemplatePOIExcelGenerator();
+		excelGenerator = new CustomTemplatePOIExcelGenerator();
 	}
 
 	@Test
 	public void testGenerator() throws FileNotFoundException {
 		// 输出文件
-		File outFile = new File("office/generator2.xlsx");
+		File outFile = new File("office/generator.xlsx");
 		if(!outFile.exists()) {
 			if(!outFile.getParentFile().exists()) {
 				outFile.getParentFile().mkdirs();
@@ -32,7 +31,7 @@ public class POIExcelGeneratorTest {
 		}
 		FileOutputStream outputStream = new FileOutputStream(outFile);
 		// 模板输入文件
-		FileInputStream templateFile = new FileInputStream("office/template2.xlsx");
+		FileInputStream templateFile = new FileInputStream("office/template.xlsx");
 		
 		SimpleTemplateExcelObject simpleObj = new SimpleTemplateExcelObject();
 		simpleObj.setTemplateInputStream(templateFile);

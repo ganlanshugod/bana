@@ -5,7 +5,6 @@ import java.io.OutputStream;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.bana.common.util.poi.BanaPoiException;
@@ -87,52 +86,11 @@ public class TemplatePOIExcelGenerator implements POIExcelGenerator{
 			throw new BanaPoiException(String.format("模板文件中不存在指定的第 %s sheet页", index));
 		}
 		// 循环每一行进行数据替换
-		int firstRowNum = sheet.getFirstRowNum();
-		int lastRowNum = sheet.getLastRowNum();
-		System.out.println(firstRowNum +" ~ " + lastRowNum);
-		for (int rowIndex = firstRowNum; rowIndex < lastRowNum; rowIndex++) {
-			System.out.println(rowIndex);
-			Row row = sheet.getRow(rowIndex);
-			short lastCellNum = row.getLastCellNum();
-			short firstCellNum = row.getFirstCellNum();
-			for(short colIx=firstCellNum; colIx<lastCellNum; colIx++) {
-				Cell cell = row.getCell(colIx);
-			   if(cell != null) {
-//				   print(cell);
-				   this.getTemplateParser().parserTemplate(cell, row, excelData);
-			   }
-			 }
-			System.out.println();
-		}
+		this.getTemplateParser().parseTemplate(sheet, excelData);
 		
 		this.doCreateSheet(workbook,sheet,excelConfig,excelData,index);
 	}
 
-	private void print(Cell cell) {
-		CellType cellType = cell.getCellType();
-		switch (cellType) {
-		case _NONE:
-		case BLANK:
-			break;
-		case BOOLEAN:
-			System.out.print(cell.getBooleanCellValue());
-			break;
-		case FORMULA:
-			System.out.print(cell.getCellFormula());
-			break;
-		case NUMERIC:
-			System.out.print(cell.getNumericCellValue());
-			break;
-		case STRING:
-			System.out.print(cell.getStringCellValue());
-			break;
-		case ERROR:
-			System.out.print(cell.getErrorCellValue());
-			break;
-		default:
-			break;
-		}
-	}
 
 	public TemplateParser getTemplateParser() {
 		if(templateParser == null) {

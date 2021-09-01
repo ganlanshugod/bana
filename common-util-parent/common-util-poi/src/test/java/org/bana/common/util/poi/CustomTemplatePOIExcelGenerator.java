@@ -1,7 +1,10 @@
 package org.bana.common.util.poi;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.poi.ss.usermodel.Cell;
@@ -39,18 +42,21 @@ public class CustomTemplatePOIExcelGenerator extends TemplatePOIExcelGenerator {
 		
 		int startRow = 11;
 		// 获取原合并单元格的配置
-		List<CellRangeAddress> mergedRegions = sheet.getMergedRegions();
-		System.out.println(mergedRegions.size());
 		List<CellRangeAddress> newReginList = new ArrayList<>();
-		for (CellRangeAddress cellRangeAddress : mergedRegions) {
+		int sheetMergeCount = sheet.getNumMergedRegions(); 
+		Set<Integer> removeMerge = new HashSet<>();
+		for (int mi = 0; mi < sheetMergeCount; mi++) {
+			CellRangeAddress cellRangeAddress = sheet.getMergedRegion(mi);
 			if(cellRangeAddress.getFirstRow() == startRow && cellRangeAddress.getLastRow() == startRow) {
 				// 需要复制合并单元格，横向的单元格合并
-				for (int i = 0; i < rows-1; i++) {
-//					CellRangeAddress region1 = new CellRangeAddress(startRow+i+1, startRow+i+1, cellRangeAddress.getFirstColumn(), cellRangeAddress.getLastColumn());
-//					newReginList.add(region1);
+				for (int i = 0; i < rows; i++) {
+					CellRangeAddress region1 = new CellRangeAddress(startRow+i, startRow+i, cellRangeAddress.getFirstColumn(), cellRangeAddress.getLastColumn());
+					addMergeRegionSafe(newReginList, region1);
 				}
+				removeMerge.add(mi);
 			}
 		}
+		sheet.removeMergedRegions(removeMerge);
 		// 添加指定的行数
 		sheet.shiftRows(startRow+1, sheet.getLastRowNum(), rows-1, true, false);
 
@@ -91,9 +97,9 @@ public class CustomTemplatePOIExcelGenerator extends TemplatePOIExcelGenerator {
 				if(itemList2.size() > 1) {
 					// 增加每列的合并单元格,
 					// 样品类型
-					newReginList.add(new CellRangeAddress(currentRow, currentRow+itemList2.size()-1, 1,1));
+					addMergeRegionSafe(newReginList,new CellRangeAddress(currentRow, currentRow+itemList2.size()-1, 1,1));
 					// 样品名称
-//					newReginList.add(new CellRangeAddress(currentRow, currentRow+itemList2.size()-1, 2,3));
+					addMergeRegionSafe(newReginList,new CellRangeAddress(currentRow, currentRow+itemList2.size()-1, 2,3));
 				}
 			}else {
 				addRows ++;
@@ -108,6 +114,16 @@ public class CustomTemplatePOIExcelGenerator extends TemplatePOIExcelGenerator {
 			});
 		}
 		
+	}
+	
+	private void addMergeRegionSafe(List<CellRangeAddress> rangeList,CellRangeAddress range) {
+		List<CellRangeAddress> collect = rangeList.stream().filter(item -> 
+			item.intersects(range)
+		).collect(Collectors.toList());
+		if(!collect.isEmpty()) {
+			rangeList.removeAll(collect);
+		}
+		rangeList.add(range);
 	}
 	
 	private void copyRowsStyle(Row sourceRow,Row targetRow) {
