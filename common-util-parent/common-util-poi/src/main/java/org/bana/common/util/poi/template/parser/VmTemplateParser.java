@@ -167,7 +167,10 @@ public class VmTemplateParser implements TemplateParser {
 			
 			int addRows = 0;
 			// 添加指定的行数
-			sheet.shiftRows(startRow+1, sheet.getLastRowNum(), rows-1, true, false);
+			if(rows > 1) {
+				sheet.shiftRows(startRow+1, sheet.getLastRowNum(), rows-1, true, false);
+			}
+			
 			List<CellRangeAddress> newRangeList = new ArrayList<>();
 			for (int i=0; i < rowList.size() ; i++) {
 				int currentRow = startRow + addRows;
