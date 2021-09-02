@@ -2,6 +2,7 @@ package org.bana.common.util.poi.template.parser;
 
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -68,7 +69,7 @@ public class VmTemplateParser implements TemplateParser {
 	}
 	
 	private String numSplit = ":_:_:";
-	private String colSplit = ",_,  ";
+	private String colSplit = ", , ,";
 	
 	static class ForEachResult{
 		short colIndex;
@@ -93,7 +94,8 @@ public class VmTemplateParser implements TemplateParser {
 				int newFun = getNum(cellValue,keyFn);
 				System.out.println(cellValue + " ," + endNum + "," + newFun); 
 				if(endNum - newFun > 0) {
-					vm.append(cellValue.replace("#end", numSplit+i+ colSplit +"\n#end"));
+					// 匹配最后一个end，把最后一个end进行更新? 匹配最后一个的 regx /#end(?!.*#end)/  实际是匹配第一个
+					vm.append(cellValue.replaceFirst("#end", numSplit+i+ colSplit +"\n#end"));
 				}else if(endNum - newFun < 0) {
 					vm.append("\t").append(cellValue).append(numSplit+i+colSplit);
 				}else {
@@ -117,11 +119,12 @@ public class VmTemplateParser implements TemplateParser {
 		}
 		String parserString = parserString(vm.toString(),excelData);
 		LOG.debug("解析结果为；\n{}" , parserString);
-		parserString = parserString.replaceAll("\n", "").replaceAll("\t", "");
+		parserString = parserString.replaceAll("\n", "").replaceAll("\t", "").trim();
 		String[] split = parserString.split(colSplit);
 		List<RowData> rowList = new ArrayList<>();
 		
 		// 解析表格数据
+		System.out.println(Arrays.toString(split));
 		parseRow(startForEachIndex,split,rowList,0);
 		LOG.debug("解析数据一共{}行, 数据为{}",rowList.size(),rowList);
 		// 输出表格数据

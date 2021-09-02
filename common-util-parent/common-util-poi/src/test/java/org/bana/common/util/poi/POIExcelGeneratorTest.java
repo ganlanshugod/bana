@@ -7,8 +7,14 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.poi.hssf.usermodel.HSSFFooter;
+import org.apache.poi.hssf.usermodel.HeaderFooter;
+import org.apache.poi.ss.usermodel.Footer;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.bana.common.util.poi.template.TemplatePOIExcelGenerator;
 import org.bana.common.util.poi.template.param.SimpleTemplateExcelObject;
+import org.bana.common.util.poi.template.param.TemplateExcelConfig;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -46,6 +52,15 @@ public class POIExcelGeneratorTest {
 		data.setItem(item);
 		data.setItemList(createItem(3));
 		simpleObj.setExcelData(data);
+		
+		TemplateExcelConfig excelConfig = new TemplateExcelConfig();
+		excelConfig.setHeaderFooter((Workbook workbook, Sheet sheet,Object excelData,
+				int index)->{
+			System.out.println("执行自定义的headerfooter---");
+			Footer footer = sheet.getFooter(); 
+			footer.setCenter("第"+ HeaderFooter.page()+"页，共"+HeaderFooter.numPages()+"页");
+		});
+		simpleObj.setExcelConfig(excelConfig);
 		
 		excelGenerator.generatorExcel(outputStream, simpleObj);
 		

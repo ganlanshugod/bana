@@ -89,6 +89,12 @@ public class TemplatePOIExcelGenerator implements POIExcelGenerator{
 		this.getTemplateParser().parseTemplate(sheet, excelData);
 		
 		this.doCreateSheet(workbook,sheet,excelConfig,excelData,index);
+		
+		// 设置页眉页脚
+		HeaderFooter headerFooter = excelConfig.getHeaderFooter();
+		if(headerFooter!= null) {
+			headerFooter.onEndPage(workbook,sheet,excelData,index);
+		}
 	}
 
 

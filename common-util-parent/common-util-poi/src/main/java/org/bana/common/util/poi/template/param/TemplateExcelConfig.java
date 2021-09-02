@@ -1,6 +1,7 @@
 package org.bana.common.util.poi.template.param;
 
 import org.bana.common.util.poi.param.ExcelConfig;
+import org.bana.common.util.poi.template.HeaderFooter;
 
 /** 
 * @ClassName: TemplateExcelConfig 
@@ -20,6 +21,8 @@ public class TemplateExcelConfig implements ExcelConfig{
 	*/ 
 	private int sheetNum = -1;
 	
+	private HeaderFooter headerFooter;
+	
 	
 	/*====getter and setter =====*/
 
@@ -37,6 +40,14 @@ public class TemplateExcelConfig implements ExcelConfig{
 
 	public void setSheetNum(int sheetNum) {
 		this.sheetNum = sheetNum;
+	}
+
+	public HeaderFooter getHeaderFooter() {
+		return headerFooter;
+	}
+
+	public void setHeaderFooter(HeaderFooter headerFooter) {
+		this.headerFooter = headerFooter;
 	}
 
 	
