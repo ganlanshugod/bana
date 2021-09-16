@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
@@ -120,20 +121,47 @@ public class VmTemplateParser implements TemplateParser {
 		String parserString = parserString(vm.toString(),excelData);
 		LOG.debug("解析结果为；\n{}" , parserString);
 		parserString = parserString.replaceAll("\n", "").replaceAll("\t", "").trim();
-		String[] split = parserString.split(colSplit);
-		List<RowData> rowList = new ArrayList<>();
-		
-		// 解析表格数据
-		System.out.println(Arrays.toString(split));
-		parseRow(startForEachIndex,split,rowList,0);
-		LOG.debug("解析数据一共{}行, 数据为{}",rowList.size(),rowList);
-		// 输出表格数据
-		writeForEachRows(sheet, sourceRow, startRow, rowList);
-		ForEachResult result = new ForEachResult();
-		result.colIndex = endForEachIndex;
-		result.rowNum = rowList.size();
-		return result;
-		
+		// 数据不为空的情况下继续解析
+		if(StringUtils.isNotBlank(parserString)) {
+			String[] split = parserString.split(colSplit);
+			List<RowData> rowList = new ArrayList<>();
+			
+			// 解析表格数据
+			System.out.println(Arrays.toString(split));
+			parseRow(startForEachIndex,split,rowList,0);
+			LOG.debug("解析数据一共{}行, 数据为{}",rowList.size(),rowList);
+			// 输出表格数据
+			writeForEachRows(sheet, sourceRow, startRow, rowList);
+			ForEachResult result = new ForEachResult();
+			result.colIndex = endForEachIndex;
+			result.rowNum = rowList.size();
+			return result;
+		}else {
+			// 如果数据为空的情况下，删除当前行数据
+			deleteRow(sheet, startRow);
+			ForEachResult result = new ForEachResult();
+			result.colIndex = 0;
+			result.rowNum = 0;
+			return result;
+		}
+	}
+	
+	private void deleteRow(Sheet sheet,int rowNum){
+		// 删除一行中的合并单元格
+		int sheetMergeCount = sheet.getNumMergedRegions(); 
+		Set<Integer> removeMerge = new HashSet<>();
+		for (int mi = 0; mi < sheetMergeCount; mi++) {
+			CellRangeAddress cellRangeAddress = sheet.getMergedRegion(mi);
+			if(cellRangeAddress.getFirstRow() == rowNum && cellRangeAddress.getLastRow() == rowNum) {
+				removeMerge.add(mi);
+			}
+		}
+		sheet.removeMergedRegions(removeMerge);
+		//此方法只能删除行内容
+		sheet.removeRow(sheet.getRow(rowNum));
+		int lastRowNum = sheet.getLastRowNum();
+		//此方法是将余下的行向上移
+		sheet.shiftRows(rowNum+1, lastRowNum, -1);
 	}
 
 	private void writeForEachRows(Sheet sheet, Row sourceRow, int startRow, List<RowData> rowList) {
@@ -345,30 +373,30 @@ public class VmTemplateParser implements TemplateParser {
 	private static Pattern end = Pattern.compile("#end");
 	private static Pattern keyFn = Pattern.compile("#(foreach)|(if)");
 	
-	public static void main(String[] args) {
-		String str = "#if(${velocityCount}>0) 1 #else 0 #end";
-		String str2 = "$ele.code";
-		System.out.println(getNum(str,keyFn));
-		System.out.println(getNum(str2,keyFn));
-		print(1);
-		
-		CellRangeAddress address = new CellRangeAddress(1,2,3,4);
-		CellRangeAddress address2 = new CellRangeAddress(3,4,5,6);
-		CellRangeAddress address3 = new CellRangeAddress(3,4,5,6);
-		List<CellRangeAddress> list = new ArrayList<>();
-		list.add(address);
-		list.add(address2);
-		list.add(address3);
-		List<CellRangeAddress> list2 = new ArrayList<>();
-		list2.add(address);
-		list2.add(address2);
-		System.out.println(list.size());
-		System.out.println(list2.size());
-		list.removeAll(list2);
-		System.out.println(list.size());
-		System.out.println(list2.size());
-		
-	}
+//	public static void main(String[] args) {
+//		String str = "#if(${velocityCount}>0) 1 #else 0 #end";
+//		String str2 = "$ele.code";
+//		System.out.println(getNum(str,keyFn));
+//		System.out.println(getNum(str2,keyFn));
+//		print(1);
+//		
+//		CellRangeAddress address = new CellRangeAddress(1,2,3,4);
+//		CellRangeAddress address2 = new CellRangeAddress(3,4,5,6);
+//		CellRangeAddress address3 = new CellRangeAddress(3,4,5,6);
+//		List<CellRangeAddress> list = new ArrayList<>();
+//		list.add(address);
+//		list.add(address2);
+//		list.add(address3);
+//		List<CellRangeAddress> list2 = new ArrayList<>();
+//		list2.add(address);
+//		list2.add(address2);
+//		System.out.println(list.size());
+//		System.out.println(list2.size());
+//		list.removeAll(list2);
+//		System.out.println(list.size());
+//		System.out.println(list2.size());
+//		
+//	}
 	
 	private static void print(int size){
 		if(size == 10) {

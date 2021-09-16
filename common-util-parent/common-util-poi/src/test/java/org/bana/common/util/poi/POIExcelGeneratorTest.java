@@ -50,7 +50,7 @@ public class POIExcelGeneratorTest {
 		item.setCode("hello code");
 		item.setValue("hello,value");
 		data.setItem(item);
-		data.setItemList(createItem(3));
+//		data.setItemList(createItem(3));
 		simpleObj.setExcelData(data);
 		
 		TemplateExcelConfig excelConfig = new TemplateExcelConfig();
