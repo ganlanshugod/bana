@@ -35,7 +35,7 @@ public class Async implements Serializable {
 
 	private List<Future<Object>> asyncFnList = new ArrayList<>();
 
-	private static int minPoolSize = 100;
+	private static int minPoolSize = 50;
 	private static int maxPoolSize = 1000;
 	private static long keepAliveSeconds = 2000;
 	private static int queueCapacity = 100000;
