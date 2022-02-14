@@ -19,16 +19,16 @@ import lombok.Data;
  * @author ${user}
  */
 @Data
-@ApiModel
+@ApiModel("hello")
 public class ${Function}Model implements Serializable{
 	
 	private static final long serialVersionUID = ${serialVersionUID};
 
 #foreach (${column} in ${this.getTable().getColumnList()})
-	/** 
-	 * @Fields ${column.getJavaName()} : ${column.getColumnComment()}
+	/**
+	 * @Fields ${column.getJavaName()} : $column.getColumnComment()
 	 */
-    @ApiModelProperty("${column.getColumnComment()}")
+    @ApiModelProperty("${column.getColumnComment().replaceAll("\n","")}")
 	private ${column.getJavaType()} ${column.getJavaName()};
 #end
 
