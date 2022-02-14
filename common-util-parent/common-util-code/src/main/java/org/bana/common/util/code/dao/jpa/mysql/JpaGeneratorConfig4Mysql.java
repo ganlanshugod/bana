@@ -101,7 +101,9 @@ public class JpaGeneratorConfig4Mysql extends MybatisGeneratorConfig {
 	public static CodeTemplateConfig default_controller = new CodeTemplateConfig(GeneratorFileType.Config_Controller,"","code/jpa/mysql/defaultController.vm");
 	
 	public static CodeTemplateConfig default_model = new CodeTemplateConfig(GeneratorFileType.Model, "", "code/jpa/mysql/defaultModel.vm");
-	
+
+	public static CodeTemplateConfig swagger_model = new CodeTemplateConfig(GeneratorFileType.Model, "", "code/jpa/mysql/SwaggerModel.vm");
+
 	public static CodeTemplateConfig default_common_mapper = new CodeTemplateConfig(GeneratorFileType.Config_Mybatis_Common_xml,"","code/jpa/mysql/defaultCommonMapper.vm");
 	
 	/**

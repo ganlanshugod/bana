@@ -58,6 +58,7 @@ private final static String WORKSPACE = "/Users/liuwenjie/workspace/workspace_we
     boolean generatorService;
     boolean generatorController;
     boolean generatorModel;
+    boolean swaggerModel;
     boolean generatorCommonMapper;
     boolean isCover;
     boolean withCatalog;
@@ -83,6 +84,7 @@ private final static String WORKSPACE = "/Users/liuwenjie/workspace/workspace_we
         generatorController = false;
         //是否生成全字段的业务实体
         generatorModel = false;
+        swaggerModel = true;
         //是否生成commonmapper,仅做参考返回resultMap使用
         isCover = true;
         //entity是否需要设置catalog
@@ -170,7 +172,11 @@ private final static String WORKSPACE = "/Users/liuwenjie/workspace/workspace_we
             codeList.add(JpaGeneratorConfig4Mysql.default_controller);
         }
         if(generatorModel){
-        	codeList.add(JpaGeneratorConfig4Mysql.default_model);
+            if(swaggerModel){
+                codeList.add(JpaGeneratorConfig4Mysql.swagger_model);
+            }else{
+                codeList.add(JpaGeneratorConfig4Mysql.default_model);
+            }
         }
         jpaGeneratorConfig.setCodeVelocities(codeList);
         

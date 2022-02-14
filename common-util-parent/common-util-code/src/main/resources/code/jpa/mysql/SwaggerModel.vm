@@ -9,6 +9,7 @@
 package ${packageName};
 
 import java.io.Serializable;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /** 
@@ -25,6 +26,7 @@ public class ${Function}Model implements Serializable{
 	/** 
 	 * @Fields ${column.getJavaName()} : ${column.getColumnComment()}
 	 */
+    @ApiModelProperty("${column.getColumnComment()}")
 	private ${column.getJavaType()} ${column.getJavaName()};
 #end
 
