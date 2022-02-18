@@ -8,6 +8,12 @@
 */ 
 package org.bana.common.util.tree.impl;
 
+import org.bana.common.util.basic.StringUtils;
+import org.bana.common.util.exception.BanaUtilException;
+import org.bana.common.util.tree.Tree;
+import org.bana.common.util.tree.TreeNode;
+import org.bana.common.util.tree.TreeNodeList;
+
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
@@ -15,11 +21,6 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
-import org.bana.common.util.basic.StringUtils;
-import org.bana.common.util.exception.BanaUtilException;
-import org.bana.common.util.tree.Tree;
-import org.bana.common.util.tree.TreeNodeList;
 
 /** 
  * @ClassName: SimpleTree 
@@ -224,4 +225,31 @@ public class SimpleTree<T> implements Tree<T> {
 		}
 	}
 
+	@Override
+	public String toString() {
+		TreeNodeList<T> rootTreeNodes = this.getRootTreeNodes();
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < rootTreeNodes.size(); i++) {
+			TreeNode<T> treeNode = rootTreeNodes.get(i);
+			printNode(treeNode,0,sb);
+		}
+		return sb.toString();
+	}
+
+	private void printNode(TreeNode<T> treeNode, int level, StringBuffer sb){
+		if(level > 0){
+			for (int i = 0; i < level; i++) {
+				if(i == level-1){
+					sb.append("|-- ");
+				}else{
+					sb.append("  ");
+				}
+			}
+		}
+		sb.append(treeNode.getId() + "  :  " + treeNode.getThisData()).append("\n");
+		for (int i = 0; i < treeNode.getChildrenList().size(); i++) {
+			TreeNode<T> simpleDepartment2 =  treeNode.getChildrenList().get(i);
+			printNode(simpleDepartment2, level+1, sb);
+		}
+	}
 }
