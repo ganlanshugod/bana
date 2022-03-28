@@ -48,7 +48,7 @@ public class AnnoGeneratorTest {
 	
 	@Test
 	public void testSimpleUpload() throws FileNotFoundException{
-		FileInputStream inputStream = new FileInputStream(new File("D:/test.xls"));
+		FileInputStream inputStream = new FileInputStream(new File(basePath+"/test2.xls"));
 		
 		AnnotationExcelUploadConfig excelConfig = new AnnotationExcelUploadConfig(TestData.class);
 		excelConfig.setMutiTitleMap(getMutiMap());

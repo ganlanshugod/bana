@@ -13,13 +13,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.apache.poi.hssf.usermodel.DVConstraint;
@@ -81,10 +76,10 @@ public class BasicExcelGenerator implements ExcelGenerator {
 	 * @date 2015-7-2 上午11:09:34 
 	 * @param outputStream
 	 * @param excelObject 
-	 * @see org.bana.common.util.poi.POIHXSSFGenerator#generatorExcel(java.io.OutputStream, org.bana.common.util.office.ExcelObject) 
 	 */
 	@Override
 	public void generatorExcel(OutputStream outputStream, ExcelObject excelObject) {
+		long begin = System.currentTimeMillis();
 		ExcelDownloadConfig excelConfig = excelObject.getExcelConfig();
 		if(excelConfig == null){
 			throw new BanaUtilException("没有指定excelConfig");
@@ -103,10 +98,12 @@ public class BasicExcelGenerator implements ExcelGenerator {
 			LOG.warn("excelConfig中没有或地区到sheetConfigList " + excelConfig);
 		}
 		try {
+			LOG.debug("开始向输出流写入文件信息");
 			workbook.write(outputStream);
 		} catch (IOException e) {
 			throw new BanaUtilException("将生成的Excel写入到指定的流时出现读写错误" + excelConfig);
 		}finally{
+			LOG.debug("执行生成文件总用时为: " + (System.currentTimeMillis() - begin));
 			excelConfig.clear();
 		}
 		
@@ -122,14 +119,8 @@ public class BasicExcelGenerator implements ExcelGenerator {
 	 * @param index 
 	*/ 
 	private void createSheet(Workbook workbook,ExcelDownloadConfig excelConfig, SheetConfig sheetConfig, ExcelObject excelObject, int index) {
-		Sheet sheet;
-		if(StringUtils.isNotBlank(sheetConfig.getName())){
-			sheetConfig.getIndex();
-			sheet = workbook.createSheet(sheetConfig.getName());
-		}else{
-			sheet = workbook.createSheet();
-		}
-		
+		Sheet sheet = initWorkbookSheet(workbook, sheetConfig);
+
 		//根据sheet的行配置文件，创建对应的行信息
 		List<RowConfig> rowConfigList = sheetConfig.getRowConfigList();
 		int currentRowNum = 0;
@@ -138,6 +129,7 @@ public class BasicExcelGenerator implements ExcelGenerator {
 		int dataSize = 0;
 		RowConfig firstDataRowConfig = null;
 		if(rowConfigList != null){
+			ExcelGeneratorContext excelContext = new ExcelGeneratorContext();
 			for (RowConfig rowConfig : rowConfigList) {
 				//获取当前的起始行数
 				Integer rowIndex = rowConfig.getRowIndex();
@@ -147,7 +139,7 @@ public class BasicExcelGenerator implements ExcelGenerator {
 				}
 				//创建一行记录
 				if(RowType.标题.equals(rowConfig.getType())){
-					createTitleRow(workbook,sheet,excelConfig,sheetConfig,rowConfig,currentRowNum++);
+					createTitleRow(workbook,sheet,excelConfig,sheetConfig,rowConfig,currentRowNum++,excelContext);
 				}else{
 					List<? extends Object> data ;
 					firstDataRowNum = currentRowNum;
@@ -159,12 +151,50 @@ public class BasicExcelGenerator implements ExcelGenerator {
 						data = excelObject.getData(index);
 					}
 					
-					if(data != null){
-						dataSize = data.size();
-						for (int i = 0; i < data.size(); i++) {
-							Object object = data.get(i);
+					if(CollectionUtils.isNotEmpty(data)){
+						int i = 0;
+//						final int beginDataRowNum = currentRowNum;
+//						Set<Integer> columnSizeSet = Collections.synchronizedSet(new HashSet<>());
+//						Async async = new Async();
+//						List<Object> objects = new ArrayList<>();
+//						for (Object object: data) {
+//							final int currentIndex = i;
+//							async.add(()->{
+//								LOG.info("执行" + currentIndex);
+//								if(Map.class.isInstance(object) || object.getClass().getName().equals(rowConfig.getClassName())){
+//									Integer currentColumnSize = createDataRow(workbook,sheet,excelConfig,sheetConfig,rowConfig,object,beginDataRowNum + currentIndex,currentIndex);
+//									//获取总列数
+//									columnSizeSet.add(currentColumnSize);
+//									return currentColumnSize;
+//								}else{
+//									throw new BanaUtilException("指定的数据类型 " + rowConfig.getClassName() + " 与传入的数据类型 " + object.getClass() + " 不匹配");
+//								}
+//							});
+//							i ++;
+//						}
+//						objects.addAll(async.await());
+//						// 循环执行结果
+//						for (Object object : objects) {
+//							if(object == null){
+//								continue;
+//							}
+//							if(object instanceof Integer){
+//								Integer currentColumnSize = (Integer)object;
+//								if(currentColumnSize > columnSize){
+//									columnSize = currentColumnSize;
+//								}
+//							}else if(object instanceof RuntimeException){
+//								RuntimeException e = (RuntimeException)object;
+//								throw e;
+//							}else if(object instanceof Throwable){
+//								throw new RuntimeException((Throwable) object);
+//							}
+//						}
+
+
+						for (Object object: data) {
 							if(Map.class.isInstance(object) || object.getClass().getName().equals(rowConfig.getClassName())){
-								int currentColumnSize = createDataRow(workbook,sheet,excelConfig,sheetConfig,rowConfig,object,currentRowNum++,i);
+								int currentColumnSize = createDataRow(workbook,sheet,excelConfig,sheetConfig,rowConfig,object,currentRowNum++,i,excelContext);
 								//获取总列数
 								if(currentColumnSize > columnSize){
 									columnSize = currentColumnSize;
@@ -172,31 +202,57 @@ public class BasicExcelGenerator implements ExcelGenerator {
 							}else{
 								throw new BanaUtilException("指定的数据类型 " + rowConfig.getClassName() + " 与传入的数据类型 " + object.getClass() + " 不匹配");
 							}
+							i++;
 						}
 					}
 					
 				}
 				
 			}
+			// 解决autoSizeColumn 报错的问题
+//		if(sheet instanceof SXSSFSheet) {
+//			((SXSSFSheet)sheet).trackAllColumnsForAutoSizing();
+//		}
+			//设置列宽自适应
+			LOG.debug("开始设置列宽自适应");
+//		for (int i = 0; i < columnSize; i++) {
+//			sheet.autoSizeColumn(i,true); //调整第一列宽度
+//		}
+
+			// 为了优化autoSizeColumn方法的性能，使用其他方式来替换
+			Map<Integer, Integer> columnWidthContext = excelContext.getColumnWidthContext();
+			LOG.debug("columnWidthContext is {}",columnWidthContext);
+			columnWidthContext.forEach((k,v)->{
+				int columnWidth = (v+1)*256;
+				sheet.setColumnWidth(k-1,columnWidth);
+			});
+
+			//设置字典列的内容可以被进行列表选择
+			LOG.debug("开始设置数据字典的可选区域");
+			setExcelDVConstraint(sheet,excelConfig,firstDataRowConfig,firstDataRowNum,dataSize);
 		}
-		// 解决autoSizeColumn 报错的问题
-		if(sheet instanceof SXSSFSheet) {
-			((SXSSFSheet)sheet).trackAllColumnsForAutoSizing();
-		}
-		//设置列宽自适应
-		for (int i = 0; i < columnSize; i++) {
-			sheet.autoSizeColumn(i,true); //调整第一列宽度
-		}
-		
-		//设置字典列的内容可以被进行列表选择
-		setExcelDVConstraint(sheet,excelConfig,firstDataRowConfig,firstDataRowNum,dataSize);
-		
+
 //		float hieght=getExcelCellAutoHeight("指定的数据类型 ", 8f);     
 //		//根据字符串的长度设置高度
 //		sheet.getRow(sheet.getLastRowNum()).setHeightInPoints(height)s(hieght); 
 		
 	}
-	
+
+	private Sheet initWorkbookSheet(Workbook workbook, SheetConfig sheetConfig) {
+		Sheet sheet;
+		if(StringUtils.isNotBlank(sheetConfig.getName())){
+			sheet = workbook.getSheet(sheetConfig.getName());
+			if(sheet == null){
+				sheet = workbook.createSheet(sheetConfig.getName());
+			}
+		}else{
+			// 导出不是用指定的index，多个index的时候，会出现错误sheet页的问题
+//			Integer sheetIndex = sheetConfig.getIndex();
+			sheet = workbook.createSheet();
+		}
+		return sheet;
+	}
+
 	/**
 	 * 设置SheetConfig中的可选择区域
 	 * @param sheet 
@@ -316,30 +372,32 @@ public class BasicExcelGenerator implements ExcelGenerator {
 	/** 
 	* @Description: 根据指定的数据和匹配关系，构造一行记录
 	* @author Liu Wenjie   
-	* @date 2015-7-8 上午9:36:59 
-	* @param workbook
-	* @param sheet
-	* @param sheetConfig
-	* @param rowConfig
-	* @param object
-	* @param i  
-	*/ 
-	private int createDataRow(Workbook workbook, Sheet sheet,ExcelDownloadConfig excelConfig, SheetConfig sheetConfig, RowConfig rowConfig, Object object, int currentRowNum,int index) {
-		return createRow(workbook, sheet, excelConfig,sheetConfig, rowConfig, object, currentRowNum,index);
+	* @date 2015-7-8 上午9:36:59
+	 * @param i
+	 * @param workbook
+	 * @param sheet
+	 * @param sheetConfig
+	 * @param rowConfig
+	 * @param object
+	 * @param excelContext
+	 */
+	private int createDataRow(Workbook workbook, Sheet sheet, ExcelDownloadConfig excelConfig, SheetConfig sheetConfig, RowConfig rowConfig, Object object, int currentRowNum, int index, ExcelGeneratorContext excelContext) {
+		return createRow(workbook, sheet, excelConfig,sheetConfig, rowConfig, object, currentRowNum,index,excelContext);
 	}
 
 	/** 
 	* @Description: 创建一行记录
 	* @author Liu Wenjie   
-	* @date 2015-7-7 下午6:19:07 
-	* @param workbook
-	* @param sheet
-	* @param sheetConfig
-	 * @param rowConfig 
-	* @param currentRowNum  
-	*/ 
-	private int createTitleRow(Workbook workbook, Sheet sheet,ExcelDownloadConfig excelConfig, SheetConfig sheetConfig, RowConfig rowConfig, int currentRowNum) {
-		return createRow(workbook, sheet, excelConfig,sheetConfig, rowConfig, null, currentRowNum,1);
+	* @date 2015-7-7 下午6:19:07
+	 * @param workbook
+	 * @param sheet
+	 * @param sheetConfig
+	 * @param rowConfig
+	 * @param currentRowNum
+	 * @param excelContext
+	 */
+	private int createTitleRow(Workbook workbook, Sheet sheet, ExcelDownloadConfig excelConfig, SheetConfig sheetConfig, RowConfig rowConfig, int currentRowNum, ExcelGeneratorContext excelContext) {
+		return createRow(workbook, sheet, excelConfig,sheetConfig, rowConfig, null, currentRowNum,1, excelContext);
 	}
 	
 	/** 
@@ -350,11 +408,12 @@ public class BasicExcelGenerator implements ExcelGenerator {
 	* @param sheet
 	* @param sheetConfig
 	* @param rowConfig
-	* @param currentRowNum  
-	 * @param index 
-	* @return 创建的总列数，单元格个数
+	* @param currentRowNum
+	 * @param index
+	* @param excelContext
+	 * @return 创建的总列数，单元格个数
 	*/ 
-	private int createRow(Workbook workbook, Sheet sheet,ExcelDownloadConfig excelConfig,SheetConfig sheetConfig, RowConfig rowConfig,Object object, int currentRowNum, int index){
+	private int createRow(Workbook workbook, Sheet sheet, ExcelDownloadConfig excelConfig, SheetConfig sheetConfig, RowConfig rowConfig, Object object, int currentRowNum, int index, ExcelGeneratorContext excelContext){
 		Row row = sheet.createRow(currentRowNum);
 		row.setHeightInPoints(rowConfig.getRowHieght());
 		int currentColNum = 0;
@@ -388,23 +447,24 @@ public class BasicExcelGenerator implements ExcelGenerator {
     							}
     						}
     						//按照当前的列进行创建单元格
-    						currentColNum = createCurrentCell(workbook,sheet,row,excelConfig,sheetConfig,rowConfig,targetColumnConfig,cellKey,object,currentRowNum,currentColNum,index,cellConfig);
+    						currentColNum = createCurrentCell(workbook,sheet,row,excelConfig,sheetConfig,rowConfig,targetColumnConfig,cellKey,object,currentRowNum,currentColNum,index,cellConfig,excelContext);
     					}
     				}else{//使用固定列值来设置内容
-    					currentColNum = createCurrentCell(workbook,sheet,row,excelConfig,sheetConfig,rowConfig,targetColumnConfig,configName,object,currentRowNum,currentColNum,index);
+    					currentColNum = createCurrentCell(workbook,sheet,row,excelConfig,sheetConfig,rowConfig,targetColumnConfig,configName,object,currentRowNum,currentColNum,index,excelContext);
     				}
     			}else{//使用固定内容来设置对应的内容
-    				currentColNum = createCurrentCell(workbook,sheet,row,excelConfig,sheetConfig,rowConfig,targetColumnConfig,configName,object,currentRowNum,currentColNum,index);
+    				currentColNum = createCurrentCell(workbook,sheet,row,excelConfig,sheetConfig,rowConfig,targetColumnConfig,configName,object,currentRowNum,currentColNum,index,excelContext);
     			}
 			}
 	    }
+		LOG.debug("执行第" + currentRowNum + "行完成");
 	    return currentColNum;
 	}
 
 	private int createCurrentCell(Workbook workbook, Sheet sheet, Row row, ExcelDownloadConfig excelConfig,
 			SheetConfig sheetConfig, RowConfig rowConfig, ColumnConfig targetColumnConfig, String cellKey,
-			Object object, int currentRowNum, int currentColNum, int index) {
-		return createCurrentCell(workbook, sheet, row, excelConfig, sheetConfig, rowConfig, targetColumnConfig, cellKey, object, currentRowNum, currentColNum, index, null);
+			Object object, int currentRowNum, int currentColNum, int index,ExcelGeneratorContext excelContext) {
+		return createCurrentCell(workbook, sheet, row, excelConfig, sheetConfig, rowConfig, targetColumnConfig, cellKey, object, currentRowNum, currentColNum, index, null, excelContext);
 	}
 
 	/** 
@@ -423,7 +483,7 @@ public class BasicExcelGenerator implements ExcelGenerator {
 	* @param index  
 	 * @param index2 
 	*/ 
-	private int createCurrentCell(Workbook workbook, Sheet sheet, Row row,ExcelDownloadConfig excelConfig, SheetConfig sheetConfig, RowConfig rowConfig, ColumnConfig columnConfig, String cellKey, Object object, int currentRowNum, int currentColNum, int index,ColumnConfig cellConfig) {
+	private int createCurrentCell(Workbook workbook, Sheet sheet, Row row,ExcelDownloadConfig excelConfig, SheetConfig sheetConfig, RowConfig rowConfig, ColumnConfig columnConfig, String cellKey, Object object, int currentRowNum, int currentColNum, int index,ColumnConfig cellConfig,ExcelGeneratorContext excelContext) {
 		//设置单元格样式
 		CellStyle cellStyle = excelConfig.getCellStyle(workbook,sheetConfig,rowConfig,columnConfig);
 		//创建单元格，并付上样式
@@ -445,6 +505,7 @@ public class BasicExcelGenerator implements ExcelGenerator {
 		
 		//设置单元格类型和值
 		if(RowType.标题.equals(rowConfig.getType())){
+			excelContext.setColumnWidth(currentColNum,StringUtils.chineselength(cellKey));
 			cell.setCellValue(cellKey);
 		}else{
 			Object value = null;
@@ -462,19 +523,20 @@ public class BasicExcelGenerator implements ExcelGenerator {
 				}
 			}
 			if(value != null){//控制时，不进行任何设置
+				excelContext.setColumnWidth(currentColNum,StringUtils.chineselength(String.valueOf(value)));
 				if (value instanceof Double) {
 					cell.setCellValue((Double) value);
-				}else if(value instanceof Integer){
-					cell.setCellValue(1D*(Integer)value);
-				}else if(value instanceof Date){
+				} else if (value instanceof Integer) {
+					cell.setCellValue(1D * (Integer) value);
+				} else if (value instanceof Date) {
 					cell.setCellValue((Date) value);
-				}else if(value instanceof Boolean){
+				} else if (value instanceof Boolean) {
 					cell.setCellValue((Boolean) value);
-				}else if(value instanceof Calendar){
+				} else if (value instanceof Calendar) {
 					cell.setCellValue((Calendar) value);
-				}else if(value instanceof RichTextString){
+				} else if (value instanceof RichTextString) {
 					cell.setCellValue((RichTextString) value);
-				}else {
+				} else {
 					cell.setCellValue(String.valueOf(value));
 				}
 			}

@@ -8,8 +8,12 @@
 */
 package org.bana.common.util.async;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionService;
@@ -33,7 +37,9 @@ public class Async implements Serializable {
 	 */
 	private static final long serialVersionUID = 4392180309790709930L;
 
-	private List<Future<Object>> asyncFnList = new ArrayList<>();
+	private List<Future<Object>> asyncFnList = Collections.synchronizedList(new ArrayList<>());
+
+	private static final Logger LOG = LoggerFactory.getLogger(Async.class);
 
 	private static int minPoolSize = 50;
 	private static int maxPoolSize = 1000;
@@ -81,15 +87,17 @@ public class Async implements Serializable {
 	public List<Object> await() {
 		List<Object> result = new ArrayList<>();
 		// 按照加入顺序返回执行结果
+		LOG.info("asyncFnList size is " + asyncFnList.size());
+		int i = 0;
 		for (Future<Object> future : asyncFnList) {
 			try {
 				result.add(future.get());
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				LOG.info("执行出现InterruptedException",e);
 //				throw new AsyncInterruptException("异步执行出现InterruptedException==", e);
 				result.add(null);
 			} catch (ExecutionException e) {
-				e.printStackTrace();
+				LOG.info("执行 Async 第" + i + "个任务出现ExecutionException",e);
 //				if (e.getCause() instanceof RuntimeException) {
 //					throw (RuntimeException) e.getCause();
 //				} else {
@@ -97,6 +105,7 @@ public class Async implements Serializable {
 //				}
 				result.add(null);
 			}
+			i++;
 		}
 
 		return result;
@@ -109,11 +118,11 @@ public class Async implements Serializable {
 			try {
 				result.add(future.get());
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				LOG.info("执行出现InterruptedException",e);
 				result.add(e);
 //			throw new AsyncInterruptException("异步执行出现InterruptedException==", e);
 			} catch (ExecutionException e) {
-				e.printStackTrace();
+				LOG.info("执行Async出现ExecutionException",e);
 				if (e.getCause() instanceof RuntimeException) {
 					result.add(e);
 //				throw (RuntimeException) e.getCause();

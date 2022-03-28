@@ -55,7 +55,11 @@ public class SimpleExcelConfig implements ExcelConfig,Serializable {
 	public void setDicMap(Map<String, Map<String, Object>> dicMap) {
 		this.dicMap = dicMap;
 	}
-	
+
+	public Map<String, Map<String, Object>> getDicMap() {
+		return dicMap;
+	}
+
 	/**
 	 * 获取所有配置中指定的字典对象
 	 * @return

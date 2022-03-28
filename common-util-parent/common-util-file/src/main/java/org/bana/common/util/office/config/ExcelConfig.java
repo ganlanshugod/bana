@@ -19,7 +19,7 @@ import java.util.Map;
  */
 public interface ExcelConfig extends Serializable{
 
-	
+
 	List<SheetConfig> getSheetConfigList();
 	
 	

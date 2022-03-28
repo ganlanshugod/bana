@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -44,7 +45,7 @@ public class SimpleExcelDownloadConfig extends SimpleExcelConfig implements Exce
 	/** 
 	* @Fields styleMap : 配置中所有用到的style集合
 	*/ 
-	private ThreadLocal<Map<String,CellStyle>> styleMapCollection = new ThreadLocal<Map<String,CellStyle>>();
+	private Map<String,CellStyle> styleMapCollection = new ConcurrentHashMap<>();
 	
 	
 	@Override
@@ -67,7 +68,7 @@ public class SimpleExcelDownloadConfig extends SimpleExcelConfig implements Exce
 
 	@Override
 	public void clear() {
-		styleMapCollection.set(null);
+		styleMapCollection.clear();
 	}
 
 	/** 
@@ -96,18 +97,16 @@ public class SimpleExcelDownloadConfig extends SimpleExcelConfig implements Exce
 		}
 		if(!cellMap.isEmpty()){
 			String styleKey = JSON.toJSONString(cellMap);// JSONObject.fromObject(cellMap).toString();
-			Map<String, CellStyle> styleMap = styleMapCollection.get();
-			if(styleMap == null){
-				styleMap = new HashMap<String, CellStyle>();
-				styleMapCollection.set(styleMap);
-			}
-			CellStyle cellStyle = styleMap.get(styleKey);
-			if(cellStyle == null){
-				cellStyle = StyleSerializer.generatorCellStyle(workbook,cellMap);
-				styleMap.put(styleKey, cellStyle);
-				return cellStyle;
-			}else{
-				return cellStyle;
+			CellStyle cellStyle = styleMapCollection.get(styleKey);
+			synchronized (this){
+				cellStyle = styleMapCollection.get(styleKey);
+				if(cellStyle == null){
+					cellStyle = StyleSerializer.generatorCellStyle(workbook,cellMap);
+					styleMapCollection.put(styleKey, cellStyle);
+					return cellStyle;
+				}else{
+					return cellStyle;
+				}
 			}
 		}
 		return null;
@@ -117,7 +116,7 @@ public class SimpleExcelDownloadConfig extends SimpleExcelConfig implements Exce
 	* @Description: 根据字典Map获取对应的字典对应的值
 	* @author liuwenjie   
 	* @date 2016-2-20 上午11:38:41 
-	* @param value
+	* @param key
 	* @param columnConfig
 	* @return  
 	*/ 
@@ -172,8 +171,7 @@ public class SimpleExcelDownloadConfig extends SimpleExcelConfig implements Exce
 	* @return  
 	*/ 
 	public int getCellStyleSize(){
-		Map<String, CellStyle> styleMap = styleMapCollection.get();
-		return styleMap == null ? 0 :styleMap.size();
+		return styleMapCollection == null ? 0 :styleMapCollection.size();
 	}
 	
 	/**
