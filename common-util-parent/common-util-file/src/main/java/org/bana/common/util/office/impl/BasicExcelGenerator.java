@@ -17,21 +17,12 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
+import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.hssf.usermodel.DVConstraint;
 import org.apache.poi.hssf.usermodel.HSSFDataValidation;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.DataValidation;
-import org.apache.poi.ss.usermodel.DataValidationConstraint;
-import org.apache.poi.ss.usermodel.DataValidationHelper;
-import org.apache.poi.ss.usermodel.DateUtil;
-import org.apache.poi.ss.usermodel.RichTextString;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
@@ -153,6 +144,7 @@ public class BasicExcelGenerator implements ExcelGenerator {
 					
 					if(CollectionUtils.isNotEmpty(data)){
 						int i = 0;
+						dataSize = data.size();
 //						final int beginDataRowNum = currentRowNum;
 //						Set<Integer> columnSizeSet = Collections.synchronizedSet(new HashSet<>());
 //						Async async = new Async();
@@ -307,6 +299,10 @@ public class BasicExcelGenerator implements ExcelGenerator {
 		if(dicValueList == null){
 			return;
 		}
+
+		if(dataSize == 0){
+			return;
+		}
 		  
 		//绑定下拉框和作用区域  
 		DataValidation data_validation = null;
@@ -373,13 +369,6 @@ public class BasicExcelGenerator implements ExcelGenerator {
 	* @Description: 根据指定的数据和匹配关系，构造一行记录
 	* @author Liu Wenjie   
 	* @date 2015-7-8 上午9:36:59
-	 * @param i
-	 * @param workbook
-	 * @param sheet
-	 * @param sheetConfig
-	 * @param rowConfig
-	 * @param object
-	 * @param excelContext
 	 */
 	private int createDataRow(Workbook workbook, Sheet sheet, ExcelDownloadConfig excelConfig, SheetConfig sheetConfig, RowConfig rowConfig, Object object, int currentRowNum, int index, ExcelGeneratorContext excelContext) {
 		return createRow(workbook, sheet, excelConfig,sheetConfig, rowConfig, object, currentRowNum,index,excelContext);
@@ -471,18 +460,7 @@ public class BasicExcelGenerator implements ExcelGenerator {
 	* @Description: 创建当前单元格内容
 	* @author Liu Wenjie   
 	* @date 2015-11-29 下午4:37:12 
-	* @param workbook
-	 * @param sheet 
-	 * @param row 
-	* @param sheetConfig
-	* @param rowConfig
-	* @param targetColumnConfig
-	* @param cellKey
-	* @param object
-	* @param i
-	* @param index  
-	 * @param index2 
-	*/ 
+	*/
 	private int createCurrentCell(Workbook workbook, Sheet sheet, Row row,ExcelDownloadConfig excelConfig, SheetConfig sheetConfig, RowConfig rowConfig, ColumnConfig columnConfig, String cellKey, Object object, int currentRowNum, int currentColNum, int index,ColumnConfig cellConfig,ExcelGeneratorContext excelContext) {
 		//设置单元格样式
 		CellStyle cellStyle = excelConfig.getCellStyle(workbook,sheetConfig,rowConfig,columnConfig);
@@ -556,7 +534,7 @@ public class BasicExcelGenerator implements ExcelGenerator {
 				return WorkbookFactory.create(BasicExcelGenerator.class.getResourceAsStream(excelConfig.getBaseFile()));
 			} catch (IOException e) {
 				throw new BanaUtilException("初始化workBook出错",e);
-			} catch (InvalidFormatException e) {
+			} catch (EncryptedDocumentException e) {
 				throw new BanaUtilException("初始化workBook出错",e);
 			}
 		}
@@ -589,7 +567,7 @@ public class BasicExcelGenerator implements ExcelGenerator {
 			return WorkbookFactory.create(is);
 		} catch (IOException e) {
 			throw new BanaUtilException("初始化workBook出错",e);
-		} catch (InvalidFormatException e) {
+		} catch (EncryptedDocumentException e) {
 			throw new BanaUtilException("初始化workBook出错",e);
 		}
 	}
@@ -600,7 +578,6 @@ public class BasicExcelGenerator implements ExcelGenerator {
 	 * @date 2015-7-2 上午11:09:34 
 	 * @param inputStream
 	 * @return 
-	 * @see org.bana.common.util.poi.POIHXSSFGenerator#generatorObject(java.io.InputStream) 
 	 */
 	@Override
 	public ExcelObject generatorObject(InputStream inputStream,ExcelUploadConfig excelConfig) {
@@ -865,7 +842,7 @@ public class BasicExcelGenerator implements ExcelGenerator {
 			return null;
 		}
 		switch (cell.getCellType()) {
-		case Cell.CELL_TYPE_FORMULA: ////公式型(公式类型和数值类型进行相同的处理)
+		case FORMULA: ////公式型(公式类型和数值类型进行相同的处理)
 			// cell.getCellFormula();
 			try {
 				return String.valueOf(cell.getNumericCellValue());
@@ -873,7 +850,7 @@ public class BasicExcelGenerator implements ExcelGenerator {
 				return String.valueOf(cell.getRichStringCellValue());
 			}
 //			throw new BanaUtilException("当前上传文件不支持包含公式类型的单元格内容");
-		case Cell.CELL_TYPE_NUMERIC://数值型(包括时间)
+		case NUMERIC://数值型(包括时间)
 			if(DateUtil.isCellDateFormatted(cell)){//返回指定格式的时间字符串
 				return cell.getDateCellValue();
 			}
@@ -889,13 +866,13 @@ public class BasicExcelGenerator implements ExcelGenerator {
 				}
 			}
 			return getNumberFormat().format(cell.getNumericCellValue());
-		case Cell.CELL_TYPE_STRING://字符串类型
+		case STRING://字符串类型
 			return cell.getStringCellValue();
-		case Cell.CELL_TYPE_BOOLEAN:////布尔值
+		case BOOLEAN:////布尔值
 			return cell.getBooleanCellValue();
-		case Cell.CELL_TYPE_ERROR://错误
+		case ERROR://错误
 			throw new BanaUtilException("存在错误的表格格式");
-		case Cell.CELL_TYPE_BLANK://空白
+		case BLANK://空白
 			return null;
 		default:
 			throw new BanaUtilException("存在无法解析的表单类型");
@@ -1062,12 +1039,6 @@ public class BasicExcelGenerator implements ExcelGenerator {
 
 	/**
 	 * 添加一个sheet页中的错误信息
-	 * @param workbook
-	 * @param sheet 
-	 * @param excelUploadConfig
-	 * @param sheetConfig
-	 * @param includeCorrect 
-	 * @param map
 	 */
 	private void addSheetError(Workbook workbook, Sheet sheet, ExcelUploadConfig excelUploadConfig, SheetConfig sheetConfig,
 			Map<Integer, String> errorRecords, boolean includeCorrect) {
@@ -1130,23 +1101,35 @@ public class BasicExcelGenerator implements ExcelGenerator {
 	 * @param rowIndex a 0 based index of removing row 
 	 */  
 	public static void removeRow(Sheet sheet, int rowIndex) {  
-	    int lastRowNum=sheet.getLastRowNum();  
-	    if(rowIndex>=0&&rowIndex<lastRowNum)  
-	        sheet.shiftRows(rowIndex+1,lastRowNum,-1);//将行号为rowIndex+1一直到行号为lastRowNum的单元格全部上移一行，以便删除rowIndex行  
-	    if(rowIndex==lastRowNum){  
-	        Row removingRow=sheet.getRow(rowIndex);  
-	        if(removingRow!=null)  
+	    int lastRowNum=sheet.getLastRowNum();
+		Row removingRow=sheet.getRow(rowIndex);
+		if(rowIndex>=0&&rowIndex<lastRowNum) {
+			sheet.removeRow(removingRow);
+			// 删除当前行的合并数据
+			removeRowsMergedRegions(sheet, rowIndex);
+			sheet.shiftRows(rowIndex + 1, lastRowNum, -1);//将行号为rowIndex+1一直到行号为lastRowNum的单元格全部上移一行，以便删除rowIndex行
+		}
+		if(rowIndex==lastRowNum){
+	        if(removingRow!=null)
 	            sheet.removeRow(removingRow);  
 	    }  
-	} 
+	}
+
+	private static void removeRowsMergedRegions(Sheet sheet, int rowIndex) {
+		int sheetMergeCount = sheet.getNumMergedRegions();
+		Set<Integer> removeMerge = new HashSet<>();
+		for (int mi = 0; mi < sheetMergeCount; mi++) {
+			CellRangeAddress cellRangeAddress = sheet.getMergedRegion(mi);
+			if(cellRangeAddress.getFirstRow() == rowIndex && cellRangeAddress.getLastRow() == rowIndex) {
+				// 需要复制合并单元格，横向的单元格合并
+				removeMerge.add(mi);
+			}
+		}
+		sheet.removeMergedRegions(removeMerge);
+	}
 
 	/**
 	 * 添加数据行的异常数据
-	 * @param sheet
-	 * @param row
-	 * @param errorColumn
-	 * @param rowConfig 
-	 * @param string
 	 */
 	private boolean addDataError(Sheet sheet, Row row, int errorColumn, String error) {
 		if(StringUtils.isNotBlank(error)){
@@ -1156,7 +1139,7 @@ public class BasicExcelGenerator implements ExcelGenerator {
 		}
 		for (int i = 0; i < errorColumn; i++) {
 			Cell cell = row.getCell(i);
-			if(cell !=null && cell.getCellType() != Cell.CELL_TYPE_BLANK){
+			if(cell !=null && !CellType.BLANK.equals(cell.getCellType())){
 				return true;
 			}
 		}
@@ -1165,10 +1148,6 @@ public class BasicExcelGenerator implements ExcelGenerator {
 
 	/**
 	 * 添加异常列列名
-	 * @param workbook
-	 * @param sheet
-	 * @param row
-	 * @param rowConfig 
 	 * @return
 	 */
 	private int addErrorTitle(Sheet sheet, Row row) {

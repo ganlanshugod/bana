@@ -3,7 +3,7 @@
   <parent>
 		<artifactId>common-util-parent</artifactId>
 		<groupId>org.bana</groupId>
-		<version>1.2.0-SNAPSHOT</version>
+		<version>1.3.0-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>common-util-basic</artifactId>
@@ -22,6 +22,11 @@
 		<groupId>commons-collections</groupId>
 		<artifactId>commons-collections</artifactId>
 	</dependency>
+<!--	  <dependency>-->
+<!--		  <groupId>org.apache.commons</groupId>-->
+<!--		  <artifactId>commons-collections4</artifactId>-->
+<!--	  </dependency>-->
+
 	<!-- 异步支持 -->
 	<dependency>
 		<groupId>org.bana</groupId>

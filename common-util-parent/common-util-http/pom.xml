@@ -5,7 +5,7 @@
 	<parent>
 		<artifactId>common-util-parent</artifactId>
 		<groupId>org.bana</groupId>
-		<version>1.2.0-SNAPSHOT</version>
+		<version>1.3.0-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<artifactId>common-util-http</artifactId>

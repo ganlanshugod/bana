@@ -518,7 +518,7 @@ public class ImportExcelTest {
 		if (cell == null) {
 			System.out.println(cell);
 		}
-		CellType cellTypeEnum = cell.getCellTypeEnum();
+		CellType cellTypeEnum = cell.getCellType();
 
 		switch (cellTypeEnum) {
 			case STRING:

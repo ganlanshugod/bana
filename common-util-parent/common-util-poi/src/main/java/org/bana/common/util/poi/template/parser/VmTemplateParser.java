@@ -12,7 +12,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.ss.usermodel.Cell;
@@ -25,6 +24,7 @@ import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.bana.common.util.basic.BeanToMapUtil;
+import org.bana.common.util.basic.CollectionUtils;
 import org.bana.common.util.poi.BanaPoiException;
 import org.bana.common.util.velocity.SimpleVelocityEngineFactory;
 import org.slf4j.Logger;
