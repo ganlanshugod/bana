@@ -34,8 +34,10 @@ public class TestDownData {
 	private String name;
 	@ExcelColumn(name="性别",sort=2,colspan=2,useDic=true,dicType="sex",showSelectList=true)
 	private String sex ;
+	@ExcelColumn(name="金额",sort = 6,style = "dataFormat:#,##0.00")
+	private Long price;
 	
-	@ExcelColumn(name="额外配置",mutiMap="额外配置",sort=6)
+	@ExcelColumn(name="额外配置",mutiMap="额外配置",sort=7)
 	private Map<String,Object> mutiMap;
 	/**
 	 * @Description: 属性 name 的get方法 
@@ -100,6 +102,15 @@ public class TestDownData {
 	public Date getDate() {
 		return date;
 	}
+
+	public Long getPrice() {
+		return price;
+	}
+
+	public void setPrice(Long price) {
+		this.price = price;
+	}
+
 	/**
 	 * @Description: 属性 date 的set方法 
 	 * @param date 

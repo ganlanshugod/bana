@@ -88,8 +88,8 @@ public class AnnoGeneratorTest {
 		sexMap.put("0", "未知");
 		dicMap.put("sex", sexMap);
 		Map<String,Object> idCard = new HashMap<String, Object>();
-		idCard.put("18263906395:0", "刘文杰");
-		idCard.put("18263906395:1", "李加秀");
+		idCard.put("372928198708098136:0", "刘文杰");
+		idCard.put("372928198708098136:1", "李加秀");
 		dicMap.put("idCard", idCard);
 		excelConfig.setMutiTitleMap(getMutiMap());
 		Set<String> dicKey = excelConfig.getDicKey();
@@ -154,9 +154,10 @@ public class AnnoGeneratorTest {
 			testData.setName("name"+i+":" + random.nextInt(100));
 			testData.setSex(random.nextInt(2)+"");
 			testData.setDate(new Date());
+			testData.setPrice(10000L);
 			Map<String,Object> mutiMap = new HashMap<String,Object>();
-			mutiMap.put("身份证", "18263906395:"+i);
-			mutiMap.put("联系电话","372928198708098136"+i);
+			mutiMap.put("联系电话", "18263906395"+i);
+			mutiMap.put("身份证","372928198708098136:"+i);
 			testData.setMutiMap(mutiMap);
 			dataList.add(testData);
 		}

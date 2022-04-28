@@ -8,18 +8,15 @@
 */
 package org.bana.common.util.mongodb;
 
-import java.lang.reflect.Method;
-
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mongodb.DB;
-import com.mongodb.DBApiLayer;
-import com.mongodb.DBCollection;
+import java.lang.reflect.Method;
 
 /**
  * @ClassName: MongoDBTransactionFacadeCglib
@@ -52,7 +49,7 @@ public class MongoDBTransactionFacadeCglib implements MethodInterceptor {
         enhancer.setCallback(this);
         // 设置参数
         Class[] classes = new Class[2];
-        classes[0] = DBApiLayer.class;
+        classes[0] = DB.class;
         classes[1] = String.class;
 
         Object[] objs = new Object[2];

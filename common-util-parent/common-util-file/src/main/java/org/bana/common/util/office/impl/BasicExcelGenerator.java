@@ -506,6 +506,8 @@ public class BasicExcelGenerator implements ExcelGenerator {
 					cell.setCellValue((Double) value);
 				} else if (value instanceof Integer) {
 					cell.setCellValue(1D * (Integer) value);
+				} else if (value instanceof Long) {
+					cell.setCellValue(1D * (Long) value);
 				} else if (value instanceof Date) {
 					cell.setCellValue((Date) value);
 				} else if (value instanceof Boolean) {

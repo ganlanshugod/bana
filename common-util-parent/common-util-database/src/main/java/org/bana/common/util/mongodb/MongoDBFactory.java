@@ -8,21 +8,15 @@
  */
 package org.bana.common.util.mongodb;
 
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
+import com.mongodb.*;
 import org.bana.common.util.exception.BanaUtilException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.MongoClient;
-import com.mongodb.MongoCredential;
-import com.mongodb.ServerAddress;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 /** 
  * @ClassName: MongoDBFactory 
@@ -102,9 +96,10 @@ public class MongoDBFactory {
 				seeds.add(new ServerAddress(server.get(ServerAddressEle.host.toString()),Integer.valueOf(server.get(ServerAddressEle.port.toString()))));
 			} catch (NumberFormatException e) {
 				throw new BanaUtilException("端口号 " + server.get(ServerAddressEle.port) + "不是合法的字符",e);
-			} catch (UnknownHostException e) {
-				throw new BanaUtilException("ip地址  " + server.get(ServerAddressEle.host) + "未知的服务器地址",e);
 			}
+//			catch (UnknownHostException e) {
+//				throw new BanaUtilException("ip地址  " + server.get(ServerAddressEle.host) + "未知的服务器地址",e);
+//			}
 		}
 		//credentialList 
 		List<MongoCredential> mongoCredList = new ArrayList<MongoCredential>();
@@ -197,7 +192,7 @@ public class MongoDBFactory {
 
 	/**
 	 * @Description: 属性 serverAdress 的set方法 
-	 * @param serverAdress 
+	 * @param serverAddress
 	 */
 	public void setServerAddress(List<Map<String, String>> serverAddress) {
 		this.serverAddress = serverAddress;
